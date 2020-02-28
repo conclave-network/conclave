@@ -1,0 +1,58 @@
+/*
+ * CONCLAVE - Making Bitcoin Scale And Be Useful
+ * Copyright (C) 2019-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+#pragma once
+
+#include "chainwatch/chainwatch_manager.h"
+#include "p2p/p2p_manager.h"
+#include "rpc/rpc_manager.h"
+#include "config/config.h"
+#include "private_key.h"
+#include "public_key.h"
+#include "worker.h"
+#include "bitcoin_chain/bitcoin_chain.h"
+#include "conclave_chain/conclave_chain.h"
+
+using namespace conclave::chainwatch;
+using namespace conclave::p2p;
+using namespace conclave::rpc;
+using namespace conclave::chain::bitcoin;
+using namespace conclave::chain::conclave;
+namespace conclave
+{
+    class ConclaveNode final : public Worker
+    {
+        public:
+        ConclaveNode(const Config&);
+        const std::string& getDisplayName() const;
+        const PrivateKey& getPrivateKey() const;
+        const PublicKey& getPublicKey() const;
+        BitcoinChain& getBitcoinChain();
+        ConclaveChain& getConclaveChain();
+        private:
+        void prepare() override final;
+        void cleanup() override final;
+        std::string displayName;
+        PrivateKey privateKey;
+        BitcoinChain bitcoinChain;
+        ConclaveChain conclaveChain;
+        ChainwatchManager chainwatchManager;
+        P2pManager p2pManager;
+        RpcManager rpcManager;
+    };
+}
