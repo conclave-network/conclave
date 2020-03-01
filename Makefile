@@ -14,7 +14,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-.PHONY: clean
+.PHONY: clean conclave test all
+
 all: conclave test
 
 install: conclave test
@@ -24,11 +25,11 @@ install: conclave test
 dev: conclave
 	valgrind --tool=memcheck --leak-check=yes ./build/bin/conclaved
 
-test: conclave
-	cd build/tests && ctest --verbose -R $(test)
+test:
+	mkdir -p build && cd build && cmake -D BUILD_TESTS=ON .. && make && cd tests && ctest --verbose -R $(test)
 
 conclave:
-	mkdir -p build && cd build && cmake .. && make
+	mkdir -p build && cd build && cmake -D BUILD_SRC=ON .. && make
 
 clean:
 	rm -fr build
