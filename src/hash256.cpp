@@ -39,18 +39,18 @@ namespace conclave
     {
     }
     
-    Hash256::Hash256(const std::array<BYTE, LARGE_HASH_SIZE_BYTES>& data)
+    Hash256::Hash256(const std::array <BYTE, LARGE_HASH_SIZE_BYTES>& data)
         : data(data)
     {
     }
     
-    Hash256::Hash256(std::array<BYTE, LARGE_HASH_SIZE_BYTES>&& data)
+    Hash256::Hash256(std::array <BYTE, LARGE_HASH_SIZE_BYTES>&& data)
         : data(std::move(data))
     {
     }
     
-    Hash256::Hash256(const BYTE* dat)
-        : data(bytePointerToByteArray<LARGE_HASH_SIZE_BYTES>(dat))
+    Hash256::Hash256(const BYTE* data)
+        : data(bytePointerToByteArray<LARGE_HASH_SIZE_BYTES>(data))
     {
     }
     
@@ -66,7 +66,7 @@ namespace conclave
     
     const Hash256 Hash256::reversed() const
     {
-        std::array<BYTE, LARGE_HASH_SIZE_BYTES> revData = data;
+        std::array <BYTE, LARGE_HASH_SIZE_BYTES> revData = data;
         std::reverse(revData.begin(), revData.end());
         return Hash256(revData);
     }
