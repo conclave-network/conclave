@@ -28,14 +28,20 @@ namespace conclave
     class PublicKey
     {
         public:
+        // Constructors
         PublicKey(const Hash256&, const Hash256&);
         PublicKey(Hash256&&, Hash256&&);
-        PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
+        PublicKey(const Hash256&, const bool);
+        PublicKey(Hash256&&, const bool);
+        PublicKey(const std::array <BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
+        // Public functions
+        // Operators
         bool operator==(const PublicKey&) const;
         bool operator!=(const PublicKey&) const;
         operator std::string() const;
         friend std::ostream& operator<<(std::ostream&, const PublicKey&);
         private:
+        // Properties
         const Hash256 x;
         const Hash256 y;
     };
