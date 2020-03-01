@@ -44,6 +44,16 @@ namespace conclave
     {
     }
     
+    Hash160::Hash160(std::array<BYTE, SMALL_HASH_SIZE_BYTES>&& data)
+        : data(std::move(data))
+    {
+    }
+    
+    Hash160::Hash160(const BYTE* data)
+        : data(bytePointerToByteArray<SMALL_HASH_SIZE_BYTES>(data))
+    {
+    }
+    
     Hash160::Hash160(const std::string& hex)
         : Hash160(hexStringToByteArray<SMALL_HASH_SIZE_BYTES>(hex))
     {
@@ -79,6 +89,11 @@ namespace conclave
     Hash160::operator std::array<BYTE, SMALL_HASH_SIZE_BYTES>() const
     {
         return data;
+    }
+    
+    Hash160::operator const unsigned char*() const
+    {
+        return data.data();
     }
     
     BYTE& Hash160::operator[](const size_t index) const

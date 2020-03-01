@@ -16,97 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "util/hex.h"
 #include "private_key.h"
-#include <vector>
-#include <string>
-#include <stdexcept>
-#include <openssl/obj_mac.h>
-#include <openssl/ec.h>
-#include <openssl/bn.h>
+#include <bitcoin/system/math/elliptic_curve.hpp>
 
-/**
- * Low level function for deriving the secp256k1 public key's bytes from private key.
- * @param privKeyBytes - private key bytes
- * @return public key bytes
- */
-bool derivePubKey(const std::vector<BYTE>& privKeyBytes, std::vector<BYTE>& pubKeyBytes)
+namespace conclave
 {
-    BIGNUM* privKeyBn = nullptr;
-    EC_KEY* ecKey = nullptr;
-    EC_POINT* ecPoint = nullptr;
-    BN_CTX* bnCtx = nullptr;
-    const EC_GROUP* group;
-    bool ret = false;
+    using namespace libbitcoin::system;
     
-    // Make private key into BIGNUM
-    if ((privKeyBn = BN_bin2bn(privKeyBytes.data(), PRIVKEY_SIZE_BYTES, nullptr)) == nullptr) {
-        goto done;
+    PublicKey derivePublicKey(const Hash256& privateKeyData)
+    {
+        ec_uncompressed ecu;
+        secret_to_public(ecu, privateKeyData);
+        return PublicKey(ecu);
     }
     
-    // create new ec keypair
-    if ((ecKey = EC_KEY_new_by_curve_name(NID_secp256k1)) == nullptr) {
-        goto done;
+    PrivateKey::PrivateKey(const Hash256& data)
+        : data(data), publicKey(derivePublicKey(data))
+    {
     }
     
-    // get group of the keypair
-    if ((group = EC_KEY_get0_group(ecKey)) == nullptr) {
-        goto done;
+    [[nodiscard]] const PublicKey& PrivateKey::getPublicKey() const
+    {
+        return publicKey;
     }
-    
-    // create new point - public key
-    if ((ecPoint = EC_POINT_new(group)) == nullptr) {
-        goto done;
-    }
-    
-    // create context (consider using BN_CTX_secure_new)
-    if ((bnCtx = BN_CTX_new()) == nullptr) {
-        goto done;
-    }
-    
-    // perform the multiplication
-    if (!EC_POINT_mul(group, ecPoint, privKeyBn, 0, 0, bnCtx)) {
-        goto done;
-    }
-    
-    // Copy the result into the vector
-    if (EC_POINT_point2oct(group, ecPoint, POINT_CONVERSION_COMPRESSED, pubKeyBytes.data(), PUBKEY_SIZE_BYTES,
-                           bnCtx) != PUBKEY_SIZE_BYTES) {
-        goto done;
-    }
-    
-    // Success
-    ret = true;
-done:
-    if (bnCtx) BN_CTX_free(bnCtx);
-    if (ecPoint) EC_POINT_free(ecPoint);
-    if (ecKey) EC_KEY_free(ecKey);
-    if (privKeyBn) BN_free(privKeyBn);
-    return ret;
 }
-
-PrivateKey::PrivateKey(const std::string& hex)
-    : PrivateKey(hexStringToByteVector(hex))
-{
-}
-
-PrivateKey::PrivateKey(const std::vector<BYTE>& privKeyBytes)
-{
-    if (privKeyBytes.size() != PRIVKEY_SIZE_BYTES) {
-        throw std::invalid_argument("PrivateKey should be " +
-                                    std::to_string(PRIVKEY_SIZE_BYTES) + " bytes, not " +
-                                    std::to_string(privKeyBytes.size()));
-    }
-    std::vector<BYTE> pubKeyBytes(PUBKEY_SIZE_BYTES);
-    if (!derivePubKey(privKeyBytes, pubKeyBytes)) {
-        throw std::runtime_error("Error deriving public key");
-    }
-    this->bytes = privKeyBytes;
-    this->publicKey.reset(new PublicKey(pubKeyBytes));
-}
-
-const PublicKey& PrivateKey::getPublicKey() const
-{
-    return *publicKey;
-}
-

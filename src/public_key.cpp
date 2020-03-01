@@ -16,46 +16,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "util/hex.h"
 #include "public_key.h"
-#include <vector>
-#include <stdexcept>
-#include <string>
 
-PublicKey::PublicKey(const std::string& hex)
-    : PublicKey(hexStringToByteVector(hex))
+namespace conclave
 {
-}
-
-PublicKey::PublicKey(const std::vector<BYTE>& bytes)
-{
-    if (bytes.size() != 33) {
-        throw std::invalid_argument("PublicKey should be 33 bytes, not " + std::to_string(bytes.size()));
+    PublicKey::PublicKey(const Hash256& x, const Hash256& y)
+        : x(x), y(y)
+    {
     }
-    if (bytes[0] != 0x02 && bytes[0] != 0x03) {
-        throw std::invalid_argument("PublicKey should start with 0x02 or 0x03");
+    
+    PublicKey::PublicKey(Hash256&& x, Hash256&& y)
+        : x(std::move(x)), y(std::move(y))
+    {
     }
-    this->bytes = bytes;
-    this->string = byteVectorToHexString(bytes);
-}
-
-bool PublicKey::operator==(const PublicKey& other) const
-{
-    return bytes == other.bytes;
-}
-
-bool PublicKey::operator!=(const PublicKey& other) const
-{
-    return bytes != other.bytes;
-}
-
-PublicKey::operator std::string() const
-{
-    return string;
-}
-
-std::ostream& operator<<(std::ostream& os, const PublicKey& publicKey)
-{
-    os << static_cast<std::string>(publicKey);
-    return os;
+    
+    PublicKey::PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>& data)
+        : x(&data[1]), y(&data[1 + EC_POINT_SIZE_BYTES])
+    {
+    }
+    
+    bool PublicKey::operator==(const PublicKey& other) const
+    {
+        return (x == other.x) && (y == other.y);
+    }
+    
+    bool PublicKey::operator!=(const PublicKey& other) const
+    {
+        return (x != other.x) || (y != other.y);
+    }
+    
+    PublicKey::operator std::string() const
+    {
+        return (std::string) x + (std::string) y;
+    }
+    
+    std::ostream& operator<<(std::ostream& os, const PublicKey& publicKey)
+    {
+        os << static_cast<std::string>(publicKey);
+        return os;
+    }
 }

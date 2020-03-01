@@ -24,11 +24,20 @@
 
 #define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
 typedef unsigned char BYTE;
-// We use 256-bit EC cryptography with compressed pubkey
 const static size_t PRIVKEY_SIZE_BYTES = 32;
-const static size_t PUBKEY_SIZE_BYTES = 33;
+const static size_t EC_POINT_SIZE_BYTES = 32;
+const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
+const static size_t UNCOMPRESSED_PUBKEY_SIZE_BYTES = 65;
 const static size_t SMALL_HASH_SIZE_BYTES = 20;
 const static size_t LARGE_HASH_SIZE_BYTES = 32;
+
+template<size_t size>
+inline const std::array<BYTE, size> bytePointerToByteArray(const BYTE* ptr)
+{
+    std::array<BYTE, size> arr;
+    std::copy(ptr, ptr + size, arr.begin());
+    return arr;
+}
 
 template<size_t size>
 std::ostream& operator<<(std::ostream& os, const std::array<BYTE, size> ba)

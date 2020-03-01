@@ -44,6 +44,16 @@ namespace conclave
     {
     }
     
+    Hash256::Hash256(std::array<BYTE, LARGE_HASH_SIZE_BYTES>&& data)
+        : data(std::move(data))
+    {
+    }
+    
+    Hash256::Hash256(const BYTE* dat)
+        : data(bytePointerToByteArray<LARGE_HASH_SIZE_BYTES>(dat))
+    {
+    }
+    
     Hash256::Hash256(const std::string& hex)
         : Hash256(hexStringToByteArray<LARGE_HASH_SIZE_BYTES>(hex))
     {
@@ -79,6 +89,11 @@ namespace conclave
     Hash256::operator std::array<BYTE, LARGE_HASH_SIZE_BYTES>() const
     {
         return data;
+    }
+    
+    Hash256::operator const unsigned char*() const
+    {
+        return data.data();
     }
     
     BYTE& Hash256::operator[](size_t index) const

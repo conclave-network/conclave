@@ -18,18 +18,19 @@
 
 #pragma once
 
-#include "conclave.h"
 #include "public_key.h"
-#include <ostream>
-#include <memory>
+#include "hash256.h"
+#include "conclave.h"
 
-class PrivateKey
+namespace conclave
 {
-    public:
-    PrivateKey(const std::string&);
-    PrivateKey(const std::vector<BYTE>&);
-    const PublicKey& getPublicKey() const;
-    private:
-    std::vector<BYTE> bytes;
-    std::unique_ptr<PublicKey> publicKey;
-};
+    class PrivateKey
+    {
+        public:
+        PrivateKey(const Hash256&);
+        [[nodiscard]] const PublicKey& getPublicKey() const;
+        private:
+        const Hash256 data;
+        const PublicKey publicKey;
+    };
+}

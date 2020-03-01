@@ -31,6 +31,8 @@ namespace conclave
         Hash160(const Hash160& other);
         Hash160(Hash160&& other);
         Hash160(const std::array<BYTE, SMALL_HASH_SIZE_BYTES>&);
+        Hash160(std::array<BYTE, SMALL_HASH_SIZE_BYTES>&&);
+        Hash160(const BYTE*);
         Hash160(const std::string&);
         Hash160(const char*);
         // Public Functions
@@ -40,6 +42,7 @@ namespace conclave
         // Operators
         operator std::string() const;
         operator std::array<BYTE, SMALL_HASH_SIZE_BYTES>() const;
+        operator const unsigned char*() const;
         BYTE& operator[](const size_t) const;
         Hash160& operator=(const Hash160&) = delete;
         Hash160& operator=(Hash160&&) = delete;

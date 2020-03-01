@@ -19,17 +19,24 @@
 #pragma once
 
 #include "conclave.h"
+#include "hash256.h"
+#include <array>
+#include <string>
 
-class PublicKey
+namespace conclave
 {
-    public:
-    PublicKey(const std::string&);
-    PublicKey(const std::vector<BYTE>&);
-    bool operator==(const PublicKey& other) const;
-    bool operator!=(const PublicKey& other) const;
-    operator std::string() const;
-    friend std::ostream& operator<<(std::ostream&, const PublicKey&);
-    private:
-    std::vector<BYTE> bytes;
-    std::string string;
-};
+    class PublicKey
+    {
+        public:
+        PublicKey(const Hash256&, const Hash256&);
+        PublicKey(Hash256&&, Hash256&&);
+        PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
+        bool operator==(const PublicKey&) const;
+        bool operator!=(const PublicKey&) const;
+        operator std::string() const;
+        friend std::ostream& operator<<(std::ostream&, const PublicKey&);
+        private:
+        const Hash256 x;
+        const Hash256 y;
+    };
+}

@@ -31,6 +31,8 @@ namespace conclave
         Hash256(const Hash256& other);
         Hash256(Hash256&& other);
         Hash256(const std::array<BYTE, LARGE_HASH_SIZE_BYTES>&);
+        Hash256(std::array<BYTE, LARGE_HASH_SIZE_BYTES>&&);
+        Hash256(const BYTE*);
         Hash256(const std::string&);
         Hash256(const char*);
         // Public Functions
@@ -40,6 +42,7 @@ namespace conclave
         // Operators
         operator std::string() const;
         operator std::array<BYTE, LARGE_HASH_SIZE_BYTES>() const;
+        operator const unsigned char*() const;
         BYTE& operator[](const size_t) const;
         Hash256& operator=(const Hash256&) = delete;
         Hash256& operator=(Hash256&&) = delete;
