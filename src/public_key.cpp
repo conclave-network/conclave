@@ -18,6 +18,7 @@
 
 #include "public_key.h"
 #include <bitcoin/system/math/elliptic_curve.hpp>
+#include <algorithm>
 
 namespace conclave
 {
@@ -27,8 +28,10 @@ namespace conclave
     {
         ec_compressed ecc;
         ec_uncompressed ecu;
+        ecc[0] = odd ? 0x02 : 0x03;
+        std::copy(x.begin(), x.end(), &ecc[1]);
         decompress(ecu, ecc);
-        return x;
+        return Hash256(&ecu[1 + EC_POINT_SIZE_BYTES]);
     }
     
     PublicKey::PublicKey(const Hash256& x, const Hash256& y)
@@ -51,7 +54,7 @@ namespace conclave
     {
     }
     
-    PublicKey::PublicKey(const std::array <BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>& data)
+    PublicKey::PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>& data)
         : x(&data[1]), y(&data[1 + EC_POINT_SIZE_BYTES])
     {
     }

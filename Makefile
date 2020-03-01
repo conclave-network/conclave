@@ -26,10 +26,10 @@ dev: conclave
 	valgrind --tool=memcheck --leak-check=yes ./build/bin/conclaved
 
 test:
-	mkdir -p build && cd build && cmake -D EXCLUDE_SRC=YES .. && make && cd tests && ctest --verbose -R $(test)
+	mkdir -p build && cd build && cmake -D EXCLUDE_SRC:bool=YES .. && make && cd tests && ctest --verbose -R $(test)
 
 conclave:
-	mkdir -p build && cd build && cmake -D EXCLUDE_TESTS=YES .. && make
+	mkdir -p build && cd build && cmake -D EXCLUDE_TESTS:bool=YES .. && make
 
 clean:
-	rm -fr build
+	rm -fr build cmake-build-debug
