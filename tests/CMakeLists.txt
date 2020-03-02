@@ -79,6 +79,7 @@ add_executable(
 
 add_executable(
         private_key_test
+        ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
         ../src/private_key.cpp
@@ -86,12 +87,19 @@ add_executable(
 )
 
 add_executable(
+        public_key_test
+        ../src/hash160.cpp
+        ../src/hash256.cpp
+        ../src/public_key.cpp
+        public_key_test.cpp
+)
+
+add_executable(
         address_test
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/address.cpp
-        address_test.cpp
-)
+        address_test.cpp)
 
 add_executable(
         script_test
@@ -239,6 +247,15 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        public_key_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        OpenSSL::Crypto
+        OpenSSL::SSL
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+target_link_libraries(
         address_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -377,6 +394,11 @@ add_test(
 add_test(
         NAME private_key_test
         COMMAND $<TARGET_FILE:private_key_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME public_key_test
+        COMMAND $<TARGET_FILE:public_key_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

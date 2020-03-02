@@ -34,6 +34,16 @@ namespace conclave
         return Hash256(&ecu[1 + EC_POINT_SIZE_BYTES]);
     }
     
+    PublicKey::PublicKey(const PublicKey& other)
+        : x(other.x), y(other.y)
+    {
+    }
+    
+    PublicKey::PublicKey(PublicKey&& other)
+        : x(std::move(other.x)), y(std::move(other.y))
+    {
+    }
+    
     PublicKey::PublicKey(const Hash256& x, const Hash256& y)
         : x(x), y(y)
     {
@@ -62,6 +72,16 @@ namespace conclave
     PublicKey::PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>& data)
         : x(&data[1]), y(getY(Hash256(&data[1]), data[0] == 0x03))
     {
+    }
+    
+    const std::string PublicKey::asHexStringUncompressed() const
+    {
+        return byteArrayToHexString(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+    }
+    
+    const std::string PublicKey::asHexStringCompressed() const
+    {
+        return byteArrayToHexString(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
     }
     
     const Hash160 PublicKey::getHash160Uncompressed() const
@@ -116,7 +136,7 @@ namespace conclave
     PublicKey::operator std::string() const
     {
         // Stringify as a compressed pubkey by default
-        return byteArrayToHexString(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+        return asHexStringCompressed();
     }
     
     std::ostream& operator<<(std::ostream& os, const PublicKey& publicKey)
