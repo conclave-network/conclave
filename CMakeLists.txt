@@ -22,9 +22,7 @@ set(CMAKE_CXX_STANDARD 17)
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(LIBBITCOIN-SYSTEM REQUIRED IMPORTED_TARGET libbitcoin-system)
 
-if (NOT EXCLUDE_SRC)
-    add_subdirectory(src)
-endif ()
-if (NOT EXCLUDE_TESTS)
-    add_subdirectory(tests)
-endif ()
+
+add_subdirectory(src)
+add_subdirectory(tests)
+
