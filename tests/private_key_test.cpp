@@ -23,12 +23,11 @@
 namespace conclave
 {
     const static Hash256 KEY_DATA_1("017b8511ce04f889d3ef08df1c4497794a2fce1c92a84562bbe5c6d572bfc67c");
-    const static Hash256 KEY_DATA_2("bb76e7bfc8248e47f59dd63534171cc54e6b49dd70cf16e45027bbd4e429e60a");
+    const static Hash256 KEY_DATA_2("1b76e7bfc8248e47f59dd63534171cc54e6b49dd70cf16e45022bbd4e429e60a");
     
     BOOST_AUTO_TEST_CASE(PrivateKeyConstructorTest)
     {
         PrivateKey privateKey1(KEY_DATA_1);
-        PublicKey publicKey = privateKey1.getPublicKey();
-        std::cout << publicKey << std::endl;
+        PrivateKey privateKey2(KEY_DATA_2);
     }
 }
