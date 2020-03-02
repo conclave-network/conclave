@@ -99,7 +99,8 @@ add_executable(
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/address.cpp
-        address_test.cpp)
+        address_test.cpp
+)
 
 add_executable(
         script_test
