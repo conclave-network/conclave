@@ -64,6 +64,28 @@ namespace conclave
     {
     }
     
+    const Hash160 PublicKey::getHash160Uncompressed() const
+    {
+        return bitcoin_short_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+    }
+    
+    const Hash160 PublicKey::getHash160Compressed() const
+    {
+        return bitcoin_short_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+    }
+    
+    const Hash256 PublicKey::getHash256Uncompressed() const
+    {
+        return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
+            .reversed();
+    }
+    
+    const Hash256 PublicKey::getHash256Compressed() const
+    {
+        return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
+            .reversed();
+    }
+    
     bool PublicKey::operator==(const PublicKey& other) const
     {
         return (x == other.x) && (y == other.y);

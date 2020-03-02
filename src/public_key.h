@@ -20,6 +20,7 @@
 
 #include "conclave.h"
 #include "hash256.h"
+#include "hash160.h"
 #include <array>
 #include <string>
 
@@ -36,6 +37,10 @@ namespace conclave
         PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
         PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
         // Public functions
+        const Hash160 getHash160Uncompressed() const;
+        const Hash160 getHash160Compressed() const;
+        const Hash256 getHash256Uncompressed() const;
+        const Hash256 getHash256Compressed() const;
         // Operators
         operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
         operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
