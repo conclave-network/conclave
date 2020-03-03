@@ -106,6 +106,7 @@ target_link_libraries(
         PocoJSON
         PocoXML
         PocoFoundation
+        lmdb
 )
 
 set_target_properties(
