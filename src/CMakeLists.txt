@@ -90,6 +90,7 @@ add_executable(
         rpc/methods/make_entry_tx/make_entry_tx_handler.cpp
         rpc/methods/make_entry_tx/structs/sources.cpp
         rpc/methods/make_entry_tx/structs/destinations.cpp
+        cloud/cloud.cpp
         conclave_chain/conclave_chain.cpp
         bitcoin_chain/bitcoin_chain.cpp
         bitcoin_chain/electrumx/electrumx_client.cpp

@@ -173,6 +173,13 @@ add_executable(
 )
 
 add_executable(
+        cloud_test
+        ../src/cloud/cloud.cpp
+        ../src/config/cloud_config.cpp
+        cloud/cloud_test.cpp
+)
+
+add_executable(
         bitcoin_chain_test
         ../src/hash160.cpp
         ../src/hash256.cpp
@@ -279,6 +286,7 @@ target_link_libraries(
 target_link_libraries(
         outpoint_test
         LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
 )
 
 target_link_libraries(
@@ -327,6 +335,12 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        cloud_test
+        PkgConfig::LIBBITCOIN_SYSTEM
+        lmdb
+)
+
+target_link_libraries(
         bitcoin_chain_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -357,6 +371,7 @@ target_link_libraries(
 target_link_libraries(
         sources_test
         LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
 )
 
 target_link_libraries(
@@ -442,6 +457,11 @@ add_test(
 add_test(
         NAME conclave_entry_tx_test
         COMMAND $<TARGET_FILE:conclave_entry_tx_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME cloud_test
+        COMMAND $<TARGET_FILE:cloud_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

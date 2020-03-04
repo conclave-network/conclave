@@ -16,26 +16,39 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
 
-#include "../hash256.h"
-#include "../conclave.h"
-#include <vector>
-#include <optional>
+#include "cloud.h"
 
 namespace conclave
 {
     namespace cloud
     {
-        class ConclaveCloud
+        static lmdb::env initLmdb(const std::string& rootDirectory)
         {
-            public:
-            const std::optional<std::vector<BYTE>> getItem(const Hash256&);
-            const std::optional<std::vector<BYTE>> getMutableItem(const Hash256&);
-            bool putItem(const std::vector<BYTE>&);
-            bool putMutableItem(const Hash256&, const std::vector<BYTE>&);
-            bool updateMutableItem(const Hash256&, const std::vector<BYTE>&);
-            private:
-        };
+            lmdb::env env = lmdb::env::create();
+            env.set_mapsize(1UL * 1024UL * 1024UL * 1024UL); // 1GB - TODO: parameterise
+            env.open(rootDirectory.c_str(), 0, 0664);
+            return env;
+        }
+        
+        Cloud::Cloud(const std::string& rootDirectory)
+            : env(initLmdb(rootDirectory))
+        {
+        }
+        
+        Cloud::Cloud(const CloudConfig& cloudConfig)
+            : Cloud(cloudConfig.getRootDirectory())
+        {
+        }
+        
+        bool Cloud::putItem(const std::vector<BYTE>& value)
+        {
+            return false;
+        }
+        
+        std::optional<std::vector<BYTE>> Cloud::getItem(const Hash256&)
+        {
+            return std::nullopt;
+        }
     }
 }
