@@ -16,20 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "cloud_config.h"
 
-#include <boost/property_tree/ptree.hpp>
-
-namespace pt = boost::property_tree;
-
-class ElectrumxClientConfig
+CloudConfig::CloudConfig(const pt::ptree& tree)
+    : rootDirectory(tree.get<std::string>("RootDirectory"))
 {
-    public:
-    ElectrumxClientConfig(const pt::ptree&);
-    ElectrumxClientConfig(const std::string&, const unsigned short);
-    const std::string& getHost() const;
-    unsigned short getPort() const;
-    private:
-    std::string host;
-    unsigned short port;
-};
+}
+
+CloudConfig::CloudConfig(const std::string& rootDirectory)
+    : rootDirectory(rootDirectory)
+{
+}
+
+const std::string& CloudConfig::getRootDirectory() const
+{
+    return rootDirectory;
+}

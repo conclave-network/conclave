@@ -34,10 +34,11 @@ Config::Config(const std::string& configFilePath)
     try {
         displayName = root.get<std::string>("DisplayName");
         privateKey = root.get<std::string>("PrivateKey");
-        chainwatchConfig = ChainwatchConfig(root.get_child("Chainwatch"));
         rpcConfig = RpcConfig(root.get_child("RPC"));
+        cloudConfig = CloudConfig(root.get_child("Cloud"));
         bitcoinChainConfig = BitcoinChainConfig(root.get_child("BitcoinChain"));
         conclaveChainConfig = ConclaveChainConfig(root.get_child("ConclaveChain"));
+        chainwatchConfig = ChainwatchConfig(root.get_child("Chainwatch"));
     } catch (std::exception& e) {
         throw std::runtime_error("Error parsing config file " + configFilePath + ": " + e.what());
     }
@@ -53,14 +54,14 @@ const std::string& Config::getPrivateKey() const
     return privateKey;
 }
 
-const ChainwatchConfig& Config::getChainwatchConfig() const
-{
-    return *chainwatchConfig;
-}
-
 const RpcConfig& Config::getRpcConfig() const
 {
     return *rpcConfig;
+}
+
+const CloudConfig& Config::getCloudConfig() const
+{
+    return *cloudConfig;
 }
 
 const BitcoinChainConfig& Config::getBitcoinChainConfig() const
@@ -73,4 +74,8 @@ const ConclaveChainConfig& Config::getConclaveChainConfig() const
     return *conclaveChainConfig;
 }
 
+const ChainwatchConfig& Config::getChainwatchConfig() const
+{
+    return *chainwatchConfig;
+}
 

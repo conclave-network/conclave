@@ -18,10 +18,11 @@
 
 #pragma once
 
-#include "chainwatch_config.h"
 #include "rpc_config.h"
+#include "cloud_config.h"
 #include "bitcoin_chain_config.h"
 #include "conclave_chain_config.h"
+#include "chainwatch_config.h"
 #include <string>
 #include <optional>
 
@@ -31,15 +32,17 @@ class Config
     Config(const std::string&);
     const std::string& getDisplayName() const;
     const std::string& getPrivateKey() const;
-    const ChainwatchConfig& getChainwatchConfig() const;
     const RpcConfig& getRpcConfig() const;
+    const CloudConfig& getCloudConfig() const;
     const BitcoinChainConfig& getBitcoinChainConfig() const;
     const ConclaveChainConfig& getConclaveChainConfig() const;
+    const ChainwatchConfig& getChainwatchConfig() const;
     private:
     std::string displayName;
     std::string privateKey;
-    std::optional<ChainwatchConfig> chainwatchConfig;
     std::optional<RpcConfig> rpcConfig;
+    std::optional<CloudConfig> cloudConfig;
     std::optional<BitcoinChainConfig> bitcoinChainConfig;
     std::optional<ConclaveChainConfig> conclaveChainConfig;
+    std::optional<ChainwatchConfig> chainwatchConfig;
 };

@@ -1,13 +1,6 @@
 {
   "DisplayName": "Callan",
   "PrivateKey": "7fb4f6e09d5344c46b4551fe08af8033d5d5864d9bbe551f282a574c928e945b",
-  "BitcoinChain": {
-    "ElectrumXClient": {
-      "Host": "157.245.172.236",
-      "Port": 50001
-    }
-  },
-  "ConclaveChain": {},
   "RPC": {
     "Acceptor": {
       "IPAddress": "127.0.0.1",
@@ -15,5 +8,15 @@
     },
     "NumProcessors": 3
   },
+  "Cloud": {
+    "RootDirectory": "/tmp/conclaveCloud.mdb"
+  },
+  "BitcoinChain": {
+    "ElectrumXClient": {
+      "Host": "157.245.172.236",
+      "Port": 50001
+    }
+  },
+  "ConclaveChain": {},
   "Chainwatch": {}
 }

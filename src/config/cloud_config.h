@@ -22,14 +22,12 @@
 
 namespace pt = boost::property_tree;
 
-class ElectrumxClientConfig
+class CloudConfig
 {
     public:
-    ElectrumxClientConfig(const pt::ptree&);
-    ElectrumxClientConfig(const std::string&, const unsigned short);
-    const std::string& getHost() const;
-    unsigned short getPort() const;
+    CloudConfig(const pt::ptree&);
+    CloudConfig(const std::string&);
+    const std::string& getRootDirectory() const;
     private:
-    std::string host;
-    unsigned short port;
+    std::string rootDirectory;
 };

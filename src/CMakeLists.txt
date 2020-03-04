@@ -69,9 +69,10 @@ add_executable(
         structs/bitcoin_output.cpp
         structs/conclave_entry_tx.cpp
         config/config.cpp
-        config/chainwatch_config.cpp
         config/rpc_config.cpp
         config/rpc_acceptor_config.cpp
+        config/cloud_config.cpp
+        config/chainwatch_config.cpp
         config/bitcoin_chain_config.cpp
         config/conclave_chain_config.cpp
         config/electrumx_client_config.cpp
