@@ -19,6 +19,7 @@
 #pragma once
 
 #include "conclave.h"
+#include <bitcoin/system.hpp>
 #include <array>
 
 namespace conclave
@@ -26,6 +27,8 @@ namespace conclave
     class Hash256 final
     {
         public:
+        // Factories
+        static Hash256 digest(const std::vector<BYTE>&);
         // Constructors
         Hash256();
         Hash256(const Hash256& other);

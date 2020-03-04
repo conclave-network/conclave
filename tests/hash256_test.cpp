@@ -25,6 +25,14 @@
 
 namespace conclave
 {
+    const static std::vector<BYTE> ZERO_LENGTH_VECTOR{};
+    const static std::vector<BYTE> ONE_LENGTH_VECTOR{0x42};
+    const static std::vector<BYTE> TWO_LENGTH_VECTOR{0x77, 0xfd};
+    const static std::vector<BYTE> THREE_LENGTH_VECTOR{0x00, 0xff, 0x49};
+    const static Hash256 ZERO_LENGTH_DATA_DIGEST("56944c5d3f98413ef45cf54545538103cc9f298e0575820ad3591376e2e0f65d");
+    const static Hash256 ONE_LENGTH_DATA_DIGEST("01517aea572935ff9eb1455bc1147f98fb60957f4f9f868f06824ede3bb0550b");
+    const static Hash256 TWO_LENGTH_DATA_DIGEST("20f0ef39afb3f4a9146ed564ad4c366ef1a5216079101abb9d2c0e041196ffe9");
+    const static Hash256 THREE_LENGTH_DATA_DIGEST("a10b6252b19da86f58489cc9be8347cb6c4436e78bd8ccb06630a585ae111e6f");
     const static std::array<BYTE, LARGE_HASH_SIZE_BYTES> ALL_ZEROS_BA_1{
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -59,6 +67,18 @@ namespace conclave
     const static char* ALL_ONES_CSTR_2 = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     const static Hash256 RANDOM_HASH_1;
     const static Hash256 RANDOM_HASH_2;
+    
+    BOOST_AUTO_TEST_CASE(Hash256FactoryTest)
+    {
+        Hash256 zeroLengthVectorDigest = Hash256::digest(ZERO_LENGTH_VECTOR);
+        Hash256 oneLengthVectorDigest = Hash256::digest(ONE_LENGTH_VECTOR);
+        Hash256 twoLengthVectorDigest = Hash256::digest(TWO_LENGTH_VECTOR);
+        Hash256 threeLengthVectorDigest = Hash256::digest(THREE_LENGTH_VECTOR);
+        BOOST_TEST(zeroLengthVectorDigest == ZERO_LENGTH_DATA_DIGEST);
+        BOOST_TEST(oneLengthVectorDigest == ONE_LENGTH_DATA_DIGEST);
+        BOOST_TEST(twoLengthVectorDigest == TWO_LENGTH_DATA_DIGEST);
+        BOOST_TEST(threeLengthVectorDigest == THREE_LENGTH_DATA_DIGEST);
+    }
     
     BOOST_AUTO_TEST_CASE(Hash256DefaultConstructorTest)
     {

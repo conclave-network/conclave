@@ -24,6 +24,11 @@
 
 namespace conclave
 {
+    Hash160 Hash160::digest(const std::vector<BYTE>& data)
+    {
+        return static_cast<Hash160>(bc::system::bitcoin_short_hash(data));
+    }
+    
     Hash160::Hash160()
         : data(makeRandomByteArray<SMALL_HASH_SIZE_BYTES>())
     {

@@ -24,6 +24,11 @@
 
 namespace conclave
 {
+    Hash256 Hash256::digest(const std::vector<BYTE>& data)
+    {
+        return static_cast<Hash256>(bc::system::bitcoin_hash(data)).reversed();
+    }
+    
     Hash256::Hash256()
         : data(makeRandomByteArray<LARGE_HASH_SIZE_BYTES>())
     {
@@ -39,12 +44,12 @@ namespace conclave
     {
     }
     
-    Hash256::Hash256(const std::array <BYTE, LARGE_HASH_SIZE_BYTES>& data)
+    Hash256::Hash256(const std::array<BYTE, LARGE_HASH_SIZE_BYTES>& data)
         : data(data)
     {
     }
     
-    Hash256::Hash256(std::array <BYTE, LARGE_HASH_SIZE_BYTES>&& data)
+    Hash256::Hash256(std::array<BYTE, LARGE_HASH_SIZE_BYTES>&& data)
         : data(std::move(data))
     {
     }
@@ -66,7 +71,7 @@ namespace conclave
     
     const Hash256 Hash256::reversed() const
     {
-        std::array <BYTE, LARGE_HASH_SIZE_BYTES> revData = data;
+        std::array<BYTE, LARGE_HASH_SIZE_BYTES> revData = data;
         std::reverse(revData.begin(), revData.end());
         return Hash256(revData);
     }

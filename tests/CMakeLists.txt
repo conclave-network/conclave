@@ -231,11 +231,13 @@ target_link_libraries(
 target_link_libraries(
         hash160_test
         LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
 )
 
 target_link_libraries(
         hash256_test
         LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
 )
 
 target_link_libraries(

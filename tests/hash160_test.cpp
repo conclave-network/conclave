@@ -25,6 +25,14 @@
 
 namespace conclave
 {
+    const static std::vector<BYTE> ZERO_LENGTH_VECTOR{};
+    const static std::vector<BYTE> ONE_LENGTH_VECTOR{0x42};
+    const static std::vector<BYTE> TWO_LENGTH_VECTOR{0x77, 0xfd};
+    const static std::vector<BYTE> THREE_LENGTH_VECTOR{0x00, 0xff, 0x49};
+    const static Hash160 ZERO_LENGTH_DATA_DIGEST("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
+    const static Hash160 ONE_LENGTH_DATA_DIGEST("6b050eeb2b581fc02616246d0b038126fb3bf238");
+    const static Hash160 TWO_LENGTH_DATA_DIGEST("8c6c792569398c4e93bbd213ced7d22635234e7a");
+    const static Hash160 THREE_LENGTH_DATA_DIGEST("1eed7ac281b147e5158eebe8c601be6f599b151d");
     const static std::array<BYTE, SMALL_HASH_SIZE_BYTES> ALL_ZEROS_BA_1{
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -51,6 +59,18 @@ namespace conclave
     const static char* ALL_ONES_CSTR_2 = "ffffffffffffffffffffffffffffffffffffffff";
     const static Hash160 RANDOM_HASH_1;
     const static Hash160 RANDOM_HASH_2;
+    
+    BOOST_AUTO_TEST_CASE(Hash160FactoryTest)
+    {
+        Hash160 zeroLengthVectorDigest = Hash160::digest(ZERO_LENGTH_VECTOR);
+        Hash160 oneLengthVectorDigest = Hash160::digest(ONE_LENGTH_VECTOR);
+        Hash160 twoLengthVectorDigest = Hash160::digest(TWO_LENGTH_VECTOR);
+        Hash160 threeLengthVectorDigest = Hash160::digest(THREE_LENGTH_VECTOR);
+        BOOST_TEST(zeroLengthVectorDigest == ZERO_LENGTH_DATA_DIGEST);
+        BOOST_TEST(oneLengthVectorDigest == ONE_LENGTH_DATA_DIGEST);
+        BOOST_TEST(twoLengthVectorDigest == TWO_LENGTH_DATA_DIGEST);
+        BOOST_TEST(threeLengthVectorDigest == THREE_LENGTH_DATA_DIGEST);
+    }
     
     BOOST_AUTO_TEST_CASE(Hash160DefaultConstructorTest)
     {
