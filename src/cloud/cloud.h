@@ -37,6 +37,8 @@ namespace conclave
             Cloud(const CloudConfig&);
             Hash256 putItem(const std::vector<BYTE>&);
             std::optional<std::vector<BYTE>> getItem(const Hash256&);
+            void putMutableItem(const Hash256&, const std::vector<BYTE>&);
+            std::optional<std::vector<BYTE>> getMutableItem(const Hash256&);
             private:
             lmdb::env env;
         };

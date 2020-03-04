@@ -30,10 +30,12 @@ namespace conclave
     {
         namespace fs = std::filesystem;
         const static std::string CLOUD_ROOT = "/tmp/conclaveCloud.mdb";
-        const static std::vector<BYTE> IMMUTABLE_ITEM_1{'B', 'i', 't', 'c', 'o', 'i', 'n'};
-        const static std::vector<BYTE> IMMUTABLE_ITEM_2{'C', 'o', 'n', 'c', 'l', 'a', 'v', 'e'};
-        const static Hash256 IMMUTABLE_ITEM_1_KEY("6fef50c603dcf8f3723119e7d4f2d62160dd1814b145521524eaee7c82b6b31a");
-        const static Hash256 IMMUTABLE_ITEM_2_KEY("b976c0370263098cb4e01625a9b103b36a8d915d619e8635ca716ab049e762dd");
+        const static std::vector<BYTE> ITEM_1{'B', 'i', 't', 'c', 'o', 'i', 'n'};
+        const static std::vector<BYTE> ITEM_2{'C', 'o', 'n', 'c', 'l', 'a', 'v', 'e'};
+        const static Hash256 ITEM_1_KEY("6fef50c603dcf8f3723119e7d4f2d62160dd1814b145521524eaee7c82b6b31a");
+        const static Hash256 ITEM_2_KEY("b976c0370263098cb4e01625a9b103b36a8d915d619e8635ca716ab049e762dd");
+        const static Hash256 RANDOM_HASH_1;
+        const static Hash256 RANDOM_HASH_2;
         
         BOOST_AUTO_TEST_CASE(CloudConstructorsTest)
         {
@@ -49,21 +51,46 @@ namespace conclave
         {
             fs::remove_all(CLOUD_ROOT);
             Cloud cloud(CLOUD_ROOT);
-            Hash256 immutableItem1Key = cloud.putItem(IMMUTABLE_ITEM_1);
-            Hash256 immutableItem2Key = cloud.putItem(IMMUTABLE_ITEM_2);
-            BOOST_TEST(immutableItem1Key == IMMUTABLE_ITEM_1_KEY);
-            BOOST_TEST(immutableItem2Key == IMMUTABLE_ITEM_2_KEY);
+            Hash256 immutableItem1Key = cloud.putItem(ITEM_1);
+            Hash256 immutableItem2Key = cloud.putItem(ITEM_2);
+            BOOST_TEST(immutableItem1Key == ITEM_1_KEY);
+            BOOST_TEST(immutableItem2Key == ITEM_2_KEY);
         }
         
         BOOST_AUTO_TEST_CASE(CloudGetItemTest)
         {
             fs::remove_all(CLOUD_ROOT);
             Cloud cloud(CLOUD_ROOT);
-            cloud.putItem(IMMUTABLE_ITEM_1);
-            std::optional<std::vector<BYTE>> immutableItem1 = cloud.getItem(IMMUTABLE_ITEM_1_KEY);
-            std::optional<std::vector<BYTE>> immutableItem2 = cloud.getItem(IMMUTABLE_ITEM_2_KEY);
-            BOOST_TEST((immutableItem1 == IMMUTABLE_ITEM_1));
+            cloud.putItem(ITEM_1);
+            std::optional<std::vector<BYTE>> immutableItem1 = cloud.getItem(ITEM_1_KEY);
+            std::optional<std::vector<BYTE>> immutableItem2 = cloud.getItem(ITEM_2_KEY);
+            BOOST_TEST((immutableItem1 == ITEM_1));
             BOOST_TEST((immutableItem2 == std::nullopt));
+        }
+        
+        BOOST_AUTO_TEST_CASE(CloudPutMutableItemTest)
+        {
+            // Test that putMutableItem replaces the value when called with the same key
+            fs::remove_all(CLOUD_ROOT);
+            Cloud cloud(CLOUD_ROOT);
+            cloud.putMutableItem(RANDOM_HASH_2, ITEM_1);
+            cloud.putMutableItem(RANDOM_HASH_2, ITEM_2);
+            std::optional<std::vector<BYTE>> mutableItem1 = cloud.getMutableItem(RANDOM_HASH_1);
+            std::optional<std::vector<BYTE>> mutableItem2 = cloud.getMutableItem(RANDOM_HASH_2);
+            BOOST_TEST((mutableItem1 == std::nullopt));
+            BOOST_TEST((mutableItem2 == ITEM_2));
+        }
+        
+        BOOST_AUTO_TEST_CASE(CloudGetMutableItemTest)
+        {
+            fs::remove_all(CLOUD_ROOT);
+            Cloud cloud(CLOUD_ROOT);
+            cloud.putMutableItem(RANDOM_HASH_1, ITEM_1);
+            cloud.putMutableItem(RANDOM_HASH_2, ITEM_2);
+            std::optional<std::vector<BYTE>> mutableItem1 = cloud.getMutableItem(RANDOM_HASH_1);
+            std::optional<std::vector<BYTE>> mutableItem2 = cloud.getMutableItem(RANDOM_HASH_2);
+            BOOST_TEST((mutableItem1 == ITEM_1));
+            BOOST_TEST((mutableItem2 == ITEM_2));
         }
     }
 }
