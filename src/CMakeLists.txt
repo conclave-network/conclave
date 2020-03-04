@@ -67,6 +67,7 @@ add_executable(
         structs/bitcoin_tx.cpp
         structs/bitcoin_input.cpp
         structs/bitcoin_output.cpp
+        structs/conclave_output.cpp
         structs/conclave_entry_tx.cpp
         config/config.cpp
         config/rpc_config.cpp
