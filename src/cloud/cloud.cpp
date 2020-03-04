@@ -18,15 +18,19 @@
 
 
 #include "cloud.h"
+#include <filesystem>
 
 namespace conclave
 {
     namespace cloud
     {
+        namespace fs = std::filesystem;
+        
         static lmdb::env initLmdb(const std::string& rootDirectory)
         {
+            fs::create_directory(rootDirectory);
             lmdb::env env = lmdb::env::create();
-            env.set_mapsize(1UL * 1024UL * 1024UL * 1024UL); // 1GB - TODO: parameterise
+            env.set_mapsize(1UL * 1024UL * 1024UL * 1024UL); // 1GB - TODO: parameterize
             env.open(rootDirectory.c_str(), 0, 0664);
             return env;
         }
@@ -41,14 +45,31 @@ namespace conclave
         {
         }
         
-        bool Cloud::putItem(const std::vector<BYTE>& value)
+        Hash256 Cloud::putItem(const std::vector<BYTE>& value)
         {
-            return false;
+            Hash256 key = Hash256::digest(value);
+            lmdb::txn wtxn = lmdb::txn::begin(env);
+            lmdb::dbi dbi = lmdb::dbi::open(wtxn, nullptr);
+            if (!dbi.put(wtxn, key, value)) {
+                throw std::runtime_error("putItem failed");
+            }
+            wtxn.commit();
+            return key;
         }
         
-        std::optional<std::vector<BYTE>> Cloud::getItem(const Hash256&)
+        std::optional<std::vector<BYTE>> Cloud::getItem(const Hash256& key)
         {
-            return std::nullopt;
+            lmdb::txn rtxn = lmdb::txn::begin(env, nullptr, MDB_RDONLY);
+            lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
+            std::vector<BYTE> value;
+            if (!dbi.get(rtxn, key, value)) {
+                return std::nullopt;
+            }
+            // Compute hash of value and ensure it matches the key
+            if (Hash256::digest(value) != key) {
+                throw std::runtime_error("getItem failed: data hash does not match key");
+            }
+            return value;
         }
     }
 }

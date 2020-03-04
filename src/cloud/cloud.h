@@ -35,7 +35,7 @@ namespace conclave
             public:
             Cloud(const std::string&);
             Cloud(const CloudConfig&);
-            bool putItem(const std::vector<BYTE>&);
+            Hash256 putItem(const std::vector<BYTE>&);
             std::optional<std::vector<BYTE>> getItem(const Hash256&);
             private:
             lmdb::env env;

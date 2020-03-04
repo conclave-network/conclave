@@ -174,8 +174,9 @@ add_executable(
 
 add_executable(
         cloud_test
-        ../src/cloud/cloud.cpp
+        ../src/hash256.cpp
         ../src/config/cloud_config.cpp
+        ../src/cloud/cloud.cpp
         cloud/cloud_test.cpp
 )
 
@@ -336,8 +337,10 @@ target_link_libraries(
 
 target_link_libraries(
         cloud_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
         PkgConfig::LIBBITCOIN_SYSTEM
         lmdb
+        stdc++fs
 )
 
 target_link_libraries(
