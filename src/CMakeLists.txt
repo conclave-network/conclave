@@ -109,6 +109,7 @@ target_link_libraries(
         PocoXML
         PocoFoundation
         lmdb
+        stdc++fs # Remove after GCC9
 )
 
 set_target_properties(

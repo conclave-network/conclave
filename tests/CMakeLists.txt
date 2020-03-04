@@ -340,7 +340,7 @@ target_link_libraries(
         LINK_PUBLIC ${Boost_LIBRARIES}
         PkgConfig::LIBBITCOIN_SYSTEM
         lmdb
-        stdc++fs
+        stdc++fs # Remove after GCC9
 )
 
 target_link_libraries(
