@@ -54,13 +54,13 @@ namespace conclave
                     return outputs;
                 }
                 
-                std::vector<BitcoinOutput> makeConclaveOutputs(const Destinations& destinations)
+                std::vector<ConclaveOutput> makeConclaveOutputs(const Destinations& destinations)
                 {
-                    std::vector<BitcoinOutput> outputs;
+                    std::vector<ConclaveOutput> outputs;
                     for (const Destination& destination: destinations.conclaveDestinations) {
                         Script scriptPubKey = Script::p2hScript(destination.address);
                         uint64_t value = destination.value;
-                        outputs.emplace_back(BitcoinOutput(scriptPubKey, value));
+                        outputs.emplace_back(ConclaveOutput(scriptPubKey, value));
                     }
                     return outputs;
                 }

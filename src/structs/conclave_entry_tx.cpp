@@ -21,21 +21,21 @@
 
 namespace conclave
 {
-    const std::string ConclaveEntryTx::JSONKEY_CONCLAVE_OUTPUTS = "conclaveOutputs";
+    const std::string ConclaveEntryTx::JSONKEY_OUTPUTS = "outputs";
     const std::string ConclaveEntryTx::JSONKEY_BITCOIN_TXID = "bitcoinTxid";
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<BitcoinOutput>& conclaveOutputs)
-        : conclaveOutputs(conclaveOutputs), bitcoinTxid(std::nullopt)
+    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs)
+        : outputs(outputs), bitcoinTxid(std::nullopt)
     {
     }
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<BitcoinOutput>& conclaveOutputs, const Hash256& bitcoinTxid)
-        : conclaveOutputs(conclaveOutputs), bitcoinTxid(bitcoinTxid)
+    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs, const Hash256& bitcoinTxid)
+        : outputs(outputs), bitcoinTxid(bitcoinTxid)
     {
     }
     
     ConclaveEntryTx::ConclaveEntryTx(const pt::ptree& tree)
-        : ConclaveEntryTx(tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS),
+        : ConclaveEntryTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
                           *getOptionalPrimitiveFromJson<std::string>(tree, JSONKEY_BITCOIN_TXID))
     {
     }
@@ -43,7 +43,7 @@ namespace conclave
     ConclaveEntryTx::operator pt::ptree() const
     {
         pt::ptree tree;
-        tree.add_child(JSONKEY_CONCLAVE_OUTPUTS, vectorOfObjectsToArray(conclaveOutputs));
+        tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
         if (bitcoinTxid.has_value()) {
             tree.add<std::string>(JSONKEY_BITCOIN_TXID, *bitcoinTxid);
         }
@@ -57,12 +57,12 @@ namespace conclave
     
     bool ConclaveEntryTx::operator==(const ConclaveEntryTx& other) const
     {
-        return (conclaveOutputs == other.conclaveOutputs) && (bitcoinTxid == other.bitcoinTxid);
+        return (outputs == other.outputs) && (bitcoinTxid == other.bitcoinTxid);
     }
     
     bool ConclaveEntryTx::operator!=(const ConclaveEntryTx& other) const
     {
-        return (conclaveOutputs != other.conclaveOutputs) || (bitcoinTxid != other.bitcoinTxid);
+        return (outputs != other.outputs) || (bitcoinTxid != other.bitcoinTxid);
     }
     
     std::ostream& operator<<(std::ostream& os, const ConclaveEntryTx& conclaveEntryTx)

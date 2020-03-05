@@ -19,7 +19,7 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
-#include "bitcoin_output.h"
+#include "conclave_output.h"
 #include "../hash256.h"
 #include "../conclave.h"
 #include <optional>
@@ -31,11 +31,11 @@ namespace conclave
     struct ConclaveEntryTx final
     {
         // JSON keys
-        const static std::string JSONKEY_CONCLAVE_OUTPUTS;
+        const static std::string JSONKEY_OUTPUTS;
         const static std::string JSONKEY_BITCOIN_TXID;
         // Constructors
-        ConclaveEntryTx(const std::vector<BitcoinOutput>&);
-        ConclaveEntryTx(const std::vector<BitcoinOutput>&, const Hash256&);
+        ConclaveEntryTx(const std::vector<ConclaveOutput>&);
+        ConclaveEntryTx(const std::vector<ConclaveOutput>&, const Hash256&);
         ConclaveEntryTx(const pt::ptree&);
         // Operators
         explicit operator pt::ptree() const;
@@ -44,7 +44,7 @@ namespace conclave
         bool operator!=(const ConclaveEntryTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveEntryTx&);
         // Properties
-        const std::vector<BitcoinOutput> conclaveOutputs;
+        const std::vector<ConclaveOutput> outputs;
         const std::optional<Hash256> bitcoinTxid;
     };
 }

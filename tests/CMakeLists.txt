@@ -178,7 +178,8 @@ add_executable(
         ../src/hash256.cpp
         ../src/address.cpp
         ../src/script.cpp
-        ../src/structs/bitcoin_output.cpp
+        ../src/structs/outpoint.cpp
+        ../src/structs/conclave_output.cpp
         ../src/structs/conclave_entry_tx.cpp
         structs/conclave_entry_tx_test.cpp
 )
