@@ -18,14 +18,12 @@
 
 
 #include "cloud.h"
-#include <filesystem>
+#include "../util/filesystem.h"
 
 namespace conclave
 {
     namespace cloud
     {
-        namespace fs = std::filesystem;
-        
         static lmdb::env initLmdb(const std::string& rootDirectory)
         {
             fs::create_directory(rootDirectory);

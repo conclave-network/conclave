@@ -20,7 +20,7 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include "../../src/cloud/cloud.h"
-#include <filesystem>
+#include "../../src/util/filesystem.h"
 #include <vector>
 #include <string>
 
@@ -28,7 +28,6 @@ namespace conclave
 {
     namespace cloud
     {
-        namespace fs = std::filesystem;
         const static std::string CLOUD_ROOT = "/tmp/conclaveCloud.mdb";
         const static std::vector<BYTE> ITEM_1{'B', 'i', 't', 'c', 'o', 'i', 'n'};
         const static std::vector<BYTE> ITEM_2{'C', 'o', 'n', 'c', 'l', 'a', 'v', 'e'};
