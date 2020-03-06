@@ -89,7 +89,7 @@ inline const std::vector<T> tryGetVectorOfPrimitives(const pt::ptree& tree, cons
 {
     std::vector<T> vec;
     for (auto& item : tree.get_child(childName)) {
-        vec.push_back(item.second.get_value<T>());
+        vec.push_back(T(item.second.get_value<std::string>()));
     }
     return vec;
 }
