@@ -52,9 +52,7 @@ namespace conclave
                     private:
                     void serialize()
                     {
-                        pt::ptree tree;
-                        tree.put<uint64_t>("balance", balance);
-                        serializedJson = jsonToString(tree);
+                        serializedJson = "\"" + std::to_string(balance) + "\"";
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
