@@ -125,18 +125,14 @@ $ curl -X POST -d @makeEntryTxRequest.json http://127.0.0.1:8008/
           ],
           "value": 50000
         }
-      ]
-    },
-    "redeemScript": [
-      "614811cd92661d3bd4b393363e6ce14e0b53592896d513de48ed0d8915b174c8",
-      "DROP",
-      "2",
-      "03519e185b4c0de842cb5cf9e49cd6df00569c4f34bf87ed295b65f9473d508e9d",
-      "02a013b162136d674a37b95ce50d0ae02c5f3d3ab74e52d363e809cde86e92cbbb",
-      "031f74bdb5873d9ae3d46aa3473718eac8fe19d4b9d62d9421cf6b9b6beab1e6c4",
-      "3",
-      "CHECKSIG"
-    ]
+      ],
+      "trustees": [
+        "02a4a43dcfc18a895e479eebeb6d9cd025d47bf440782a96b8954584fa4c19fc50",
+        "02e701c1b81ea6aeddcc4bbddb1a11877c85e8768440bf679a6fdc9263b4e9ae79",
+        "0339d29af90f8e83bcc2a2d5bfde993f943869044ff1284f5dacfe800775821fff"
+      ],
+      "minSigs": 2
+    }
   }
 }
  ```
