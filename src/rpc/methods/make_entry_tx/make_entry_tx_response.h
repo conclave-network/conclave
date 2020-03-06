@@ -36,8 +36,8 @@ namespace conclave
                 class MakeEntryTxResponse : public Response
                 {
                     public:
-                    MakeEntryTxResponse(const BitcoinTx& bitcoinTx, const ConclaveEntryTx& conclaveEntryTx)
-                        : bitcoinTx(bitcoinTx), conclaveEntryTx(conclaveEntryTx)
+                    MakeEntryTxResponse(const BitcoinTx& fundTx, const ConclaveEntryTx& claimTx)
+                        : fundTx(fundTx), claimTx(claimTx)
                     {
                     }
                     
@@ -55,14 +55,14 @@ namespace conclave
                     void serialize()
                     {
                         pt::ptree tree;
-                        tree.add_child("bitcoinTx", static_cast<pt::ptree>(bitcoinTx));
-                        tree.add_child("conclaveEntryTx", static_cast<pt::ptree>(conclaveEntryTx));
+                        tree.add_child("FundTx", static_cast<pt::ptree>(fundTx));
+                        tree.add_child("ClaimTx", static_cast<pt::ptree>(claimTx));
                         serializedJson = jsonToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
-                    const BitcoinTx bitcoinTx;
-                    const ConclaveEntryTx conclaveEntryTx;
+                    const BitcoinTx fundTx;
+                    const ConclaveEntryTx claimTx;
                 };
             }
         }

@@ -41,6 +41,30 @@ namespace conclave
                 };
                 const static uint32_t MIN_SIGS = 2;
                 
+                std::vector<ConclaveOutput> makeConclaveOutputs(const std::vector<Destination> conclaveDestinations)
+                {
+                    std::vector<ConclaveOutput> outputs;
+                    for (const Destination& destination: conclaveDestinations) {
+                        Script scriptPubKey = Script::p2hScript(destination.address);
+                        uint64_t value = destination.value;
+                        outputs.emplace_back(ConclaveOutput(scriptPubKey, value));
+                    }
+                    return outputs;
+                }
+                
+                ConclaveEntryTx makeClaimTx(const std::vector<Destination> destinations,
+                                            const std::vector<PublicKey>& trustees,
+                                            const uint32_t minSigs)
+                {
+                    return ConclaveEntryTx(makeConclaveOutputs(destinations), trustees, minSigs);
+                }
+                
+                Script makeEntryRedeemScript(const ConclaveEntryTx& claimTx)
+                {
+                    return Script(std::vector<std::string>{
+                    });
+                }
+                
                 std::vector<BitcoinInput> makeBitcoinInputs(const Sources& sources)
                 {
                     std::vector<BitcoinInput> inputs;
@@ -53,6 +77,8 @@ namespace conclave
                 std::vector<BitcoinOutput> makeBitcoinOutputs(const Destinations& destinations)
                 {
                     std::vector<BitcoinOutput> outputs;
+                    // Add Conclave funding output
+                    // TODO
                     // Add bitcoin change outputs
                     for (const Destination& destination: destinations.bitcoinDestinations) {
                         Script scriptPubKey = Script::p2hScript(destination.address);
@@ -62,24 +88,14 @@ namespace conclave
                     return outputs;
                 }
                 
-                std::vector<ConclaveOutput> makeConclaveOutputs(const Destinations& destinations)
-                {
-                    std::vector<ConclaveOutput> outputs;
-                    for (const Destination& destination: destinations.conclaveDestinations) {
-                        Script scriptPubKey = Script::p2hScript(destination.address);
-                        uint64_t value = destination.value;
-                        outputs.emplace_back(ConclaveOutput(scriptPubKey, value));
-                    }
-                    return outputs;
-                }
-                
                 MakeEntryTxResponse* makeEntryTxHandler(const MakeEntryTxRequest& makeEntryTxRequest,
                                                         ConclaveNode& conclaveNode)
                 {
                     const Sources sources = makeEntryTxRequest.getSources();
                     const Destinations destinations = makeEntryTxRequest.getDestinations();
+                    ConclaveEntryTx conclaveEntryTx(
+                        makeConclaveOutputs(destinations.conclaveDestinations), TRUSTEES, MIN_SIGS);
                     BitcoinTx bitcoinTx(makeBitcoinInputs(sources), makeBitcoinOutputs(destinations), 2, 0);
-                    ConclaveEntryTx conclaveEntryTx(makeConclaveOutputs(destinations), TRUSTEES, MIN_SIGS);
                     return new MakeEntryTxResponse(bitcoinTx, conclaveEntryTx);
                 }
             }
