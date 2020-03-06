@@ -20,10 +20,13 @@
 
 #include "util/hex.h"
 #include <array>
+#include <vector>
 #include <ostream>
 
-#define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
 typedef unsigned char BYTE;
+#define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
+#define BYTE_VECTOR_TO_HEX(byteVector) byteVectorToHexString(byteVector)
+#define HEX_TO_BYTE_VECTOR(hex) hexStringToByteVector(hex)
 const static size_t PRIVKEY_SIZE_BYTES = 32;
 const static size_t EC_POINT_SIZE_BYTES = 32;
 const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
@@ -40,8 +43,9 @@ inline const std::array<BYTE, size> bytePointerToByteArray(const BYTE* ptr)
 }
 
 template<size_t size>
-std::ostream& operator<<(std::ostream& os, const std::array<BYTE, size> ba)
+std::ostream& operator<<(std::ostream& os, const std::array<BYTE, size>& ba)
 {
     os << byteArrayToHexString(ba);
     return os;
 }
+

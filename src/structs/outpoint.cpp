@@ -17,6 +17,7 @@
  */
 
 #include "outpoint.h"
+#include <cstring>
 
 namespace pt = boost::property_tree;
 namespace conclave
@@ -33,6 +34,15 @@ namespace conclave
         : Outpoint(getPrimitiveFromJson<std::string>(tree, JSONKEY_TXID),
                    getPrimitiveFromJson<uint32_t>(tree, JSONKEY_INDEX))
     {
+    }
+    
+    const std::vector<BYTE> Outpoint::serialize() const
+    {
+        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + sizeof(index));
+        Hash256 revTxid = txId.reversed();
+        std::memcpy(&serialized[0], &revTxid[0], LARGE_HASH_SIZE_BYTES);
+        std::memcpy(&serialized[LARGE_HASH_SIZE_BYTES], &index, sizeof(index));
+        return serialized;
     }
     
     Outpoint::operator pt::ptree() const
