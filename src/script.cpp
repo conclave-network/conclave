@@ -206,6 +206,11 @@ namespace conclave
         return sha256_hash(script.to_data(false));
     }
     
+    const std::vector<BYTE> Script::serialize() const
+    {
+        return script.to_data(true);
+    }
+    
     bool Script::operator==(const Script& other) const
     {
         return (script == other.script);

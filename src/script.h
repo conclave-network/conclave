@@ -59,6 +59,7 @@ namespace conclave
         const Hash160 getHash160() const;
         const Hash256 getHash256() const;
         const Hash256 getSingleSHA256() const;
+        const std::vector<BYTE> serialize() const;
         // Operators
         bool operator==(const Script& other) const;
         bool operator!=(const Script& other) const;
