@@ -74,6 +74,16 @@ namespace conclave
     {
     }
     
+    PublicKey::PublicKey(const std::string& hex)
+        : PublicKey(hexStringToByteArray<COMPRESSED_PUBKEY_SIZE_BYTES>(hex))
+    {
+    }
+    
+    PublicKey::PublicKey(const char* hex)
+        : PublicKey(std::string(hex))
+    {
+    }
+    
     const std::string PublicKey::asHexStringUncompressed() const
     {
         return byteArrayToHexString(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));

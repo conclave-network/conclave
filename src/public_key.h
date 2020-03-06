@@ -38,6 +38,8 @@ namespace conclave
         PublicKey(Hash256&&, const bool);
         PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
         PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
+        PublicKey(const std::string&);
+        PublicKey(const char*);
         // Public functions
         const std::string asHexStringUncompressed() const;
         const std::string asHexStringCompressed() const;
