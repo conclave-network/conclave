@@ -33,6 +33,14 @@ namespace conclave
         {
             namespace make_entry_tx
             {
+                // TEMP !!!
+                const static std::vector<PublicKey> TRUSTEES{
+                    "03519e185b4c0de842cb5cf9e49cd6df00569c4f34bf87ed295b65f9473d508e9d",
+                    "02a013b162136d674a37b95ce50d0ae02c5f3d3ab74e52d363e809cde86e92cbbb",
+                    "031f74bdb5873d9ae3d46aa3473718eac8fe19d4b9d62d9421cf6b9b6beab1e6c4"
+                };
+                const static uint32_t MIN_SIGS = 2;
+                
                 std::vector<BitcoinInput> makeBitcoinInputs(const Sources& sources)
                 {
                     std::vector<BitcoinInput> inputs;
@@ -71,7 +79,7 @@ namespace conclave
                     const Sources sources = makeEntryTxRequest.getSources();
                     const Destinations destinations = makeEntryTxRequest.getDestinations();
                     BitcoinTx bitcoinTx(makeBitcoinInputs(sources), makeBitcoinOutputs(destinations), 2, 0);
-                    ConclaveEntryTx conclaveEntryTx(makeConclaveOutputs(destinations));
+                    ConclaveEntryTx conclaveEntryTx(makeConclaveOutputs(destinations), TRUSTEES, MIN_SIGS);
                     return new MakeEntryTxResponse(bitcoinTx, conclaveEntryTx);
                 }
             }
