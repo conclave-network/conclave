@@ -18,13 +18,11 @@
 
 #pragma once
 
-#include "get_address_balance_request.h"
 #include "get_address_balance_response.h"
 #include "../request.h"
 #include "../../../address.h"
 #include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
-#include <iostream>
 
 namespace pt = boost::property_tree;
 namespace conclave
@@ -32,41 +30,47 @@ namespace conclave
     class ConclaveNode;
     namespace rpc
     {
-        class GetAddressBalanceRequest;
-        
-        GetAddressBalanceResponse* getAddressBalanceHandler(const GetAddressBalanceRequest&, ConclaveNode&);
-        
-        class GetAddressBalanceRequest : public Request
+        namespace methods
         {
-            public:
-            GetAddressBalanceRequest(const pt::ptree& params)
-                : address(getPrimitiveFromJson<std::string>(params, "address"))
+            namespace get_address_balance
             {
+                class GetAddressBalanceRequest;
+                
+                GetAddressBalanceResponse* getAddressBalanceHandler(const GetAddressBalanceRequest&, ConclaveNode&);
+                
+                class GetAddressBalanceRequest : public Request
+                {
+                    public:
+                    GetAddressBalanceRequest(const pt::ptree& params)
+                        : address(getPrimitiveFromJson<std::string>(params, "address"))
+                    {
+                    }
+                    
+                    RpcMethod getMethod() const override
+                    {
+                        return rpcMethod;
+                    }
+                    
+                    const std::string& getMethodName() const override
+                    {
+                        return rpcMethodToString(rpcMethod);
+                    }
+                    
+                    Response* handle(ConclaveNode& conclaveNode) const override
+                    {
+                        return getAddressBalanceHandler(*this, conclaveNode);
+                    }
+                    
+                    const Address& getAddress() const
+                    {
+                        return address;
+                    }
+                    
+                    private:
+                    const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
+                    const Address address;
+                };
             }
-            
-            RpcMethod getMethod() const override
-            {
-                return rpcMethod;
-            }
-            
-            const std::string& getMethodName() const override
-            {
-                return rpcMethodToString(rpcMethod);
-            }
-            
-            Response* handle(ConclaveNode& conclaveNode) const override
-            {
-                return getAddressBalanceHandler(*this, conclaveNode);
-            }
-            
-            const Address& getAddress() const
-            {
-                return address;
-            }
-            
-            private:
-            const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
-            const Address address;
-        };
+        }
     }
 }

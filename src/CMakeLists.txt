@@ -86,16 +86,16 @@ add_executable(
         rpc/methods/request.cpp
         rpc/methods/response.cpp
         rpc/methods/node_info/node_info_handler.cpp
-        rpc/methods/send_tx/send_tx_handler.cpp
         rpc/methods/get_address_balance/get_address_balance_handler.cpp
         rpc/methods/make_entry_tx/make_entry_tx_handler.cpp
         rpc/methods/make_entry_tx/structs/sources.cpp
         rpc/methods/make_entry_tx/structs/destinations.cpp
+        rpc/methods/submit_entry_tx/submit_entry_tx_handler.cpp
         cloud/cloud.cpp
         conclave_chain/conclave_chain.cpp
         bitcoin_chain/bitcoin_chain.cpp
         bitcoin_chain/electrumx/electrumx_client.cpp
-        rpc/methods/make_entry_tx/make_entry_tx_handler.cpp rpc/methods/submit_entry_tx/submit_entry_tx_handler.cpp rpc/methods/submit_entry_tx/submit_entry_tx_request.h rpc/methods/submit_entry_tx/submit_entry_tx_response.h)
+)
 
 target_link_libraries(
         conclaved

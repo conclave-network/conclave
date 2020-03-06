@@ -19,11 +19,10 @@
 #pragma once
 
 #include "submit_entry_tx_response.h"
+#include "../request.h"
 #include "../../../structs/bitcoin_tx.h"
 #include "../../../structs/conclave_entry_tx.h"
-#include "../request.h"
-#include <iostream>
-#include <vector>
+#include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
 namespace conclave

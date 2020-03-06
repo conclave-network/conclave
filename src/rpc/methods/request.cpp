@@ -27,7 +27,9 @@ namespace conclave
     namespace rpc
     {
         using namespace methods::node_info;
+        using namespace methods::get_address_balance;
         using namespace methods::make_entry_tx;
+        using namespace methods::submit_entry_tx;
         
         Request* Request::deserializeJson(const std::string& json)
         {
@@ -39,16 +41,16 @@ namespace conclave
             // Go for JSON-RPC 2.0 specification (https://www.jsonrpc.org/specification)
             std::string method = getPrimitiveFromJson<std::string>(root, "method");
             const pt::ptree params = root.get_child("params", pt::ptree());
+            // TODO - find out a way to lose this switch statement
             switch (stringToRpcMethod(method)) {
                 case RpcMethod::NodeInfo:
-                    return new NodeInfoRequest();
+                    return new NodeInfoRequest(params);
                 case RpcMethod::GetAddressBalance:
                     return new GetAddressBalanceRequest(params);
                 case RpcMethod::MakeEntryTx:
                     return new MakeEntryTxRequest(params);
                 case RpcMethod::SubmitEntryTx:
-                    retturn
-                    new SubmitEntryTxRequest(params);
+                    return new SubmitEntryTxRequest(params);
                 default:
                     throw std::logic_error("No implementation found for RPC method: " + method);
             }

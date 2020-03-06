@@ -24,17 +24,24 @@ namespace conclave
 {
     namespace rpc
     {
-        GetAddressBalanceResponse* getAddressBalanceHandler(const GetAddressBalanceRequest& getAddressBalanceRequest,
-                                                            ConclaveNode& conclaveNode)
+        namespace methods
         {
-            const Address& address = getAddressBalanceRequest.getAddress();
-            uint64_t balance;
-            if (address.isConclave()) {
-                balance = conclaveNode.getConclaveChain().getAddressBalance(address);
-            } else {
-                balance = conclaveNode.getBitcoinChain().getAddressBalance(address);
+            namespace get_address_balance
+            {
+                GetAddressBalanceResponse*
+                getAddressBalanceHandler(const GetAddressBalanceRequest& getAddressBalanceRequest,
+                                         ConclaveNode& conclaveNode)
+                {
+                    const Address& address = getAddressBalanceRequest.getAddress();
+                    uint64_t balance;
+                    if (address.isConclave()) {
+                        balance = conclaveNode.getConclaveChain().getAddressBalance(address);
+                    } else {
+                        balance = conclaveNode.getBitcoinChain().getAddressBalance(address);
+                    }
+                    return new GetAddressBalanceResponse(balance);
+                }
             }
-            return new GetAddressBalanceResponse(balance);
         }
     }
 }

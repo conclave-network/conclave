@@ -20,7 +20,6 @@
 
 #include "../response.h"
 #include "../../../util/json.h"
-#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
@@ -28,34 +27,40 @@ namespace conclave
 {
     namespace rpc
     {
-        class GetAddressBalanceResponse : public Response
+        namespace methods
         {
-            public:
-            GetAddressBalanceResponse(const uint64_t balance)
-                : balance(balance)
+            namespace get_address_balance
             {
+                class GetAddressBalanceResponse : public Response
+                {
+                    public:
+                    GetAddressBalanceResponse(const uint64_t balance)
+                        : balance(balance)
+                    {
+                    }
+                    
+                    RpcMethod getMethod() const override
+                    {
+                        return rpcMethod;
+                    }
+                    
+                    const std::string& getMethodName() const override
+                    {
+                        return rpcMethodToString(rpcMethod);
+                    }
+                    
+                    private:
+                    void serialize()
+                    {
+                        pt::ptree tree;
+                        tree.put<uint64_t>("balance", balance);
+                        serializedJson = jsonToString(tree);
+                    }
+                    
+                    const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
+                    const uint64_t balance;
+                };
             }
-            
-            RpcMethod getMethod() const override
-            {
-                return rpcMethod;
-            }
-            
-            const std::string& getMethodName() const override
-            {
-                return rpcMethodToString(rpcMethod);
-            }
-            
-            private:
-            void serialize()
-            {
-                pt::ptree tree;
-                tree.put<uint64_t>("balance", balance);
-                serializedJson = jsonToString(tree);
-            }
-            
-            const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
-            const uint64_t balance;
-        };
+        }
     }
 }

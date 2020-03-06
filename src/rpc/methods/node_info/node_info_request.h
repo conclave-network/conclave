@@ -20,6 +20,7 @@
 
 #include "node_info_response.h"
 #include "../request.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace conclave
 {
@@ -37,6 +38,10 @@ namespace conclave
                 class NodeInfoRequest : public Request
                 {
                     public:
+                    NodeInfoRequest(const pt::ptree& params)
+                    {
+                    }
+                    
                     RpcMethod getMethod() const override
                     {
                         return rpcMethod;

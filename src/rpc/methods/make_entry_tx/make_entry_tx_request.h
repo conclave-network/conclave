@@ -18,11 +18,12 @@
 
 #pragma once
 
+#include "make_entry_tx_response.h"
+#include "../request.h"
 #include "structs/sources.h"
 #include "structs/destinations.h"
 #include "../../../structs/outpoint.h"
-#include "make_entry_tx_response.h"
-#include "../request.h"
+#include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
 namespace conclave

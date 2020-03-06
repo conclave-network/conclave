@@ -19,9 +19,9 @@
 #pragma once
 
 #include "../response.h"
-#include "../../../util/json.h"
 #include "../../../structs/bitcoin_tx.h"
 #include "../../../structs/conclave_entry_tx.h"
+#include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
@@ -37,7 +37,6 @@ namespace conclave
                 {
                     public:
                     SubmitEntryTxResponse()
-                        : bitcoinTx(bitcoinTx), conclaveEntryTx(conclaveEntryTx)
                     {
                     }
                     
@@ -55,14 +54,10 @@ namespace conclave
                     void serialize()
                     {
                         pt::ptree tree;
-                        tree.add_child("bitcoinTx", static_cast<pt::ptree>(bitcoinTx));
-                        tree.add_child("conclaveEntryTx", static_cast<pt::ptree>(conclaveEntryTx));
                         serializedJson = jsonToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
-                    const BitcoinTx bitcoinTx;
-                    const ConclaveEntryTx conclaveEntryTx;
                 };
             }
         }

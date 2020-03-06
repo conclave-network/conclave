@@ -20,7 +20,6 @@
 
 #include "../response.h"
 #include "../../../util/json.h"
-#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
