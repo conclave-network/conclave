@@ -20,9 +20,11 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include "conclave_output.h"
-#include "../hash256.h"
+#include "outpoint.h"
+#include "../public_key.h"
 #include "../conclave.h"
 #include <optional>
+#include <cstdint>
 #include <string>
 
 namespace pt = boost::property_tree;
@@ -32,10 +34,13 @@ namespace conclave
     {
         // JSON keys
         const static std::string JSONKEY_OUTPUTS;
-        const static std::string JSONKEY_BITCOIN_TXID;
+        const static std::string JSONKEY_TRUSTEES;
+        const static std::string JSONKEY_MIN_SIGS;
+        const static std::string JSONKEY_FUNDING_OUTPOINT;
         // Constructors
-        ConclaveEntryTx(const std::vector<ConclaveOutput>&);
-        ConclaveEntryTx(const std::vector<ConclaveOutput>&, const Hash256&);
+        ConclaveEntryTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
+        ConclaveEntryTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
+                        const Outpoint&);
         ConclaveEntryTx(const pt::ptree&);
         // Operators
         explicit operator pt::ptree() const;
@@ -45,6 +50,8 @@ namespace conclave
         friend std::ostream& operator<<(std::ostream&, const ConclaveEntryTx&);
         // Properties
         const std::vector<ConclaveOutput> outputs;
-        const std::optional<Hash256> bitcoinTxid;
+        const std::vector<PublicKey> trustees;
+        const uint32_t minSigs;
+        const std::optional<Outpoint> fundingOutpoint;
     };
 }

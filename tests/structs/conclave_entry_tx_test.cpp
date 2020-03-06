@@ -29,16 +29,28 @@ namespace conclave
     const static std::vector<ConclaveOutput> OUTPUTS_2{
         ConclaveOutput(std::string("DROP"), 43)
     };
-    const static Hash256 BITCOIN_TXID_1("1f4bb68db33c8a53996a4c6452892beb1638d799592889e3bc52b7a2cfe52cd4");
-    const static Hash256 BITCOIN_TXID_2("92605ef4c724eba99523c0d73f53838ead11668c122037277c6704444e216a56");
+    const static std::vector<PublicKey> TRUSTEES_1{
+        PublicKey("03519e185b4c0de842cb5cf9e49cd6df00569c4f34bf87ed295b65f9473d508e9d"),
+        PublicKey("02a013b162136d674a37b95ce50d0ae02c5f3d3ab74e52d363e809cde86e92cbbb")
+    };
+    const static std::vector<PublicKey> TRUSTEES_2{
+        PublicKey("02a013b162136d674a37b95ce50d0ae02c5f3d3ab74e52d363e809cde86e92cbbb"),
+        PublicKey("031f74bdb5873d9ae3d46aa3473718eac8fe19d4b9d62d9421cf6b9b6beab1e6c4")
+    };
+    const static uint32_t MIN_SIGS_1 = 1;
+    const static uint32_t MIN_SIGS_2 = 2;
+    const static Outpoint FUNDING_OUTPOINT("1f4bb68db33c8a53996a4c6452892beb1638d799592889e3bc52b7a2cfe52cd4", 21);
     
     BOOST_AUTO_TEST_CASE(ConclaveEntryTxConstructorsTest)
     {
-        ConclaveEntryTx conclaveEntryTxFromOutputs1(OUTPUTS_1);
-        ConclaveEntryTx conclaveEntryTxFromOutputs2(OUTPUTS_2);
-        ConclaveEntryTx conclaveEntryTxFromOutputs1AndTxId1(OUTPUTS_1, BITCOIN_TXID_1);
-        ConclaveEntryTx conclaveEntryTxFromOutputs1AndTxId2(OUTPUTS_1, BITCOIN_TXID_2);
-        ConclaveEntryTx conclaveEntryTxFromOutputs2AndTxId1(OUTPUTS_2, BITCOIN_TXID_1);
-        ConclaveEntryTx conclaveEntryTxFromOutputs2AndTxId2(OUTPUTS_2, BITCOIN_TXID_2);
+        assert(true);
+        ConclaveEntryTx conclaveEntryTxFromOutputs1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1);
+        ConclaveEntryTx conclaveEntryTxFromOutputs2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2);
+        ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1, FUNDING_OUTPOINT);
+        ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2, FUNDING_OUTPOINT);
+        std::cout << conclaveEntryTxFromOutputs1 << std::endl;
+        std::cout << conclaveEntryTxFromOutputs2 << std::endl;
+        std::cout << conclaveEntryTxFromOutputsWithBitcoinTxid1 << std::endl;
+        std::cout << conclaveEntryTxFromOutputsWithBitcoinTxid2 << std::endl;
     }
 }

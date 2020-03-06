@@ -22,21 +22,30 @@
 namespace conclave
 {
     const std::string ConclaveEntryTx::JSONKEY_OUTPUTS = "outputs";
-    const std::string ConclaveEntryTx::JSONKEY_BITCOIN_TXID = "bitcoinTxid";
+    const std::string ConclaveEntryTx::JSONKEY_TRUSTEES = "trustees";
+    const std::string ConclaveEntryTx::JSONKEY_MIN_SIGS = "minSigs";
+    const std::string ConclaveEntryTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs)
-        : outputs(outputs), bitcoinTxid(std::nullopt)
+    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs,
+                                     const std::vector<PublicKey>& trustees,
+                                     const uint32_t minSigs)
+        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
     {
     }
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs, const Hash256& bitcoinTxid)
-        : outputs(outputs), bitcoinTxid(bitcoinTxid)
+    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs,
+                                     const std::vector<PublicKey>& trustees,
+                                     const uint32_t minSigs,
+                                     const Outpoint& fundingOutpoint)
+        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
     {
     }
     
     ConclaveEntryTx::ConclaveEntryTx(const pt::ptree& tree)
         : ConclaveEntryTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
-                          *getOptionalPrimitiveFromJson<std::string>(tree, JSONKEY_BITCOIN_TXID))
+                          tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
+                          getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
+                          *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
     {
     }
     
@@ -44,8 +53,10 @@ namespace conclave
     {
         pt::ptree tree;
         tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
-        if (bitcoinTxid.has_value()) {
-            tree.add<std::string>(JSONKEY_BITCOIN_TXID, *bitcoinTxid);
+        tree.add_child(JSONKEY_TRUSTEES, vectorOfPrimitivesToArray(trustees));
+        tree.add<uint32_t>(JSONKEY_MIN_SIGS, minSigs);
+        if (fundingOutpoint.has_value()) {
+            tree.add_child(JSONKEY_FUNDING_OUTPOINT, static_cast<pt::ptree>(*fundingOutpoint));
         }
         return tree;
     }
@@ -57,12 +68,14 @@ namespace conclave
     
     bool ConclaveEntryTx::operator==(const ConclaveEntryTx& other) const
     {
-        return (outputs == other.outputs) && (bitcoinTxid == other.bitcoinTxid);
+        return (outputs == other.outputs) && (trustees == other.trustees)
+               && (minSigs == other.minSigs) && (fundingOutpoint == other.fundingOutpoint);
     }
     
     bool ConclaveEntryTx::operator!=(const ConclaveEntryTx& other) const
     {
-        return (outputs != other.outputs) || (bitcoinTxid != other.bitcoinTxid);
+        return (outputs != other.outputs) || (trustees != other.trustees) ||
+               (minSigs != other.minSigs) || (fundingOutpoint != other.fundingOutpoint);
     }
     
     std::ostream& operator<<(std::ostream& os, const ConclaveEntryTx& conclaveEntryTx)
