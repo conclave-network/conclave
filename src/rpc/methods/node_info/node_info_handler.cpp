@@ -24,9 +24,15 @@ namespace conclave
 {
     namespace rpc
     {
-        NodeInfoResponse* nodeInfoHandler(const NodeInfoRequest& nodeInfoRequest, ConclaveNode& conclaveNode)
+        namespace methods
         {
-            return new NodeInfoResponse(conclaveNode.getDisplayName(), conclaveNode.getPublicKey());
+            namespace node_info
+            {
+                NodeInfoResponse* nodeInfoHandler(const NodeInfoRequest& nodeInfoRequest, ConclaveNode& conclaveNode)
+                {
+                    return new NodeInfoResponse(conclaveNode.getDisplayName(), conclaveNode.getPublicKey());
+                }
+            }
         }
     }
 }

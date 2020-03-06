@@ -22,7 +22,6 @@
 #include "../../../util/json.h"
 #include "../../../structs/bitcoin_tx.h"
 #include "../../../structs/conclave_entry_tx.h"
-#include <iostream>
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;

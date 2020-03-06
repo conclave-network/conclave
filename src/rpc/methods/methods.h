@@ -29,16 +29,16 @@ namespace conclave
         enum RpcMethod
         {
             NodeInfo,
-            SendTx,
             GetAddressBalance,
-            MakeEntryTx
+            MakeEntryTx,
+            SubmitEntryTx
         };
         // Order matters!
         static const std::string RPC_METHOD_NAMES[] = {
             "NodeInfo",
-            "SendTx",
             "GetAddressBalance",
-            "MakeEntryTx"
+            "MakeEntryTx",
+            "SubmitEntryTx"
         };
         static const size_t NUM_RPC_METHODS = sizeof(RPC_METHOD_NAMES) / sizeof(std::string);
         

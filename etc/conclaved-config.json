@@ -13,7 +13,7 @@
   },
   "BitcoinChain": {
     "ElectrumXClient": {
-      "Host": "157.245.172.236",
+      "Host": "104.244.222.228",
       "Port": 50001
     }
   },

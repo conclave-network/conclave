@@ -23,8 +23,6 @@
 #include "../../../structs/outpoint.h"
 #include "make_entry_tx_response.h"
 #include "../request.h"
-#include <iostream>
-#include <vector>
 
 namespace pt = boost::property_tree;
 namespace conclave

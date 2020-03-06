@@ -28,36 +28,42 @@ namespace conclave
 {
     namespace rpc
     {
-        class NodeInfoResponse : public Response
+        namespace methods
         {
-            public:
-            NodeInfoResponse(const std::string& displayName, const std::string& publicKey)
-                : displayName(displayName), publicKey(publicKey)
+            namespace node_info
             {
+                class NodeInfoResponse : public Response
+                {
+                    public:
+                    NodeInfoResponse(const std::string& displayName, const std::string& publicKey)
+                        : displayName(displayName), publicKey(publicKey)
+                    {
+                    }
+                    
+                    RpcMethod getMethod() const override
+                    {
+                        return rpcMethod;
+                    }
+                    
+                    const std::string& getMethodName() const override
+                    {
+                        return rpcMethodToString(rpcMethod);
+                    }
+                    
+                    private:
+                    void serialize()
+                    {
+                        pt::ptree tree;
+                        tree.put("DisplayName", displayName);
+                        tree.put("PublicKey", publicKey);
+                        serializedJson = jsonToString(tree);
+                    }
+                    
+                    const static RpcMethod rpcMethod = RpcMethod::NodeInfo;
+                    const std::string displayName;
+                    const std::string publicKey;
+                };
             }
-            
-            RpcMethod getMethod() const override
-            {
-                return rpcMethod;
-            }
-            
-            const std::string& getMethodName() const override
-            {
-                return rpcMethodToString(rpcMethod);
-            }
-            
-            private:
-            void serialize()
-            {
-                pt::ptree tree;
-                tree.put("DisplayName", displayName);
-                tree.put("PublicKey", publicKey);
-                serializedJson = jsonToString(tree);
-            }
-            
-            const static RpcMethod rpcMethod = RpcMethod::NodeInfo;
-            const std::string displayName;
-            const std::string publicKey;
-        };
+        }
     }
 }

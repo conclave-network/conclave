@@ -18,14 +18,15 @@
 
 #include "request.h"
 #include "node_info/node_info_request.h"
-#include "send_tx/send_tx_request.h"
 #include "get_address_balance/get_address_balance_request.h"
 #include "make_entry_tx/make_entry_tx_request.h"
+#include "submit_entry_tx/submit_entry_tx_request.h"
 
 namespace conclave
 {
     namespace rpc
     {
+        using namespace methods::node_info;
         using namespace methods::make_entry_tx;
         
         Request* Request::deserializeJson(const std::string& json)
@@ -41,12 +42,13 @@ namespace conclave
             switch (stringToRpcMethod(method)) {
                 case RpcMethod::NodeInfo:
                     return new NodeInfoRequest();
-                case RpcMethod::SendTx:
-                    return new SendTxRequest();
                 case RpcMethod::GetAddressBalance:
                     return new GetAddressBalanceRequest(params);
                 case RpcMethod::MakeEntryTx:
                     return new MakeEntryTxRequest(params);
+                case RpcMethod::SubmitEntryTx:
+                    retturn
+                    new SubmitEntryTxRequest(params);
                 default:
                     throw std::logic_error("No implementation found for RPC method: " + method);
             }

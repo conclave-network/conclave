@@ -16,17 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "send_tx_request.h"
-#include "send_tx_response.h"
-#include "../../../conclave_node.h"
+#include "submit_entry_tx_request.h"
+#include "submit_entry_tx_response.h"
 
 namespace conclave
 {
     namespace rpc
     {
-        SendTxResponse* sendTxHandler(const SendTxRequest& sendTxRequest, ConclaveNode& conclaveNode)
+        namespace methods
         {
-            return new SendTxResponse();
+            namespace submit_entry_tx
+            {
+                SubmitEntryTxResponse* submitEntryTxHandler(
+                    const SubmitEntryTxRequest& submitEntryTxRequest,
+                    ConclaveNode& conclaveNode)
+                {
+                    return new SubmitEntryTxResponse();
+                }
+            }
         }
     }
 }

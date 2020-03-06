@@ -95,7 +95,7 @@ add_executable(
         conclave_chain/conclave_chain.cpp
         bitcoin_chain/bitcoin_chain.cpp
         bitcoin_chain/electrumx/electrumx_client.cpp
-        rpc/methods/make_entry_tx/make_entry_tx_handler.cpp)
+        rpc/methods/make_entry_tx/make_entry_tx_handler.cpp rpc/methods/submit_entry_tx/submit_entry_tx_handler.cpp rpc/methods/submit_entry_tx/submit_entry_tx_request.h rpc/methods/submit_entry_tx/submit_entry_tx_response.h)
 
 target_link_libraries(
         conclaved

@@ -18,25 +18,29 @@
 
 #pragma once
 
-#include "node_info_response.h"
-#include "../request.h"
+#include "../response.h"
+#include "../../../util/json.h"
+#include "../../../structs/bitcoin_tx.h"
+#include "../../../structs/conclave_entry_tx.h"
+#include <boost/property_tree/ptree.hpp>
 
+namespace pt = boost::property_tree;
 namespace conclave
 {
-    class ConclaveNode;
     namespace rpc
     {
         namespace methods
         {
-            namespace node_info
+            namespace submit_entry_tx
             {
-                class NodeInfoRequest;
-                
-                NodeInfoResponse* nodeInfoHandler(const NodeInfoRequest&, ConclaveNode&);
-                
-                class NodeInfoRequest : public Request
+                class SubmitEntryTxResponse : public Response
                 {
                     public:
+                    SubmitEntryTxResponse()
+                        : bitcoinTx(bitcoinTx), conclaveEntryTx(conclaveEntryTx)
+                    {
+                    }
+                    
                     RpcMethod getMethod() const override
                     {
                         return rpcMethod;
@@ -47,13 +51,18 @@ namespace conclave
                         return rpcMethodToString(rpcMethod);
                     }
                     
-                    Response* handle(ConclaveNode& conclaveNode) const override
+                    private:
+                    void serialize()
                     {
-                        return nodeInfoHandler(*this, conclaveNode);
+                        pt::ptree tree;
+                        tree.add_child("bitcoinTx", static_cast<pt::ptree>(bitcoinTx));
+                        tree.add_child("conclaveEntryTx", static_cast<pt::ptree>(conclaveEntryTx));
+                        serializedJson = jsonToString(tree);
                     }
                     
-                    private:
-                    const static RpcMethod rpcMethod = RpcMethod::NodeInfo;
+                    const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
+                    const BitcoinTx bitcoinTx;
+                    const ConclaveEntryTx conclaveEntryTx;
                 };
             }
         }

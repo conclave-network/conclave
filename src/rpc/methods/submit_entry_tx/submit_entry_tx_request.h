@@ -18,9 +18,14 @@
 
 #pragma once
 
-#include "node_info_response.h"
+#include "submit_entry_tx_response.h"
+#include "../../../structs/bitcoin_tx.h"
+#include "../../../structs/conclave_entry_tx.h"
 #include "../request.h"
+#include <iostream>
+#include <vector>
 
+namespace pt = boost::property_tree;
 namespace conclave
 {
     class ConclaveNode;
@@ -28,15 +33,21 @@ namespace conclave
     {
         namespace methods
         {
-            namespace node_info
+            namespace submit_entry_tx
             {
-                class NodeInfoRequest;
+                class SubmitEntryTxRequest;
                 
-                NodeInfoResponse* nodeInfoHandler(const NodeInfoRequest&, ConclaveNode&);
+                SubmitEntryTxResponse* submitEntryTxHandler(const SubmitEntryTxRequest&, ConclaveNode&);
                 
-                class NodeInfoRequest : public Request
+                class SubmitEntryTxRequest : public Request
                 {
                     public:
+                    SubmitEntryTxRequest(const pt::ptree& params)
+                        : fundingTx(params.get_child("fundingTx")),
+                          entryTx(params.get_child("entryTx"))
+                    {
+                    }
+                    
                     RpcMethod getMethod() const override
                     {
                         return rpcMethod;
@@ -49,11 +60,23 @@ namespace conclave
                     
                     Response* handle(ConclaveNode& conclaveNode) const override
                     {
-                        return nodeInfoHandler(*this, conclaveNode);
+                        return submitEntryTxHandler(*this, conclaveNode);
+                    }
+                    
+                    const BitcoinTx& getFundingTx() const
+                    {
+                        return fundingTx;
+                    }
+                    
+                    const ConclaveEntryTx& getEntryTx() const
+                    {
+                        return entryTx;
                     }
                     
                     private:
-                    const static RpcMethod rpcMethod = RpcMethod::NodeInfo;
+                    const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
+                    const BitcoinTx fundingTx;
+                    const ConclaveEntryTx entryTx;
                 };
             }
         }
