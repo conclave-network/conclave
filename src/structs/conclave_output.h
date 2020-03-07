@@ -33,7 +33,7 @@ namespace conclave
         // JSON keys
         const static std::string JSONKEY_SCRIPTPUBKEY;
         const static std::string JSONKEY_VALUE;
-        const static std::string JSONKEY_PREDESESSOR;
+        const static std::string JSONKEY_PREDECESSOR;
         // Constructors
         ConclaveOutput(const Script&, const uint64_t);
         ConclaveOutput(const Script&, const uint64_t, const Outpoint&);
@@ -49,6 +49,6 @@ namespace conclave
         // Properties
         const Script scriptPubKey;
         const uint64_t value;
-        const std::optional<Outpoint> predesessor;
+        const std::optional<Outpoint> predecessor;
     };
 }

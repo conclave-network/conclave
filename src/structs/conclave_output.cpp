@@ -24,22 +24,22 @@ namespace conclave
 {
     const std::string ConclaveOutput::JSONKEY_SCRIPTPUBKEY = "scriptPubKey";
     const std::string ConclaveOutput::JSONKEY_VALUE = "value";
-    const std::string ConclaveOutput::JSONKEY_PREDESESSOR = "predesessor";
+    const std::string ConclaveOutput::JSONKEY_PREDECESSOR = "predecessor";
     
     ConclaveOutput::ConclaveOutput(const Script& scriptPubKey, const uint64_t value)
-        : scriptPubKey(scriptPubKey), value(value), predesessor(std::nullopt)
+        : scriptPubKey(scriptPubKey), value(value), predecessor(std::nullopt)
     {
     }
     
-    ConclaveOutput::ConclaveOutput(const Script& scriptPubKey, const uint64_t value, const Outpoint& predesessor)
-        : scriptPubKey(scriptPubKey), value(value), predesessor(predesessor)
+    ConclaveOutput::ConclaveOutput(const Script& scriptPubKey, const uint64_t value, const Outpoint& predecessor)
+        : scriptPubKey(scriptPubKey), value(value), predecessor(predecessor)
     {
     }
     
     ConclaveOutput::ConclaveOutput(const pt::ptree& tree)
         : ConclaveOutput(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY),
                          getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE),
-                         *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_PREDESESSOR))
+                         *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_PREDECESSOR))
     {
     }
     
@@ -47,6 +47,17 @@ namespace conclave
     {
         const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
         const std::vector<BYTE> valueSerialized = serializeU64(value);
+        const std::vector<BYTE> predecessorSerialized = serializeOptional(predecessor);
+        const size_t scriptPubKeySerializedSize = scriptPubKeySerialized.size();
+        const size_t valueSerializedSize = valueSerialized.size();
+        const size_t predecessorSerializedSize = predecessorSerialized.size();
+        std::vector<BYTE> conclaveOutputSerialized(
+            scriptPubKeySerializedSize + valueSerializedSize + predecessorSerializedSize);
+        writeToByteVector(conclaveOutputSerialized, scriptPubKeySerialized, 0);
+        writeToByteVector(conclaveOutputSerialized, valueSerialized, scriptPubKeySerializedSize);
+        writeToByteVector(conclaveOutputSerialized, predecessorSerialized,
+                          scriptPubKeySerializedSize + valueSerializedSize);
+        return conclaveOutputSerialized;
     }
     
     ConclaveOutput::operator pt::ptree() const
@@ -54,8 +65,8 @@ namespace conclave
         pt::ptree tree;
         tree.add_child(JSONKEY_SCRIPTPUBKEY, (pt::ptree) scriptPubKey);
         tree.add<uint64_t>(JSONKEY_VALUE, value);
-        if (predesessor.has_value()) {
-            tree.add_child(JSONKEY_PREDESESSOR, static_cast<pt::ptree>(*predesessor));
+        if (predecessor.has_value()) {
+            tree.add_child(JSONKEY_PREDECESSOR, static_cast<pt::ptree>(*predecessor));
         }
         return tree;
     }
@@ -67,12 +78,12 @@ namespace conclave
     
     bool ConclaveOutput::operator==(const ConclaveOutput& other) const
     {
-        return (scriptPubKey == other.scriptPubKey) && (value == other.value) && (predesessor == other.predesessor);
+        return (scriptPubKey == other.scriptPubKey) && (value == other.value) && (predecessor == other.predecessor);
     }
     
     bool ConclaveOutput::operator!=(const ConclaveOutput& other) const
     {
-        return (scriptPubKey != other.scriptPubKey) || (value != other.value) || (predesessor != other.predesessor);
+        return (scriptPubKey != other.scriptPubKey) || (value != other.value) || (predecessor != other.predecessor);
     }
     
     std::ostream& operator<<(std::ostream& os, const ConclaveOutput& conclaveOutput)
