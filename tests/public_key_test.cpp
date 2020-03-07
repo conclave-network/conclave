@@ -75,7 +75,6 @@ namespace conclave
         {
             PublicKey publicKey1FromXY(X_1, Y_1);
             PublicKey publicKey2FromXY(X_2, Y_2);
-            std::cout << BYTE_VECTOR_TO_HEX(publicKey1FromXY.serialize()) << std::endl;
             BOOST_TEST(publicKey1FromXY.serialize() == PUBKEY_1_SERIALIZED);
             BOOST_TEST(publicKey2FromXY.serialize() == PUBKEY_2_SERIALIZED);
         }
