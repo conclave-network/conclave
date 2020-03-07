@@ -42,6 +42,7 @@ namespace conclave
         const Hash160 reversed() const;
         std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator begin() const;
         std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator end() const;
+        const std::vector<BYTE> serialize() const;
         // Operators
         operator std::string() const;
         operator std::array<BYTE, SMALL_HASH_SIZE_BYTES>() const;

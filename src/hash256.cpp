@@ -86,6 +86,13 @@ namespace conclave
         return data.end();
     }
     
+    const std::vector<BYTE> Hash256::serialize() const
+    {
+        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES);
+        std::reverse_copy(data.begin(), data.end(), serialized.begin());
+        return serialized;
+    }
+    
     Hash256::operator std::string() const
     {
         return byteArrayToHexString(data);
