@@ -31,7 +31,8 @@
 namespace conclave
 {
     /**
-     * Joins two byte vectors `a` and `b` to make `c`.
+     * Joins two byte vectors `a` and `b` to make `c`
+     *
      * @param a - a
      * @param b - b
      * @return c - Result of `a | b`
@@ -49,6 +50,7 @@ namespace conclave
     /**
      * Writes `data` to position `pos` of `dest`, resizing `dest` if necessary. Works best if `dest` has already
      * `reserve()`'d enough bytes.
+     *
      * @param dest - Destination
      * @param data - Data to be copied
      * @param pos - Whence within `dest` to begin writing
@@ -66,6 +68,7 @@ namespace conclave
     
     /**
      * Serializes a `uint32_t` in machine-native format.
+     *
      * @param value - Value to serialize
      * @return - Serialized form of `value`
      */
@@ -91,6 +94,7 @@ namespace conclave
     /**
      * Serializes a variable-length integer. `T` should be an integer type and is cast to its unsigned form.
      * See https://learnmeabitcoin.com/guide/varint for explanation of varints
+     *
      * @tparam T - Type - typically a `uint8_t`, `uint16_t`, `uint32_t` or `uint64_t`
      * @param value - Value to serialize
      * @return - Serialized form of `value`
@@ -133,11 +137,33 @@ namespace conclave
     inline const std::vector<BYTE> serializeOptional(const std::optional<T>& optional)
     {
         if (optional.has_value()) {
-            const std::vector<BYTE> itemSerialized = optional->serialize();
-            std::vector<BYTE> optionalSerialized = serializeVarInt(itemSerialized.size());
-            return joinByteVectors(serializeVarInt(itemSerialized.size()), itemSerialized);
+            const std::vector<BYTE> objectSerialized = optional->serialize();
+            std::vector<BYTE> optionalSerialized = serializeVarInt(objectSerialized.size());
+            return joinByteVectors(serializeVarInt(objectSerialized.size()), objectSerialized);
         } else {
             return serializeVarInt(0u);
         }
+    }
+    
+    /**
+     * Serialize a vector of serializable objects Bitcoin-style - prepend with a varint saying the number of objects
+     * then the objects themselves.
+     *
+     * @tparam T - Type of thing being serialized - must have a serialize() method which returns a std::vector<BYTE>
+     * @param objects - The objects to be serialized
+     * @return - Serialized form of vector<T>
+     */
+    template<class T>
+    inline const std::vector<BYTE> serializeVectorOfObjects(const std::vector<T>& objects)
+    {
+        size_t pos = 0;
+        std::vector<BYTE> ret = serializeVarInt(objects.size());
+        pos += ret.size();
+        for (const T& object: objects) {
+            const std::vector<BYTE> objectSerialized = object.serialize();
+            writeToByteVector(ret, objectSerialized, pos);
+            pos += objectSerialized.size();
+        }
+        return ret;
     }
 }

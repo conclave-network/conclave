@@ -113,6 +113,31 @@ namespace conclave
             BOOST_TEST((presentSerialized == std::vector<BYTE>{0x03, 'f', 'o', 'o'}));
             BOOST_TEST((absentSerialized == std::vector<BYTE>{0x00}));
         }
+        
+        BOOST_AUTO_TEST_CASE(SerializeVectorOfObjectsTest)
+        {
+            struct Thingy
+            {
+                size_t size;
+                
+                const std::vector<BYTE> serialize() const
+                {
+                    std::vector<BYTE> serialization(size);
+                    for (size_t i = 0; i < size; i++) {
+                        serialization[i] = size;
+                    }
+                    return serialization;
+                }
+            };
+            std::vector<Thingy> thingies{
+                Thingy{2},
+                Thingy{3},
+                Thingy{5}
+            };
+            std::vector<BYTE> thingiesSerialized = serializeVectorOfObjects(thingies);
+            BOOST_TEST((thingiesSerialized ==
+                        std::vector<BYTE>{0x03, 0x02, 0x02, 0x03, 0x03, 0x03, 0x05, 0x05, 0x05, 0x05, 0x05}));
+        }
     
     BOOST_AUTO_TEST_SUITE_END()
 }
