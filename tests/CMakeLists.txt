@@ -53,7 +53,7 @@ pkg_check_modules(
 add_executable(
         hex_test
         util/hex_test.cpp
-        util/serialization_test.cpp)
+)
 
 add_executable(
         json_test
@@ -63,6 +63,11 @@ add_executable(
 add_executable(
         random_test
         util/random_test.cpp
+)
+
+add_executable(
+        serialization_test
+        util/serialization_test.cpp
 )
 
 add_executable(
@@ -250,6 +255,10 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        serialization_test
+)
+
+target_link_libraries(
         hash160_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         PkgConfig::LIBBITCOIN_SYSTEM
@@ -421,6 +430,11 @@ add_test(
 add_test(
         NAME random_test
         COMMAND $<TARGET_FILE:random_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME serialization_test
+        COMMAND $<TARGET_FILE:serialization_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

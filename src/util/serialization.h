@@ -22,6 +22,7 @@
 #include <cstdint>
 #include <cstring>
 #include <optional>
+#include <type_traits>
 
 /**
  * Quick-and-dirty serialization routines which are probably not very efficient.
@@ -40,7 +41,7 @@ namespace conclave
      * @param b - b
      * @return c - Result of `a | b`
      */
-    inline const static std::vector<BYTE> joinByteVectors(const std::vector<BYTE>& a, const std::vector<BYTE>& b)
+    inline const std::vector<BYTE> joinByteVectors(const std::vector<BYTE>& a, const std::vector<BYTE>& b)
     {
         size_t aSize = a.size();
         size_t bSize = b.size();
@@ -57,12 +58,16 @@ namespace conclave
      * @param data - Data to be copied
      * @param pos - Whence within `dest` to begin writing
      */
-    inline static void writeToByteVector(std::vector<BYTE>& dest, const std::vector<BYTE>& data, const size_t pos = 0)
+    inline void writeToByteVector(std::vector<BYTE>& dest, const std::vector<BYTE>& data, const size_t pos = 0)
     {
         size_t dataSize = data.size();
         dest.resize(pos + dataSize);
         std::memcpy(&dest[pos], &data[0], dataSize);
     }
+    
+    //
+    // Serialization Functions
+    //
     
     /**
      * Serializes a `uint32_t` in machine-native format.
@@ -96,25 +101,26 @@ namespace conclave
      * @return - Serialized form of `value`
      */
     template<typename T>
-    inline const std::vector<BYTE> serializeVarInt(T value)
+    inline const std::vector<BYTE> serializeVarInt(const T value)
     {
+        static_assert(std::is_unsigned<T>::value, "Unsigned type required");
+        uint64_t uvalue = value;
         std::vector<BYTE> ret;
-        value = std::make_unsigned<T>(value);
-        if (value <= 0xfcu) {
+        if (uvalue <= 0xfcu) {
             ret.resize(UINT8_SIZE);
-            std::memcpy(&ret[0], &value, UINT8_SIZE);
-        } else if (value <= 0xffffu) {
+            std::memcpy(&ret[0], &uvalue, UINT8_SIZE);
+        } else if (uvalue <= 0xffffu) {
             ret.resize(1 + UINT16_SIZE);
             ret[0] = 0xfd;
-            std::memcpy(&ret[1], &value, UINT16_SIZE);
-        } else if (value <= 0xffffffffu) {
+            std::memcpy(&ret[1], &uvalue, UINT16_SIZE);
+        } else if (uvalue <= 0xffffffffu) {
             ret.resize(1 + UINT32_SIZE);
             ret[0] = 0xfe;
-            std::memcpy(&ret[1], &value, UINT32_SIZE);
+            std::memcpy(&ret[1], &uvalue, UINT32_SIZE);
         } else {
             ret.resize(1 + UINT64_SIZE);
             ret[0] = 0xff;
-            std::memcpy(&ret[1], &value, UINT64_SIZE);
+            std::memcpy(&ret[1], &uvalue, UINT64_SIZE);
         }
         return ret;
     }
@@ -133,6 +139,7 @@ namespace conclave
     {
         if (optional.has_value()) {
             const std::vector<BYTE> itemSerialized = optional->serialize();
+            std::vector<BYTE> optionalSerialized = serializeVarInt(itemSerialized.size());
             return joinByteVectors(serializeVarInt(itemSerialized.size()), itemSerialized);
         } else {
             return serializeVarInt(0u);
