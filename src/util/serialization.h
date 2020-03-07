@@ -55,11 +55,12 @@ namespace conclave
      * @param data - Data to be copied
      * @param pos - Whence within `dest` to begin writing
      */
-    inline void writeToByteVector(std::vector<BYTE>& dest, const std::vector<BYTE>& data, const size_t pos = 0)
+    inline size_t writeToByteVector(std::vector<BYTE>& dest, const std::vector<BYTE>& data, const size_t pos = 0)
     {
         size_t dataSize = data.size();
         dest.resize(pos + dataSize);
         std::memcpy(&dest[pos], &data[0], dataSize);
+        return dataSize;
     }
     
     //
