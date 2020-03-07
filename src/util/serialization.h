@@ -30,11 +30,6 @@
 
 namespace conclave
 {
-    const static size_t UINT8_SIZE = 1;
-    const static size_t UINT16_SIZE = 2;
-    const static size_t UINT32_SIZE = 4;
-    const static size_t UINT64_SIZE = 8;
-    
     /**
      * Joins two byte vectors `a` and `b` to make `c`.
      * @param a - a

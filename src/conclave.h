@@ -27,6 +27,11 @@ typedef unsigned char BYTE;
 #define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
 #define BYTE_VECTOR_TO_HEX(byteVector) byteVectorToHexString(byteVector)
 #define HEX_TO_BYTE_VECTOR(hex) hexStringToByteVector(hex)
+// Sizes of things
+const static size_t UINT8_SIZE = 1;
+const static size_t UINT16_SIZE = 2;
+const static size_t UINT32_SIZE = 4;
+const static size_t UINT64_SIZE = 8;
 const static size_t PRIVKEY_SIZE_BYTES = 32;
 const static size_t EC_POINT_SIZE_BYTES = 32;
 const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
