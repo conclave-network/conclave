@@ -47,6 +47,7 @@ namespace conclave
         const Hash160 getHash160Compressed() const;
         const Hash256 getHash256Uncompressed() const;
         const Hash256 getHash256Compressed() const;
+        const std::vector<BYTE> serialize() const;
         // Operators
         operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
         operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;

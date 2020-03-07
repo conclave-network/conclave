@@ -116,6 +116,14 @@ namespace conclave
             .reversed();
     }
     
+    const std::vector<BYTE> PublicKey::serialize() const
+    {
+        const auto arr = static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this);
+        std::vector<BYTE> serialized(COMPRESSED_PUBKEY_SIZE_BYTES);
+        std::copy(arr.begin(), arr.end(), serialized.begin());
+        return serialized;
+    }
+    
     bool PublicKey::operator==(const PublicKey& other) const
     {
         return (x == other.x) && (y == other.y);
