@@ -134,7 +134,7 @@ namespace conclave
      * @return - Serialized form of optional<T>
      */
     template<class T>
-    inline const std::vector<BYTE> serializeOptional(const std::optional<T>& optional)
+    inline const std::vector<BYTE> serializeOptionalObject(const std::optional<T>& optional)
     {
         if (optional.has_value()) {
             const std::vector<BYTE> objectSerialized = optional->serialize();

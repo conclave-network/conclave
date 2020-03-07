@@ -108,8 +108,8 @@ namespace conclave
             };
             std::optional<Foo> present = Foo();
             std::optional<Foo> absent = std::nullopt;
-            std::vector<BYTE> presentSerialized = serializeOptional(present);
-            std::vector<BYTE> absentSerialized = serializeOptional(absent);
+            std::vector<BYTE> presentSerialized = serializeOptionalObject(present);
+            std::vector<BYTE> absentSerialized = serializeOptionalObject(absent);
             BOOST_TEST((presentSerialized == std::vector<BYTE>{0x03, 'f', 'o', 'o'}));
             BOOST_TEST((absentSerialized == std::vector<BYTE>{0x00}));
         }
