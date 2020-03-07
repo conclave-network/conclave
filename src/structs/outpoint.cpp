@@ -17,7 +17,6 @@
  */
 
 #include "outpoint.h"
-#include <cstring>
 
 namespace pt = boost::property_tree;
 namespace conclave
@@ -38,10 +37,9 @@ namespace conclave
     
     const std::vector<BYTE> Outpoint::serialize() const
     {
-        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + sizeof(index));
-        Hash256 revTxid = txId.reversed();
-        std::memcpy(&serialized[0], &revTxid[0], LARGE_HASH_SIZE_BYTES);
-        std::memcpy(&serialized[LARGE_HASH_SIZE_BYTES], &index, sizeof(index));
+        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
+        writeToByteVector(serialized, txId.serialize(), 0);
+        writeToByteVector(serialized, serializeU32(index), LARGE_HASH_SIZE_BYTES);
         return serialized;
     }
     
