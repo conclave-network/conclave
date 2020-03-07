@@ -95,7 +95,7 @@ add_executable(
         conclave_chain/conclave_chain.cpp
         bitcoin_chain/bitcoin_chain.cpp
         bitcoin_chain/electrumx/electrumx_client.cpp
-)
+        util/serialization.h)
 
 target_link_libraries(
         conclaved

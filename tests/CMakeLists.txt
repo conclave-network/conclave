@@ -53,7 +53,7 @@ pkg_check_modules(
 add_executable(
         hex_test
         util/hex_test.cpp
-)
+        util/serialization_test.cpp)
 
 add_executable(
         json_test

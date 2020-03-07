@@ -18,6 +18,7 @@
 
 #include "conclave_output.h"
 #include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace conclave
 {
@@ -40,6 +41,12 @@ namespace conclave
                          getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE),
                          *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_PREDESESSOR))
     {
+    }
+    
+    const std::vector<BYTE> ConclaveOutput::serialize() const
+    {
+        const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
+        const std::vector<BYTE> valueSerialized = serializeU64(value);
     }
     
     ConclaveOutput::operator pt::ptree() const

@@ -62,6 +62,7 @@ namespace conclave
                 Script makeEntryRedeemScript(const ConclaveEntryTx& claimTx)
                 {
                     return Script(std::vector<std::string>{
+                        // TODO: make hash of claimTx
                     });
                 }
                 

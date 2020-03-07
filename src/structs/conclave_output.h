@@ -38,6 +38,8 @@ namespace conclave
         ConclaveOutput(const Script&, const uint64_t);
         ConclaveOutput(const Script&, const uint64_t, const Outpoint&);
         ConclaveOutput(const pt::ptree&);
+        // Public functions
+        const std::vector<BYTE> serialize() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
