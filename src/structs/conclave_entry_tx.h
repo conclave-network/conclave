@@ -22,6 +22,7 @@
 #include "conclave_output.h"
 #include "outpoint.h"
 #include "../public_key.h"
+#include "../util/serialization.h"
 #include "../conclave.h"
 #include <optional>
 #include <cstdint>
@@ -42,6 +43,8 @@ namespace conclave
         ConclaveEntryTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
                         const Outpoint&);
         ConclaveEntryTx(const pt::ptree&);
+        // Public functions
+        const std::vector<BYTE> serialize() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;

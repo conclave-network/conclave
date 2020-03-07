@@ -61,6 +61,21 @@ namespace conclave
         return tree;
     }
     
+    const std::vector<BYTE> ConclaveEntryTx::serialize() const
+    {
+        const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
+        const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
+        const std::vector<BYTE> minSigsSerialized = serializeU32(minSigs);
+        const std::vector<BYTE> fundingOutpointSerialized = serializeOptionalObject(fundingOutpoint);
+        std::vector<BYTE> serialized(outputsSerialized.size() + trusteesSerialized.size() +
+                                     minSigsSerialized.size() + fundingOutpointSerialized.size());
+        size_t pos = writeToByteVector(serialized, outputsSerialized);
+        pos += writeToByteVector(serialized, trusteesSerialized, pos);
+        pos += writeToByteVector(serialized, minSigsSerialized, pos);
+        writeToByteVector(serialized, fundingOutpointSerialized, pos);
+        return serialized;
+    }
+    
     ConclaveEntryTx::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
