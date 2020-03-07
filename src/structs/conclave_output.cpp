@@ -48,15 +48,11 @@ namespace conclave
         const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
         const std::vector<BYTE> valueSerialized = serializeU64(value);
         const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
-        const size_t scriptPubKeySerializedSize = scriptPubKeySerialized.size();
-        const size_t valueSerializedSize = valueSerialized.size();
-        const size_t predecessorSerializedSize = predecessorSerialized.size();
         std::vector<BYTE> serialized(
-            scriptPubKeySerializedSize + valueSerializedSize + predecessorSerializedSize);
-        writeToByteVector(serialized, scriptPubKeySerialized, 0);
-        writeToByteVector(serialized, valueSerialized, scriptPubKeySerializedSize);
-        writeToByteVector(serialized, predecessorSerialized,
-                          scriptPubKeySerializedSize + valueSerializedSize);
+            scriptPubKeySerialized.size() + valueSerialized.size() + predecessorSerialized.size());
+        size_t pos = writeToByteVector(serialized, scriptPubKeySerialized);
+        pos += writeToByteVector(serialized, valueSerialized, pos);
+        writeToByteVector(serialized, predecessorSerialized, pos);
         return serialized;
     }
     
