@@ -51,13 +51,13 @@ namespace conclave
         const size_t scriptPubKeySerializedSize = scriptPubKeySerialized.size();
         const size_t valueSerializedSize = valueSerialized.size();
         const size_t predecessorSerializedSize = predecessorSerialized.size();
-        std::vector<BYTE> conclaveOutputSerialized(
+        std::vector<BYTE> serialized(
             scriptPubKeySerializedSize + valueSerializedSize + predecessorSerializedSize);
-        writeToByteVector(conclaveOutputSerialized, scriptPubKeySerialized, 0);
-        writeToByteVector(conclaveOutputSerialized, valueSerialized, scriptPubKeySerializedSize);
-        writeToByteVector(conclaveOutputSerialized, predecessorSerialized,
+        writeToByteVector(serialized, scriptPubKeySerialized, 0);
+        writeToByteVector(serialized, valueSerialized, scriptPubKeySerializedSize);
+        writeToByteVector(serialized, predecessorSerialized,
                           scriptPubKeySerializedSize + valueSerializedSize);
-        return conclaveOutputSerialized;
+        return serialized;
     }
     
     ConclaveOutput::operator pt::ptree() const
