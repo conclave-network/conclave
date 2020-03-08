@@ -101,61 +101,55 @@ namespace conclave
     
     Script Script::p2pkhScript(const Address& address)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::dup,
-                opcode::hash160,
-                address.getHashData(),
-                opcode::equalverify,
-                opcode::checksig
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::dup,
+            opcode::hash160,
+            address.getHashData(),
+            opcode::equalverify,
+            opcode::checksig
+        });
     }
     
     Script Script::p2shScript(const Address& address)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::hash160,
-                address.getHashData(),
-                opcode::equal
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::hash160,
+            address.getHashData(),
+            opcode::equal
+        });
     }
     
     Script Script::p2wpkhScript(const Address& address)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::push_size_0,
-                address.getHashData()
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::push_size_0,
+            address.getHashData()
+        });
     }
     
     Script Script::p2wshScript(const Address& address)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::push_size_0,
-                address.getHashData()
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::push_size_0,
+            address.getHashData()
+        });
     }
     
     Script Script::p2shScript(const Script& script)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::hash160,
-                BYTE_ARRAY_TO_VECTOR(script.getHash160()),
-                opcode::equal
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::hash160,
+            static_cast<std::vector<BYTE>>(script.getHash160()),
+            opcode::equal
+        });
     }
     
     Script Script::p2wshScript(const Script& script)
     {
-        return Script(std::vector<machine::operation>(
-            {
-                opcode::push_size_0,
-                BYTE_ARRAY_TO_VECTOR(script.getHash256())
-            }));
+        return Script(std::vector<machine::operation>{
+            opcode::push_size_0,
+            static_cast<std::vector<BYTE>>(script.getHash256())
+        });
     }
     
     Script::Script()
@@ -215,12 +209,12 @@ namespace conclave
     
     const Hash160 Script::getHash160() const
     {
-        return bitcoin_short_hash(script.to_data(false));
+        return Hash160::digest(script.to_data(false));
     }
     
     const Hash256 Script::getHash256() const
     {
-        return static_cast<Hash256>(bitcoin_hash(script.to_data(false))).reversed();
+        return Hash256::digest(script.to_data(false));
     }
     
     const Hash256 Script::getSingleSHA256() const

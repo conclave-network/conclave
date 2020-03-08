@@ -84,7 +84,36 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(ScriptFactoriesTest)
         {
-            BOOST_TEST((true));//TODO
+            // P2PKH Address
+            BOOST_TEST(
+                Script::p2pkhScript(Address("17A16QmavnUfCW11DAApiJxp7ARnxN5pGX")) ==
+                Script("dup hash160 [43849383122ebb8a28268a89700c9f723663b5b8] equalverify checksig")
+            );
+            // P2SH Address
+            BOOST_TEST(
+                Script::p2shScript(Address("34CAQcnZUMT6PAhM3e2aq3mpivKmg77tgr")) ==
+                Script("hash160 [1b736585f9dc5d78b4f01ca9d087c00af8252f8f] equal")
+            );
+            // P2WPKH Address
+            BOOST_TEST(
+                Script::p2wpkhScript(Address("bc1q07e8230pdqrx9v64q495f6e84v4fdjc07wwxsy")) ==
+                Script("zero [7fb27545e1680662b355054b44eb27ab2a96cb0f]")
+            );
+            // P2WSH Address
+            BOOST_TEST(
+                Script::p2wshScript(Address("bc1qwqdg6squsna38e46795at95yu9atm8azzmyvckulcc7kytlcckxswvvzej")) ==
+                Script("zero [701a8d401c84fb13e6baf169d59684e17abd9fa216c8cc5b9fc63d622ff8c58d]")
+            );
+            // P2SH Script
+            BOOST_TEST(
+                Script::p2shScript(Script("return")) ==
+                Script("hash160 [41c98a140039816273e50db317422c11c2bfcc88] equal")
+            );
+            // P2WSH Script
+            BOOST_TEST(
+                Script::p2shScript(Script("return")) ==
+                Script("zero [d4b2548065db6cc797926a3db7de3664ad3f48acaa0e7174a9a6f490716807ea]")
+            );
         }
         
         BOOST_AUTO_TEST_CASE(ScriptConstructorsTest)
