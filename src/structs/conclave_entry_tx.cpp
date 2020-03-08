@@ -76,6 +76,11 @@ namespace conclave
         return serialized;
     }
     
+    const Hash256 ConclaveEntryTx::getHash256() const
+    {
+        return Hash256::digest(serialize());
+    }
+    
     ConclaveEntryTx::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));

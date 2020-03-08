@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "script_element.h"
 #include "conclave.h"
 #include "address.h"
 #include "hash160.h"
@@ -49,6 +50,7 @@ namespace conclave
         Script();
         Script(const Script&);
         Script(const Script&&);
+        Script(const std::vector<ScriptElement>&);
         Script(const std::vector<BYTE>&);
         Script(const std::vector<std::string>&);
         Script(const std::string&);

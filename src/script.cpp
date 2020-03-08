@@ -31,11 +31,22 @@ namespace conclave
     //
     
     inline const static
-    std::vector<machine::operation> stringVectorToMachineOpVector(const std::vector<std::string>& sv)
+    std::vector<machine::operation> stringVectorToMachineOpVector(const std::vector<std::string>& in)
     {
-        std::vector<machine::operation> ops(sv.size());
-        for (size_t i = 0; i < sv.size(); i++) {
-            ops[i].from_string(sv[i]);
+        std::vector<machine::operation> ops(in.size());
+        for (size_t i = 0; i < in.size(); i++) {
+            ops[i].from_string(in[i]);
+        }
+        return ops;
+    }
+    
+    inline const static
+    std::vector<machine::operation> scriptElementVectorToMachineOpVector(const std::vector<ScriptElement>& in)
+    {
+        std::vector<machine::operation> ops(0);
+        ops.reserve(in.size());
+        for (const ScriptElement& scriptElement: in) {
+            ops.emplace_back(scriptElement);
         }
         return ops;
     }
@@ -90,55 +101,61 @@ namespace conclave
     
     Script Script::p2pkhScript(const Address& address)
     {
-        return Script({
-                          opcode::dup,
-                          opcode::hash160,
-                          address.getHashData(),
-                          opcode::equalverify,
-                          opcode::checksig
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::dup,
+                opcode::hash160,
+                address.getHashData(),
+                opcode::equalverify,
+                opcode::checksig
+            }));
     }
     
     Script Script::p2shScript(const Address& address)
     {
-        return Script({
-                          opcode::hash160,
-                          address.getHashData(),
-                          opcode::equal
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::hash160,
+                address.getHashData(),
+                opcode::equal
+            }));
     }
     
     Script Script::p2wpkhScript(const Address& address)
     {
-        return Script({
-                          opcode::push_size_0,
-                          address.getHashData()
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::push_size_0,
+                address.getHashData()
+            }));
     }
     
     Script Script::p2wshScript(const Address& address)
     {
-        return Script({
-                          opcode::push_size_0,
-                          address.getHashData()
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::push_size_0,
+                address.getHashData()
+            }));
     }
     
     Script Script::p2shScript(const Script& script)
     {
-        return Script({
-                          opcode::hash160,
-                          BYTE_ARRAY_TO_VECTOR(script.getHash160()),
-                          opcode::equal
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::hash160,
+                BYTE_ARRAY_TO_VECTOR(script.getHash160()),
+                opcode::equal
+            }));
     }
     
     Script Script::p2wshScript(const Script& script)
     {
-        return Script({
-                          opcode::push_size_0,
-                          BYTE_ARRAY_TO_VECTOR(script.getHash256())
-                      });
+        return Script(std::vector<machine::operation>(
+            {
+                opcode::push_size_0,
+                BYTE_ARRAY_TO_VECTOR(script.getHash256())
+            }));
     }
     
     Script::Script()
@@ -166,8 +183,13 @@ namespace conclave
     {
     }
     
+    Script::Script(const std::vector<ScriptElement>& eleVector)
+        : Script(scriptElementVectorToMachineOpVector(eleVector))
+    {
+    }
+    
     Script::Script(const std::vector<std::string>& opVector)
-        : script(chain::script(stringVectorToMachineOpVector(opVector)))
+        : Script(stringVectorToMachineOpVector(opVector))
     {
     }
     

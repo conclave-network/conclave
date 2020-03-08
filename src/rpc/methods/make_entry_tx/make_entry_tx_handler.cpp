@@ -40,8 +40,62 @@ namespace conclave
                     "031f74bdb5873d9ae3d46aa3473718eac8fe19d4b9d62d9421cf6b9b6beab1e6c4"
                 };
                 const static uint32_t MIN_SIGS = 2;
+                const static uint32_t FUND_TX_VERSION = 2;
+                const static uint32_t FUND_TX_LOCK_TIME = 0;
                 
-                std::vector<ConclaveOutput> makeConclaveOutputs(const std::vector<Destination> conclaveDestinations)
+                static uint64_t totalValue(const std::vector<Destination>& destinations)
+                {
+                    uint64_t total = 0;
+                    for (const Destination& destination: destinations) {
+                        total += destination.value;
+                    }
+                    return total;
+                }
+                
+                Script makeEntryRedeemScript(const Hash256& claimTxHash,
+                                             const std::vector<PublicKey>& trustees,
+                                             const uint32_t minSigs)
+                {
+                    uint32_t nTrustees = trustees.size();
+                    std::vector<ScriptElement> scriptElements{
+                        claimTxHash, ScriptOp::drop, nTrustees
+                    };
+                    scriptElements.reserve(3 + nTrustees + 2);
+                    for (const PublicKey& trustee: trustees) {
+                        scriptElements.emplace_back(trustee);
+                    }
+                    scriptElements.emplace_back(minSigs);
+                    scriptElements.emplace_back(ScriptOp::checkmultisig);
+                    return Script(scriptElements);
+                }
+                
+                static std::vector<BitcoinInput> makeBitcoinInputs(const Sources& sources)
+                {
+                    std::vector<BitcoinInput> inputs;
+                    for (const Outpoint& outpoint:sources.outpoints) {
+                        inputs.emplace_back(BitcoinInput(outpoint, Script(), 0xffffffff));
+                    }
+                    return inputs;
+                }
+                
+                static std::vector<BitcoinOutput> makeBitcoinOutputs(
+                    const std::vector<Destination>& bitcoinDestinations, const std::vector<PublicKey>& trustees,
+                    const uint32_t minSigs, const Hash256& claimTxHash, const uint64_t fundValue)
+                {
+                    std::vector<BitcoinOutput> outputs;
+                    // Add Conclave funding output
+                    outputs.emplace_back(
+                        BitcoinOutput(makeEntryRedeemScript(claimTxHash, trustees, minSigs), fundValue));
+                    // Add bitcoin change outputs
+                    for (const Destination& destination: bitcoinDestinations) {
+                        Script scriptPubKey = Script::p2hScript(destination.address);
+                        outputs.emplace_back(BitcoinOutput(scriptPubKey, destination.value));
+                    }
+                    return outputs;
+                }
+                
+                static std::vector<ConclaveOutput> makeConclaveOutputs(
+                    const std::vector<Destination>& conclaveDestinations)
                 {
                     std::vector<ConclaveOutput> outputs;
                     for (const Destination& destination: conclaveDestinations) {
@@ -52,52 +106,22 @@ namespace conclave
                     return outputs;
                 }
                 
-                ConclaveEntryTx makeClaimTx(const std::vector<Destination> destinations,
-                                            const std::vector<PublicKey>& trustees,
-                                            const uint32_t minSigs)
-                {
-                    return ConclaveEntryTx(makeConclaveOutputs(destinations), trustees, minSigs);
-                }
-                
-                Script makeEntryRedeemScript(const ConclaveEntryTx& claimTx)
-                {
-                    return Script(std::vector<std::string>{
-                        // TODO: make hash of claimTx
-                    });
-                }
-                
-                std::vector<BitcoinInput> makeBitcoinInputs(const Sources& sources)
-                {
-                    std::vector<BitcoinInput> inputs;
-                    for (const Outpoint& outpoint:sources.outpoints) {
-                        inputs.emplace_back(BitcoinInput(outpoint, Script(), 0xffffffff));
-                    }
-                    return inputs;
-                }
-                
-                std::vector<BitcoinOutput> makeBitcoinOutputs(const Destinations& destinations)
-                {
-                    std::vector<BitcoinOutput> outputs;
-                    // Add Conclave funding output
-                    // TODO
-                    // Add bitcoin change outputs
-                    for (const Destination& destination: destinations.bitcoinDestinations) {
-                        Script scriptPubKey = Script::p2hScript(destination.address);
-                        uint64_t value = destination.value;
-                        outputs.emplace_back(BitcoinOutput(scriptPubKey, value));
-                    }
-                    return outputs;
-                }
-                
-                MakeEntryTxResponse* makeEntryTxHandler(const MakeEntryTxRequest& makeEntryTxRequest,
-                                                        ConclaveNode& conclaveNode)
+                MakeEntryTxResponse* makeEntryTxHandler(
+                    const MakeEntryTxRequest& makeEntryTxRequest, ConclaveNode& conclaveNode)
                 {
                     const Sources sources = makeEntryTxRequest.getSources();
                     const Destinations destinations = makeEntryTxRequest.getDestinations();
-                    ConclaveEntryTx conclaveEntryTx(
-                        makeConclaveOutputs(destinations.conclaveDestinations), TRUSTEES, MIN_SIGS);
-                    BitcoinTx bitcoinTx(makeBitcoinInputs(sources), makeBitcoinOutputs(destinations), 2, 0);
-                    return new MakeEntryTxResponse(bitcoinTx, conclaveEntryTx);
+                    const std::vector<Destination> bitcoinDestinations = destinations.bitcoinDestinations;
+                    const std::vector<Destination> conclaveDestinations = destinations.conclaveDestinations;
+                    const uint64_t fundValue = totalValue(conclaveDestinations);
+                    // Make claim Tx (Conclave)
+                    ConclaveEntryTx claimTx(makeConclaveOutputs(conclaveDestinations), TRUSTEES, MIN_SIGS);
+                    // Make fund Tx (Bitcoin)
+                    std::vector<BitcoinInput> bitcoinInputs = makeBitcoinInputs(sources);
+                    std::vector<BitcoinOutput> bitcoinOutputs =
+                        makeBitcoinOutputs(bitcoinDestinations, TRUSTEES, MIN_SIGS, claimTx.getHash256(), fundValue);
+                    BitcoinTx fundTx(bitcoinInputs, bitcoinOutputs, FUND_TX_VERSION, FUND_TX_LOCK_TIME);
+                    return new MakeEntryTxResponse(fundTx, claimTx);
                 }
             }
         }

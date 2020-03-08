@@ -21,6 +21,7 @@
 #include <boost/property_tree/ptree.hpp>
 #include "conclave_output.h"
 #include "outpoint.h"
+#include "../hash256.h"
 #include "../public_key.h"
 #include "../util/serialization.h"
 #include "../conclave.h"
@@ -45,6 +46,7 @@ namespace conclave
         ConclaveEntryTx(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
+        const Hash256 getHash256() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
