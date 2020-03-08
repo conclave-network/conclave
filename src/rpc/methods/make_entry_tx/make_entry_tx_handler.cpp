@@ -24,6 +24,7 @@
 #include "../../../structs/conclave_entry_tx.h"
 #include "../../../conclave_node.h"
 #include <vector>
+#include <iostream>
 
 namespace conclave
 {
@@ -82,10 +83,12 @@ namespace conclave
                     const std::vector<Destination>& bitcoinDestinations, const std::vector<PublicKey>& trustees,
                     const uint32_t minSigs, const Hash256& claimTxHash, const uint64_t fundValue)
                 {
-                    std::vector<BitcoinOutput> outputs;
-                    // Add Conclave funding output
-                    outputs.emplace_back(
-                        BitcoinOutput(makeEntryRedeemScript(claimTxHash, trustees, minSigs), fundValue));
+                    const Script redeemScript = makeEntryRedeemScript(claimTxHash, trustees, minSigs);
+                    const Script scriptPubKey = Script::p2wshScript(redeemScript);
+                    std::vector<BitcoinOutput> outputs{
+                        // Add Conclave funding output
+                        BitcoinOutput(scriptPubKey, fundValue)
+                    };
                     // Add bitcoin change outputs
                     for (const Destination& destination: bitcoinDestinations) {
                         Script scriptPubKey = Script::p2hScript(destination.address);
