@@ -43,14 +43,9 @@ namespace conclave
     
     BOOST_AUTO_TEST_CASE(ConclaveEntryTxConstructorsTest)
     {
-        assert(true);
         ConclaveEntryTx conclaveEntryTxFromOutputs1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1);
         ConclaveEntryTx conclaveEntryTxFromOutputs2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2);
         ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1, FUNDING_OUTPOINT);
         ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2, FUNDING_OUTPOINT);
-        std::cout << conclaveEntryTxFromOutputs1 << std::endl;
-        std::cout << conclaveEntryTxFromOutputs2 << std::endl;
-        std::cout << conclaveEntryTxFromOutputsWithBitcoinTxid1 << std::endl;
-        std::cout << conclaveEntryTxFromOutputsWithBitcoinTxid2 << std::endl;
     }
 }
