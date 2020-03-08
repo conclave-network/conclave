@@ -103,6 +103,13 @@ namespace conclave
         return data;
     }
     
+    Hash256::operator std::vector<BYTE>() const
+    {
+        std::vector<BYTE> vector(LARGE_HASH_SIZE_BYTES);
+        std::copy(data.begin(), data.end(), vector.begin());
+        return vector;
+    }
+    
     Hash256::operator const unsigned char*() const
     {
         return data.data();

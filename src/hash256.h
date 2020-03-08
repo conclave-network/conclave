@@ -46,6 +46,7 @@ namespace conclave
         // Operators
         operator std::string() const;
         operator std::array<BYTE, LARGE_HASH_SIZE_BYTES>() const;
+        operator std::vector<BYTE>() const;
         operator const unsigned char*() const;
         BYTE& operator[](const size_t) const;
         Hash256& operator=(const Hash256&) = delete;

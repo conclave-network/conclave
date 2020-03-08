@@ -103,6 +103,13 @@ namespace conclave
         return data;
     }
     
+    Hash160::operator std::vector<BYTE>() const
+    {
+        std::vector<BYTE> vector(SMALL_HASH_SIZE_BYTES);
+        std::copy(data.begin(), data.end(), vector.begin());
+        return vector;
+    }
+    
     Hash160::operator const unsigned char*() const
     {
         return data.data();
