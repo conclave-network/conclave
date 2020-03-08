@@ -51,6 +51,7 @@ namespace conclave
         // Operators
         operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
         operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
+        operator std::vector<BYTE>() const;
         operator std::string() const;
         bool operator==(const PublicKey&) const;
         bool operator!=(const PublicKey&) const;

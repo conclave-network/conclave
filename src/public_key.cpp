@@ -151,6 +151,15 @@ namespace conclave
         return arr;
     }
     
+    PublicKey::operator std::vector<BYTE>() const
+    {
+        // Represent as a compressed pubkey by default
+        const auto array = static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this);
+        std::vector<BYTE> vector(COMPRESSED_PUBKEY_SIZE_BYTES);
+        std::copy(array.begin(), array.end(), vector.begin());
+        return vector;
+    }
+    
     PublicKey::operator std::string() const
     {
         // Stringify as a compressed pubkey by default
