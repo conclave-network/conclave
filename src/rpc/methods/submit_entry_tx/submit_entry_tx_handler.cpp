@@ -31,6 +31,8 @@ namespace conclave
                     const SubmitEntryTxRequest& submitEntryTxRequest,
                     ConclaveNode& conclaveNode)
                 {
+                    std::cout << submitEntryTxRequest.getFundTx() << std::endl;
+                    std::cout << submitEntryTxRequest.getClaimTx() << std::endl;
                     return new SubmitEntryTxResponse();
                 }
             }

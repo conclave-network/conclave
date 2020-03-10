@@ -62,12 +62,12 @@ namespace conclave
                         return submitEntryTxHandler(*this, conclaveNode);
                     }
                     
-                    const BitcoinTx& getFundingTx() const
+                    const BitcoinTx& getFundTx() const
                     {
                         return fundTx;
                     }
                     
-                    const ConclaveEntryTx& getEntryTx() const
+                    const ConclaveEntryTx& getClaimTx() const
                     {
                         return claimTx;
                     }
