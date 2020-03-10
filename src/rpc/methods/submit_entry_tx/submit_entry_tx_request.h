@@ -42,8 +42,8 @@ namespace conclave
                 {
                     public:
                     SubmitEntryTxRequest(const pt::ptree& params)
-                        : fundingTx(params.get_child("fundingTx")),
-                          entryTx(params.get_child("entryTx"))
+                        : fundTx(params.get_child("FundTx")),
+                          claimTx(params.get_child("ClaimTx"))
                     {
                     }
                     
@@ -64,18 +64,18 @@ namespace conclave
                     
                     const BitcoinTx& getFundingTx() const
                     {
-                        return fundingTx;
+                        return fundTx;
                     }
                     
                     const ConclaveEntryTx& getEntryTx() const
                     {
-                        return entryTx;
+                        return claimTx;
                     }
                     
                     private:
-                    const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
-                    const BitcoinTx fundingTx;
-                    const ConclaveEntryTx entryTx;
+                    const static RpcMethod rpcMethod = RpcMethod::SubmitEntryTx;
+                    const BitcoinTx fundTx;
+                    const ConclaveEntryTx claimTx;
                 };
             }
         }
