@@ -32,10 +32,15 @@ namespace conclave
         {
             namespace electrumx
             {
-                ElectrumxClient::ElectrumxClient(const ElectrumxClientConfig& electrumxClientConfig)
+                ElectrumxClient::ElectrumxClient(const std::string& host, const unsigned short port)
                     : receiveBuffer(new BYTE[RECEIVE_BUFFER_SIZE + 1]),
-                      socketAddress(electrumxClientConfig.getHost(), electrumxClientConfig.getPort()),
+                      socketAddress(host, port),
                       streamSocket(socketAddress)
+                {
+                }
+                
+                ElectrumxClient::ElectrumxClient(const ElectrumxClientConfig& electrumxClientConfig)
+                    : ElectrumxClient(electrumxClientConfig.getHost(), electrumxClientConfig.getPort())
                 {
                 }
                 
@@ -53,6 +58,19 @@ namespace conclave
                     pt::ptree params;
                     params.add("scripthash", scripthash);
                     pt::ptree request = buildRequest("blockchain.scripthash.get_balance");
+                    request.add_child("params", params);
+                    return doRequest(request);
+                }
+                
+                /***
+                 * blockchain.transaction.broadcast
+                 * https://electrumx.readthedocs.io/en/latest/protocol-methods.html#blockchain-transaction-broadcast
+                 */
+                const pt::ptree ElectrumxClient::blockchainTransactionBroadcast(const std::string& rawTx)
+                {
+                    pt::ptree params;
+                    params.add("raw_tx", rawTx);
+                    pt::ptree request = buildRequest("blockchain.transaction.broadcast");
                     request.add_child("params", params);
                     return doRequest(request);
                 }

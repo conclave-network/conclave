@@ -44,9 +44,11 @@ namespace conclave
                 class ElectrumxClient
                 {
                     public:
+                    ElectrumxClient(const std::string&, const unsigned short);
                     ElectrumxClient(const ElectrumxClientConfig&);
                     ~ElectrumxClient();
                     const pt::ptree blockchainScripthashGetBalance(const std::string&);
+                    const pt::ptree blockchainTransactionBroadcast(const std::string&);
                     private:
                     const pt::ptree doRequest(const pt::ptree&);
                     BYTE* receiveBuffer;
