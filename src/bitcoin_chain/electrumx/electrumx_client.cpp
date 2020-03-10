@@ -86,9 +86,9 @@ namespace conclave
                         throw std::runtime_error("Error receiving response from ElectrumX client");
                     }
                     receiveBuffer[br] = '\0';
-                    pt::ptree result = parseJson((char*) receiveBuffer);
+                    const pt::ptree response = parseJson((char*) receiveBuffer);
                     receiveBufferMutex.unlock();
-                    return result.get_child("result");
+                    return getResultOrThrowError(response);
                 }
             };
         };

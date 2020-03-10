@@ -20,14 +20,34 @@
 
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
+#include <stdexcept>
+#include <string>
 
 namespace pt = boost::property_tree;
-
-pt::ptree buildRequest(const std::string& methodName)
+namespace conclave
 {
-    pt::ptree request;
-    request.add("jsonrpc", "2.0");
-    request.add("id", 0);
-    request.add("method", methodName);
-    return request;
+    const static std::string JSON_RPC_DEFAULT_ERROR_MESSAGE = "JSON-RPC Error";
+    
+    const pt::ptree buildRequest(const std::string& methodName)
+    {
+        pt::ptree request;
+        request.add("jsonrpc", "2.0");
+        request.add("id", 0);
+        request.add("method", methodName);
+        return request;
+    }
+    
+    const pt::ptree getResultOrThrowError(const pt::ptree& response)
+    {
+        const boost::optional<const pt::ptree&> result = response.get_child_optional("result");
+        if (result.has_value()) {
+            return result.get();
+        } else {
+            const boost::optional<const pt::ptree&> error = response.get_child_optional("error");
+            std::string errMsg =
+                error.has_value() ? JSON_RPC_DEFAULT_ERROR_MESSAGE :
+                error.get().get<std::string>("message", JSON_RPC_DEFAULT_ERROR_MESSAGE);
+            throw std::runtime_error(errMsg);
+        }
+    }
 }
