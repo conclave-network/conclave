@@ -18,6 +18,7 @@
 
 #include "submit_entry_tx_request.h"
 #include "submit_entry_tx_response.h"
+#include "../../../conclave_node.h"
 
 namespace conclave
 {

@@ -44,6 +44,7 @@ namespace conclave
                 public:
                 explicit BitcoinChain(const BitcoinChainConfig&);
                 const uint64_t getAddressBalance(const Address&);
+                const bool submitTx(const BitcoinTx&);
                 private:
                 ElectrumxClient electrumxClient;
             };
