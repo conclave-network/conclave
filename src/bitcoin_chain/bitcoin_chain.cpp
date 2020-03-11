@@ -36,13 +36,17 @@ namespace conclave
             {
                 Script p2shScript = Script::p2hScript(address);
                 Hash256 scriptHash = p2shScript.getSingleSHA256();
-                pt::ptree res = electrumxClient.blockchainScripthashGetBalance(scriptHash.reversed());
-                return getPrimitiveFromJson<uint64_t>(res, "confirmed");
+                pt::ptree tree = electrumxClient.blockchainScripthashGetBalance(scriptHash.reversed());
+                return getPrimitiveFromJson<uint64_t>(tree, "confirmed");
             }
             
             const Hash256 BitcoinChain::submitTx(const BitcoinTx& bitcoinTx)
             {
-                return Hash256(); // TODO!
+                pt::ptree tree = electrumxClient
+                    .blockchainTransactionBroadcast(BYTE_VECTOR_TO_HEX(bitcoinTx.serialize()));
+                Hash256 returnedTxid = Hash256(tree.data());
+                // TODO - check returned Txid
+                return returnedTxid;
             }
         };
     }

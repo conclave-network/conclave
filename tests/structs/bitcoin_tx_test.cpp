@@ -56,7 +56,7 @@ namespace conclave
                 ScriptOp::equalverify,
                 ScriptOp::checksig
             })
-        ),
+        )
     };
     const static uint32_t LOCKTIME_1 = 0;
     

@@ -45,6 +45,7 @@ namespace conclave
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        explicit operator std::vector<BYTE>() const;
         bool operator==(const BitcoinTx&) const;
         bool operator!=(const BitcoinTx&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinTx&);

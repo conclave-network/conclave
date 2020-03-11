@@ -204,7 +204,12 @@ add_executable(
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/address.cpp
+        ../src/public_key.cpp
         ../src/script.cpp
+        ../src/structs/outpoint.cpp
+        ../src/structs/bitcoin_input.cpp
+        ../src/structs/bitcoin_output.cpp
+        ../src/structs/bitcoin_tx.cpp
         ../src/bitcoin_chain/bitcoin_chain.cpp
         ../src/bitcoin_chain/electrumx/electrumx_client.cpp
         ../src/config/bitcoin_chain_config.cpp

@@ -105,7 +105,7 @@ namespace conclave
         {
         }
         
-        template<typename T, typename std::enable_if_t<std::is_integral_v<T>>>
+        template<typename T>
         ScriptElement(const T integral)
             :operation(integralToOperation(integral))
         {

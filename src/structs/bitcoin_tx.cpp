@@ -81,6 +81,11 @@ namespace conclave
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
+    BitcoinTx::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
     bool BitcoinTx::operator==(const BitcoinTx& other) const
     {
         return (version == other.version) && (inputs == other.inputs) &&

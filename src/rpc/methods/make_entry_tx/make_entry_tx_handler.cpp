@@ -87,12 +87,12 @@ namespace conclave
                     const Script scriptPubKey = Script::p2wshScript(redeemScript);
                     std::vector<BitcoinOutput> outputs{
                         // Add Conclave funding output
-                        BitcoinOutput(scriptPubKey, fundValue)
+                        BitcoinOutput(fundValue, scriptPubKey)
                     };
                     // Add bitcoin change outputs
                     for (const Destination& destination: bitcoinDestinations) {
                         Script scriptPubKey = Script::p2hScript(destination.address);
-                        outputs.emplace_back(BitcoinOutput(scriptPubKey, destination.value));
+                        outputs.emplace_back(BitcoinOutput(destination.value, scriptPubKey));
                     }
                     return outputs;
                 }
