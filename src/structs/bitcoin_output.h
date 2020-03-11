@@ -34,6 +34,8 @@ namespace conclave
         // Constructors
         BitcoinOutput(const Script&, const uint64_t);
         BitcoinOutput(const pt::ptree&);
+        // Public functions
+        const std::vector<BYTE> serialize() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;

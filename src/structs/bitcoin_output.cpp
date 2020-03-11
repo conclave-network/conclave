@@ -18,6 +18,7 @@
 
 #include "bitcoin_output.h"
 #include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace conclave
 {
@@ -33,6 +34,16 @@ namespace conclave
         : BitcoinOutput(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY),
                         getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE))
     {
+    }
+    
+    const std::vector<BYTE> BitcoinOutput::serialize() const
+    {
+        const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
+        const std::vector<BYTE> valueSerialized = serializeU64(value);
+        std::vector<BYTE> serialized(scriptPubKeySerialized.size() + valueSerialized.size());
+        size_t pos = writeToByteVector(serialized, scriptPubKeySerialized);
+        pos += writeToByteVector(serialized, valueSerialized, pos);
+        return serialized;
     }
     
     BitcoinOutput::operator pt::ptree() const
