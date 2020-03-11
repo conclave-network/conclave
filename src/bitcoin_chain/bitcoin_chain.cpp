@@ -20,6 +20,7 @@
 #include "../util/json.h"
 #include "../script.h"
 #include "bitcoin_chain.h"
+#include <stdexcept>
 
 namespace conclave
 {
@@ -45,7 +46,10 @@ namespace conclave
                 pt::ptree tree = electrumxClient
                     .blockchainTransactionBroadcast(BYTE_VECTOR_TO_HEX(bitcoinTx.serialize()));
                 Hash256 returnedTxid = Hash256(tree.data());
-                // TODO - check returned Txid
+                // Make sure returned Txid is same as our calculated Txid
+                if (returnedTxid != bitcoinTx.getHash256()) {
+                    throw std::runtime_error("ElectrumX server returned different Txid");
+                }
                 return returnedTxid;
             }
         };
