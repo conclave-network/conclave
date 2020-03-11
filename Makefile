@@ -14,26 +14,29 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-.PHONY: clean
+# No release build for the moment
+BUILD_DIR=cmake-build-debug
+
 all: conclave test
+.PHONY: clean
 
 install: conclave test
-	sudo cp build/bin/* /usr/local/bin
+	sudo cp $(BUILD_DIR)/bin/* /usr/local/bin
 	sudo cp etc/* /usr/local/etc
 
 dev: conclave
-	valgrind --tool=memcheck --leak-check=yes ./build/bin/conclaved
+	valgrind --tool=memcheck --leak-check=yes ./$BUILD_DIR/bin/conclaved
 
 test:
-	mkdir -p build
-	cd build && cmake -D INCLUDE_TESTS:bool=YES ..
-	cd build && make
-	cd build/tests && ctest --verbose -R $(test)
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake -D INCLUDE_TESTS:bool=YES ..
+	cd $(BUILD_DIR) && make
+	cd $(BUILD_DIR)/tests && ctest --verbose -R $(test)
 
 conclave:
-	mkdir -p build
-	cd build && cmake -D INCLUDE_SRC:bool=YES ..
-	cd build && make
+	mkdir -p $(BUILD_DIR)
+	cd $(BUILD_DIR) && cmake -D INCLUDE_SRC:bool=YES ..
+	cd $(BUILD_DIR) && make
 
 clean:
-	rm -fr build
+	rm -fr $(BUILD_DIR)
