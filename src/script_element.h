@@ -85,26 +85,30 @@ namespace conclave
         {
         }
         
+        ScriptElement(const std::vector<BYTE>& pushData)
+            : operation(pushData)
+        {
+        }
+        
         ScriptElement(const Hash256& hash256)
-            : operation(hash256)
+            : ScriptElement(static_cast<std::vector<BYTE>>(hash256))
         {
         }
         
         ScriptElement(const Hash160& hash160)
-            : operation(hash160)
+            : ScriptElement(static_cast<std::vector<BYTE>>(hash160))
         {
         }
         
         ScriptElement(const PublicKey& publicKey)
-            : operation(publicKey)
+            : ScriptElement(static_cast<std::vector<BYTE>>(publicKey))
         {
         }
         
-        template<typename T>
+        template<typename T, typename std::enable_if_t<std::is_integral_v<T>>>
         ScriptElement(const T integral)
             :operation(integralToOperation(integral))
         {
-            static_assert(std::is_integral<T>::value, "Integral required.");
         }
         
         operator machine::operation() const
