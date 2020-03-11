@@ -22,35 +22,35 @@
 
 namespace conclave
 {
-    const std::string BitcoinOutput::JSONKEY_SCRIPTPUBKEY = "scriptPubKey";
     const std::string BitcoinOutput::JSONKEY_VALUE = "value";
+    const std::string BitcoinOutput::JSONKEY_SCRIPTPUBKEY = "scriptPubKey";
     
-    BitcoinOutput::BitcoinOutput(const Script& scriptPubKey, const uint64_t value)
-        : scriptPubKey(scriptPubKey), value(value)
+    BitcoinOutput::BitcoinOutput(const uint64_t value, const Script& scriptPubKey)
+        : value(value), scriptPubKey(scriptPubKey)
     {
     }
     
     BitcoinOutput::BitcoinOutput(const pt::ptree& tree)
-        : BitcoinOutput(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY),
-                        getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE))
+        : BitcoinOutput(getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE),
+                        getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY))
     {
     }
     
     const std::vector<BYTE> BitcoinOutput::serialize() const
     {
-        const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
         const std::vector<BYTE> valueSerialized = serializeU64(value);
-        std::vector<BYTE> serialized(scriptPubKeySerialized.size() + valueSerialized.size());
-        size_t pos = writeToByteVector(serialized, scriptPubKeySerialized);
-        writeToByteVector(serialized, valueSerialized, pos);
+        const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
+        std::vector<BYTE> serialized(valueSerialized.size() + scriptPubKeySerialized.size());
+        size_t pos = writeToByteVector(serialized, valueSerialized);
+        writeToByteVector(serialized, scriptPubKeySerialized, pos);
         return serialized;
     }
     
     BitcoinOutput::operator pt::ptree() const
     {
         pt::ptree tree;
-        tree.add_child(JSONKEY_SCRIPTPUBKEY, (pt::ptree) scriptPubKey);
         tree.add<uint64_t>(JSONKEY_VALUE, value);
+        tree.add_child(JSONKEY_SCRIPTPUBKEY, (pt::ptree) scriptPubKey);
         return tree;
     }
     
@@ -61,12 +61,12 @@ namespace conclave
     
     bool BitcoinOutput::operator==(const BitcoinOutput& other) const
     {
-        return (scriptPubKey == other.scriptPubKey) && (value == other.value);
+        return (value == other.value) && (scriptPubKey == other.scriptPubKey);
     }
     
     bool BitcoinOutput::operator!=(const BitcoinOutput& other) const
     {
-        return (scriptPubKey != other.scriptPubKey) || (value != other.value);
+        return (value != other.value) || (scriptPubKey != other.scriptPubKey);
     }
     
     std::ostream& operator<<(std::ostream& os, const BitcoinOutput& bitcoinOutput)

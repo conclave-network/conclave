@@ -29,10 +29,10 @@ namespace conclave
     struct BitcoinOutput final
     {
         // JSON keys
-        const static std::string JSONKEY_SCRIPTPUBKEY;
         const static std::string JSONKEY_VALUE;
+        const static std::string JSONKEY_SCRIPTPUBKEY;
         // Constructors
-        BitcoinOutput(const Script&, const uint64_t);
+        BitcoinOutput(const uint64_t, const Script&);
         BitcoinOutput(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
@@ -43,7 +43,7 @@ namespace conclave
         bool operator!=(const BitcoinOutput&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinOutput&);
         // Properties
-        const Script scriptPubKey;
         const uint64_t value;
+        const Script scriptPubKey;
     };
 }

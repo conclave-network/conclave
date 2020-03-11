@@ -27,29 +27,29 @@
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    const static Script SCRIPTPUBKEY_1("dup hash160 [39a95df3c155a9c017c2099723a0a70ef85721b0] equalverify checksig");
-    const static Script SCRIPTPUBKEY_2("hash160 [39a95df3c155a9c017c2099723a0a70ef85721b0] equal");
     const static uint64_t VALUE_1 = 0xffffffffffffffff;
     const static uint64_t VALUE_2 = 0x0000000000000001;
+    const static Script SCRIPTPUBKEY_1("dup hash160 [39a95df3c155a9c017c2099723a0a70ef85721b0] equalverify checksig");
+    const static Script SCRIPTPUBKEY_2("hash160 [39a95df3c155a9c017c2099723a0a70ef85721b0] equal");
     std::string BITCOIN_OUTPUT_STR =
         "{\n"
+        "    \"value\": \"18446744073709551615\",\n"
         "    \"scriptPubKey\": [\n"
         "        \"dup\",\n"
         "        \"hash160\",\n"
         "        \"[39a95df3c155a9c017c2099723a0a70ef85721b0]\",\n"
         "        \"equalverify\",\n"
         "        \"checksig\"\n"
-        "    ],\n"
-        "    \"value\": \"18446744073709551615\"\n"
+        "    ]\n"
         "}\n";
     const static std::vector<BYTE> BITCOIN_OUTPUT_1_SERIALIZED =
-        HEX_TO_BYTE_VECTOR("1976a91439a95df3c155a9c017c2099723a0a70ef85721b088acffffffffffffffff");
+        HEX_TO_BYTE_VECTOR("ffffffffffffffff1976a91439a95df3c155a9c017c2099723a0a70ef85721b088ac");
     const static std::vector<BYTE> BITCOIN_OUTPUT_2_SERIALIZED =
-        HEX_TO_BYTE_VECTOR("1976a91439a95df3c155a9c017c2099723a0a70ef85721b088ac0100000000000000");
+        HEX_TO_BYTE_VECTOR("ffffffffffffffff17a91439a95df3c155a9c017c2099723a0a70ef85721b087");
     const static std::vector<BYTE> BITCOIN_OUTPUT_3_SERIALIZED =
-        HEX_TO_BYTE_VECTOR("17a91439a95df3c155a9c017c2099723a0a70ef85721b087ffffffffffffffff");
+        HEX_TO_BYTE_VECTOR("01000000000000001976a91439a95df3c155a9c017c2099723a0a70ef85721b088ac");
     const static std::vector<BYTE> BITCOIN_OUTPUT_4_SERIALIZED =
-        HEX_TO_BYTE_VECTOR("17a91439a95df3c155a9c017c2099723a0a70ef85721b0870100000000000000");
+        HEX_TO_BYTE_VECTOR("010000000000000017a91439a95df3c155a9c017c2099723a0a70ef85721b087");
     
     pt::ptree makeBitcoinOutputTree()
     {
@@ -63,34 +63,34 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(BitcoinOutputConstructorsTest)
         {
-            BitcoinOutput bitcoinOutputFromProps(SCRIPTPUBKEY_1, VALUE_1);
+            BitcoinOutput bitcoinOutputFromProps(VALUE_1, SCRIPTPUBKEY_1);
             BitcoinOutput bitcoinOutputFromPtree(makeBitcoinOutputTree());
-            BOOST_TEST((bitcoinOutputFromProps.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((bitcoinOutputFromProps.value == VALUE_1));
-            BOOST_TEST((bitcoinOutputFromPtree.scriptPubKey == SCRIPTPUBKEY_1));
+            BOOST_TEST((bitcoinOutputFromProps.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((bitcoinOutputFromPtree.value == VALUE_1));
+            BOOST_TEST((bitcoinOutputFromPtree.scriptPubKey == SCRIPTPUBKEY_1));
         }
         
         BOOST_AUTO_TEST_CASE(BitcoinOutputCastToPtreeTest)
         {
-            BOOST_TEST((makeBitcoinOutputTree() == (pt::ptree) BitcoinOutput(SCRIPTPUBKEY_1, VALUE_1)));
+            BOOST_TEST((makeBitcoinOutputTree() == (pt::ptree) BitcoinOutput(VALUE_1, SCRIPTPUBKEY_1)));
         }
         
         BOOST_AUTO_TEST_CASE(BitcoinOutputCastToStringTest)
         {
-            BOOST_TEST((BITCOIN_OUTPUT_STR == (std::string) BitcoinOutput(SCRIPTPUBKEY_1, VALUE_1)));
+            BOOST_TEST((BITCOIN_OUTPUT_STR == (std::string) BitcoinOutput(VALUE_1, SCRIPTPUBKEY_1)));
         }
         
         BOOST_AUTO_TEST_CASE(BitcoinOutputOperatorsTest)
         {
-            BitcoinOutput bitcoinOutput1(SCRIPTPUBKEY_1, VALUE_1);
-            BitcoinOutput bitcoinOutput2(SCRIPTPUBKEY_1, VALUE_2);
-            BitcoinOutput bitcoinOutput3(SCRIPTPUBKEY_2, VALUE_1);
-            BitcoinOutput bitcoinOutput4(SCRIPTPUBKEY_2, VALUE_2);
-            BitcoinOutput bitcoinOutput5(SCRIPTPUBKEY_1, VALUE_1);
-            BitcoinOutput bitcoinOutput6(SCRIPTPUBKEY_1, VALUE_2);
-            BitcoinOutput bitcoinOutput7(SCRIPTPUBKEY_2, VALUE_1);
-            BitcoinOutput bitcoinOutput8(SCRIPTPUBKEY_2, VALUE_2);
+            BitcoinOutput bitcoinOutput1(VALUE_1, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput2(VALUE_1, SCRIPTPUBKEY_2);
+            BitcoinOutput bitcoinOutput3(VALUE_2, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput4(VALUE_2, SCRIPTPUBKEY_2);
+            BitcoinOutput bitcoinOutput5(VALUE_1, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput6(VALUE_1, SCRIPTPUBKEY_2);
+            BitcoinOutput bitcoinOutput7(VALUE_2, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput8(VALUE_2, SCRIPTPUBKEY_2);
             BOOST_TEST((bitcoinOutput1 == bitcoinOutput1));
             BOOST_TEST((bitcoinOutput1 != bitcoinOutput2));
             BOOST_TEST((bitcoinOutput1 != bitcoinOutput3));
@@ -159,10 +159,10 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(BitcoinOutputSerializeTest)
         {
-            BitcoinOutput bitcoinOutput1(SCRIPTPUBKEY_1, VALUE_1);
-            BitcoinOutput bitcoinOutput2(SCRIPTPUBKEY_1, VALUE_2);
-            BitcoinOutput bitcoinOutput3(SCRIPTPUBKEY_2, VALUE_1);
-            BitcoinOutput bitcoinOutput4(SCRIPTPUBKEY_2, VALUE_2);
+            BitcoinOutput bitcoinOutput1(VALUE_1, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput2(VALUE_1, SCRIPTPUBKEY_2);
+            BitcoinOutput bitcoinOutput3(VALUE_2, SCRIPTPUBKEY_1);
+            BitcoinOutput bitcoinOutput4(VALUE_2, SCRIPTPUBKEY_2);
             BOOST_TEST((bitcoinOutput1.serialize() == BITCOIN_OUTPUT_1_SERIALIZED));
             BOOST_TEST((bitcoinOutput2.serialize() == BITCOIN_OUTPUT_2_SERIALIZED));
             BOOST_TEST((bitcoinOutput3.serialize() == BITCOIN_OUTPUT_3_SERIALIZED));
