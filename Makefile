@@ -24,11 +24,16 @@ install: conclave test
 dev: conclave
 	valgrind --tool=memcheck --leak-check=yes ./build/bin/conclaved
 
-test: conclave
+test:
+	mkdir -p build
+	cd build && cmake -D INCLUDE_TESTS:bool=YES ..
+	cd build && make
 	cd build/tests && ctest --verbose -R $(test)
 
 conclave:
-	mkdir -p build && cd build && cmake .. && make
+	mkdir -p build
+	cd build && cmake -D INCLUDE_SRC:bool=YES ..
+	cd build && make
 
 clean:
 	rm -fr build
