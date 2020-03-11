@@ -39,6 +39,11 @@ namespace conclave
                 pt::ptree res = electrumxClient.blockchainScripthashGetBalance(scriptHash.reversed());
                 return getPrimitiveFromJson<uint64_t>(res, "confirmed");
             }
+            
+            const Hash256 BitcoinChain::submitTx(const BitcoinTx& bitcoinTx)
+            {
+                return Hash256(); // TODO!
+            }
         };
     }
 }

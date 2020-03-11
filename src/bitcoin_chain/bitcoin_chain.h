@@ -19,6 +19,8 @@
 #pragma once
 
 #include "../address.h"
+#include "../hash256.h"
+#include "../structs/bitcoin_tx.h"
 #include "../config/bitcoin_chain_config.h"
 #include "electrumx/electrumx_client.h"
 
@@ -44,7 +46,7 @@ namespace conclave
                 public:
                 explicit BitcoinChain(const BitcoinChainConfig&);
                 const uint64_t getAddressBalance(const Address&);
-                const bool submitTx(const BitcoinTx&);
+                const Hash256 submitTx(const BitcoinTx&);
                 private:
                 ElectrumxClient electrumxClient;
             };
