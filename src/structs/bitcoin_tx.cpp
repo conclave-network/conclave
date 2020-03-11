@@ -61,6 +61,11 @@ namespace conclave
         return serialized;
     }
     
+    const Hash256 BitcoinTx::getHash256() const
+    {
+        return Hash256::digest(serialize());
+    }
+    
     BitcoinTx::operator pt::ptree() const
     {
         pt::ptree tree;

@@ -41,6 +41,7 @@ namespace conclave
         BitcoinTx(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
+        const Hash256 getHash256() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
