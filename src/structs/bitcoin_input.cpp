@@ -47,7 +47,7 @@ namespace conclave
             outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size());
         size_t pos = writeToByteVector(serialized, outpointSerialized);
         pos += writeToByteVector(serialized, scriptSigSerialized, pos);
-        pos += writeToByteVector(serialized, sequenceSerialized, pos);
+        writeToByteVector(serialized, sequenceSerialized, pos);
         return serialized;
     }
     

@@ -42,7 +42,7 @@ namespace conclave
         const std::vector<BYTE> valueSerialized = serializeU64(value);
         std::vector<BYTE> serialized(scriptPubKeySerialized.size() + valueSerialized.size());
         size_t pos = writeToByteVector(serialized, scriptPubKeySerialized);
-        pos += writeToByteVector(serialized, valueSerialized, pos);
+        writeToByteVector(serialized, valueSerialized, pos);
         return serialized;
     }
     
