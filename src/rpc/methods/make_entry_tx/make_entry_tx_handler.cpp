@@ -123,7 +123,7 @@ namespace conclave
                     std::vector<BitcoinInput> bitcoinInputs = makeBitcoinInputs(sources);
                     std::vector<BitcoinOutput> bitcoinOutputs =
                         makeBitcoinOutputs(bitcoinDestinations, TRUSTEES, MIN_SIGS, claimTx.getHash256(), fundValue);
-                    BitcoinTx fundTx(bitcoinInputs, bitcoinOutputs, FUND_TX_VERSION, FUND_TX_LOCK_TIME);
+                    BitcoinTx fundTx(FUND_TX_VERSION, bitcoinInputs, bitcoinOutputs, FUND_TX_LOCK_TIME);
                     return new MakeEntryTxResponse(fundTx, claimTx);
                 }
             }

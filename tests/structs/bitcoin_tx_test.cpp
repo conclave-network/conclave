@@ -25,6 +25,8 @@
 
 namespace conclave
 {
+    const static uint32_t VERSION_1 = 1;
+    const static uint32_t VERSION_2 = 2;
     const static std::vector<BitcoinInput> INPUTS_1 = {
         BitcoinInput(
             Outpoint("0000000000000000000000000000000000000000000000000000000000000000", 5),
@@ -35,8 +37,6 @@ namespace conclave
     const static std::vector<BitcoinOutput> OUTPUTS_1 = {
         //TODO
     };
-    const static uint32_t VERSION_1 = 1;
-    const static uint32_t VERSION_2 = 2;
     const static uint32_t LOCKTIME_1 = 0;
     const static uint32_t LOCKTIME_2 = 0xffffffff;
     

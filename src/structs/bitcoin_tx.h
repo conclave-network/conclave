@@ -29,13 +29,18 @@ namespace conclave
     struct BitcoinTx final
     {
         // JSON keys
+        const static std::string JSONKEY_VERSION;
         const static std::string JSONKEY_INPUTS;
         const static std::string JSONKEY_OUTPUTS;
-        const static std::string JSONKEY_VERSION;
         const static std::string JSONKEY_LOCKTIME;
         // Constructors
-        BitcoinTx(const std::vector<BitcoinInput>&, const std::vector<BitcoinOutput>&, const uint32_t, const uint32_t);
+        BitcoinTx(const uint32_t version,
+                  const std::vector<BitcoinInput>& inputs,
+                  const std::vector<BitcoinOutput>& outputs,
+                  const uint32_t lockTime);
         BitcoinTx(const pt::ptree&);
+        // Public functions
+        const std::vector<BYTE> serialize() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
@@ -43,9 +48,9 @@ namespace conclave
         bool operator!=(const BitcoinTx&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinTx&);
         // Properties
+        const uint32_t version;
         const std::vector<BitcoinInput> inputs;
         const std::vector<BitcoinOutput> outputs;
-        const uint32_t version;
         const uint32_t lockTime;
     };
 }
