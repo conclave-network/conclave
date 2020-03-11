@@ -25,7 +25,7 @@ install: conclave test
 	sudo cp etc/* /usr/local/etc
 
 dev: conclave
-	valgrind --tool=memcheck --leak-check=yes ./$BUILD_DIR/bin/conclaved
+	valgrind --tool=memcheck --leak-check=yes ./$(BUILD_DIR)/bin/conclaved
 
 test:
 	mkdir -p $(BUILD_DIR)
