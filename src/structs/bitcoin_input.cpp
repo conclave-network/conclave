@@ -17,6 +17,8 @@
  */
 
 #include "bitcoin_input.h"
+#include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace conclave
 {
@@ -34,6 +36,19 @@ namespace conclave
                        getObjectFromJson<Script>(tree, JSONKEY_SCRIPTSIG),
                        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_SEQUENCE))
     {
+    }
+    
+    const std::vector<BYTE> BitcoinInput::serialize() const
+    {
+        const std::vector<BYTE> outpointSerialized = outpoint.serialize();
+        const std::vector<BYTE> scriptSigSerialized = scriptSig.serialize();
+        const std::vector<BYTE> sequenceSerialized = serializeU32(sequence);
+        std::vector<BYTE> serialized(
+            outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size());
+        size_t pos = writeToByteVector(serialized, outpointSerialized);
+        pos += writeToByteVector(serialized, scriptSigSerialized, pos);
+        pos += writeToByteVector(serialized, sequenceSerialized, pos);
+        return serialized;
     }
     
     BitcoinInput::operator pt::ptree() const
