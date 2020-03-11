@@ -45,8 +45,9 @@ namespace conclave
         } else {
             const boost::optional<const pt::ptree&> error = response.get_child_optional("error");
             std::string errMsg =
-                error.has_value() ? JSON_RPC_DEFAULT_ERROR_MESSAGE :
-                error.get().get<std::string>("message", JSON_RPC_DEFAULT_ERROR_MESSAGE);
+                error.has_value() ?
+                error.get().get<std::string>("message", JSON_RPC_DEFAULT_ERROR_MESSAGE)
+                                  : JSON_RPC_DEFAULT_ERROR_MESSAGE;
             throw std::runtime_error(errMsg);
         }
     }
