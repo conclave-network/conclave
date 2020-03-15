@@ -154,6 +154,17 @@ add_executable(
 )
 
 add_executable(
+        conclave_input_test
+        ../src/hash160.cpp
+        ../src/hash256.cpp
+        ../src/address.cpp
+        ../src/script.cpp
+        ../src/structs/outpoint.cpp
+        ../src/structs/conclave_input.cpp
+        structs/conclave_input_test.cpp
+)
+
+add_executable(
         conclave_output_test
         ../src/hash160.cpp
         ../src/hash256.cpp
@@ -337,6 +348,15 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        conclave_input_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        OpenSSL::Crypto
+        OpenSSL::SSL
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+target_link_libraries(
         bitcoin_output_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -486,6 +506,11 @@ add_test(
 
 add_test(
         NAME bitcoin_input_test
+        COMMAND $<TARGET_FILE:bitcoin_input_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME conclave_input_test
         COMMAND $<TARGET_FILE:bitcoin_input_test> --report_format=HRF --logger=HRF,all
 )
 
