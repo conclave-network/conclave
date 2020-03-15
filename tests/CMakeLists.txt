@@ -203,6 +203,21 @@ add_executable(
 )
 
 add_executable(
+        conclave_tx_test
+        ../src/hash160.cpp
+        ../src/hash256.cpp
+        ../src/public_key.cpp
+        ../src/address.cpp
+        ../src/script.cpp
+        ../src/structs/outpoint.cpp
+        ../src/structs/conclave_input.cpp
+        ../src/structs/conclave_output.cpp
+        ../src/structs/bitcoin_output.cpp
+        ../src/structs/conclave_tx.cpp
+        structs/conclave_tx_test.cpp
+)
+
+add_executable(
         cloud_test
         ../src/hash256.cpp
         ../src/config/cloud_config.cpp
@@ -384,6 +399,15 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        conclave_tx_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        OpenSSL::Crypto
+        OpenSSL::SSL
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+target_link_libraries(
         conclave_entry_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -527,6 +551,11 @@ add_test(
 add_test(
         NAME bitcoin_tx_test
         COMMAND $<TARGET_FILE:bitcoin_tx_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME conclave_tx_test
+        COMMAND $<TARGET_FILE:conclave_tx_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(
