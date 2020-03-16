@@ -16,24 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "conclave_chain.h"
+#pragma once
+
+#include "bitcoin_tx.h"
+#include "conclave_claim_tx.h"
 
 namespace conclave
 {
-    namespace chain
+    struct EntryTx final
     {
-        ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig)
-        {
-        }
-        
-        const uint64_t ConclaveChain::getAddressBalance(const Address& address)
-        {
-            return 4112;
-        }
-        
-        const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
-        {
-            return Hash256();
-        }
-    }
+        const BitcoinTx fundTx;
+        const ConclaveClaimTx claimTx;
+    };
 }

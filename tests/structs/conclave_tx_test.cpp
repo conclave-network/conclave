@@ -24,7 +24,7 @@
 
 namespace conclave
 {
-    BOOST_AUTO_TEST_CASE(ConclaveEntryTxConstructorsTest)
+    BOOST_AUTO_TEST_CASE(ConclaveTxConstructorsTest)
     {
         BOOST_TEST(true);
     }

@@ -16,10 +16,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE Conclave_Entry_Tx_Test
+#define BOOST_TEST_MODULE Conclave_Claim_Tx_Test
 
 #include <boost/test/included/unit_test.hpp>
-#include "../../src/structs/conclave_entry_tx.h"
+#include "../../src/structs/conclave_claim_tx.h"
 
 namespace conclave
 {
@@ -41,11 +41,11 @@ namespace conclave
     const static uint32_t MIN_SIGS_2 = 2;
     const static Outpoint FUNDING_OUTPOINT("1f4bb68db33c8a53996a4c6452892beb1638d799592889e3bc52b7a2cfe52cd4", 21);
     
-    BOOST_AUTO_TEST_CASE(ConclaveEntryTxConstructorsTest)
+    BOOST_AUTO_TEST_CASE(ConclaveClaimTxConstructorsTest)
     {
-        ConclaveEntryTx conclaveEntryTxFromOutputs1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1);
-        ConclaveEntryTx conclaveEntryTxFromOutputs2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2);
-        ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1, FUNDING_OUTPOINT);
-        ConclaveEntryTx conclaveEntryTxFromOutputsWithBitcoinTxid2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2, FUNDING_OUTPOINT);
+        ConclaveClaimTx conclaveClaimTxFromOutputs1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1);
+        ConclaveClaimTx conclaveClaimTxFromOutputs2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2);
+        ConclaveClaimTx conclaveClaimTxFromOutputsWithBitcoinTxid1(OUTPUTS_1, TRUSTEES_1, MIN_SIGS_1, FUNDING_OUTPOINT);
+        ConclaveClaimTx conclaveClaimTxFromOutputsWithBitcoinTxid2(OUTPUTS_2, TRUSTEES_2, MIN_SIGS_2, FUNDING_OUTPOINT);
     }
 }

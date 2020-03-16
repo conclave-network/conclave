@@ -21,7 +21,7 @@
 #include "submit_entry_tx_response.h"
 #include "../request.h"
 #include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/conclave_entry_tx.h"
+#include "../../../structs/conclave_claim_tx.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
@@ -67,7 +67,7 @@ namespace conclave
                         return fundTx;
                     }
                     
-                    const ConclaveEntryTx& getClaimTx() const
+                    const ConclaveClaimTx& getClaimTx() const
                     {
                         return claimTx;
                     }
@@ -75,7 +75,7 @@ namespace conclave
                     private:
                     const static RpcMethod rpcMethod = RpcMethod::SubmitEntryTx;
                     const BitcoinTx fundTx;
-                    const ConclaveEntryTx claimTx;
+                    const ConclaveClaimTx claimTx;
                 };
             }
         }

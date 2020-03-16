@@ -198,8 +198,8 @@ add_executable(
         ../src/script.cpp
         ../src/structs/outpoint.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/conclave_entry_tx.cpp
-        structs/conclave_entry_tx_test.cpp
+        ../src/structs/conclave_claim_tx.cpp
+        structs/conclave_claim_tx_test.cpp
 )
 
 add_executable(

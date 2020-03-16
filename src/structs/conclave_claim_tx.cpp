@@ -16,24 +16,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "conclave_entry_tx.h"
+#include "conclave_claim_tx.h"
 #include "../util/json.h"
 
 namespace conclave
 {
-    const std::string ConclaveEntryTx::JSONKEY_OUTPUTS = "outputs";
-    const std::string ConclaveEntryTx::JSONKEY_TRUSTEES = "trustees";
-    const std::string ConclaveEntryTx::JSONKEY_MIN_SIGS = "minSigs";
-    const std::string ConclaveEntryTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
+    const std::string ConclaveClaimTx::JSONKEY_OUTPUTS = "outputs";
+    const std::string ConclaveClaimTx::JSONKEY_TRUSTEES = "trustees";
+    const std::string ConclaveClaimTx::JSONKEY_MIN_SIGS = "minSigs";
+    const std::string ConclaveClaimTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs,
+    ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs)
         : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
     {
     }
     
-    ConclaveEntryTx::ConclaveEntryTx(const std::vector<ConclaveOutput>& outputs,
+    ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs,
                                      const Outpoint& fundingOutpoint)
@@ -41,15 +41,15 @@ namespace conclave
     {
     }
     
-    ConclaveEntryTx::ConclaveEntryTx(const pt::ptree& tree)
-        : ConclaveEntryTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
+    ConclaveClaimTx::ConclaveClaimTx(const pt::ptree& tree)
+        : ConclaveClaimTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
                           tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
                           getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
                           *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
     {
     }
     
-    ConclaveEntryTx::operator pt::ptree() const
+    ConclaveClaimTx::operator pt::ptree() const
     {
         pt::ptree tree;
         tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
@@ -61,7 +61,7 @@ namespace conclave
         return tree;
     }
     
-    const std::vector<BYTE> ConclaveEntryTx::serialize() const
+    const std::vector<BYTE> ConclaveClaimTx::serialize() const
     {
         const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
         const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
@@ -76,31 +76,31 @@ namespace conclave
         return serialized;
     }
     
-    const Hash256 ConclaveEntryTx::getHash256() const
+    const Hash256 ConclaveClaimTx::getHash256() const
     {
         return Hash256::digest(serialize());
     }
     
-    ConclaveEntryTx::operator std::string() const
+    ConclaveClaimTx::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
-    bool ConclaveEntryTx::operator==(const ConclaveEntryTx& other) const
+    bool ConclaveClaimTx::operator==(const ConclaveClaimTx& other) const
     {
         return (outputs == other.outputs) && (trustees == other.trustees)
                && (minSigs == other.minSigs) && (fundingOutpoint == other.fundingOutpoint);
     }
     
-    bool ConclaveEntryTx::operator!=(const ConclaveEntryTx& other) const
+    bool ConclaveClaimTx::operator!=(const ConclaveClaimTx& other) const
     {
         return (outputs != other.outputs) || (trustees != other.trustees) ||
                (minSigs != other.minSigs) || (fundingOutpoint != other.fundingOutpoint);
     }
     
-    std::ostream& operator<<(std::ostream& os, const ConclaveEntryTx& conclaveEntryTx)
+    std::ostream& operator<<(std::ostream& os, const ConclaveClaimTx& conclaveClaimTx)
     {
-        os << static_cast<std::string>(conclaveEntryTx);
+        os << static_cast<std::string>(conclaveClaimTx);
         return os;
     }
 }
