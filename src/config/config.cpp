@@ -35,7 +35,6 @@ Config::Config(const std::string& configFilePath)
         displayName = root.get<std::string>("DisplayName");
         privateKey = root.get<std::string>("PrivateKey");
         rpcConfig = RpcConfig(root.get_child("RPC"));
-        cloudConfig = CloudConfig(root.get_child("Cloud"));
         bitcoinChainConfig = BitcoinChainConfig(root.get_child("BitcoinChain"));
         conclaveChainConfig = ConclaveChainConfig(root.get_child("ConclaveChain"));
         chainwatchConfig = ChainwatchConfig(root.get_child("Chainwatch"));
@@ -57,11 +56,6 @@ const std::string& Config::getPrivateKey() const
 const RpcConfig& Config::getRpcConfig() const
 {
     return *rpcConfig;
-}
-
-const CloudConfig& Config::getCloudConfig() const
-{
-    return *cloudConfig;
 }
 
 const BitcoinChainConfig& Config::getBitcoinChainConfig() const

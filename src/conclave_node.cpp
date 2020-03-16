@@ -20,8 +20,8 @@
 #include <iostream>
 
 using namespace conclave::rpc;
-using namespace conclave::chain::bitcoin;
-using namespace conclave::chain::bitcoin::electrumx;
+using namespace conclave::chain;
+//using namespace conclave::chain::electrumx;
 namespace conclave
 {
     ConclaveNode::ConclaveNode(const Config& config)

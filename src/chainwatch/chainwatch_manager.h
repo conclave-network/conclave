@@ -20,11 +20,11 @@
 
 #include "../worker.h"
 #include "../config/chainwatch_config.h"
-#include "../bitcoin_chain/bitcoin_chain.h"
+#include "../chain/bitcoin_chain.h"
 
 namespace conclave
 {
-    using namespace chain::bitcoin;
+    using namespace chain;
     namespace chainwatch
     {
         class ChainwatchManager final : public Worker

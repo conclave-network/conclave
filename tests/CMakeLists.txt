@@ -218,14 +218,6 @@ add_executable(
 )
 
 add_executable(
-        cloud_test
-        ../src/hash256.cpp
-        ../src/config/cloud_config.cpp
-        ../src/cloud/cloud.cpp
-        cloud/cloud_test.cpp
-)
-
-add_executable(
         bitcoin_chain_test
         ../src/hash160.cpp
         ../src/hash256.cpp
@@ -236,11 +228,11 @@ add_executable(
         ../src/structs/bitcoin_input.cpp
         ../src/structs/bitcoin_output.cpp
         ../src/structs/bitcoin_tx.cpp
-        ../src/bitcoin_chain/bitcoin_chain.cpp
-        ../src/bitcoin_chain/electrumx/electrumx_client.cpp
+        ../src/chain/bitcoin_chain.cpp
+        ../src/chain/electrumx/electrumx_client.cpp
         ../src/config/bitcoin_chain_config.cpp
         ../src/config/electrumx_client_config.cpp
-        bitcoin_chain/bitcoin_chain_test.cpp
+        chain/bitcoin_chain_test.cpp
 )
 
 add_executable(
@@ -249,9 +241,17 @@ add_executable(
         ../src/hash256.cpp
         ../src/address.cpp
         ../src/script.cpp
-        ../src/bitcoin_chain/electrumx/electrumx_client.cpp
+        ../src/chain/electrumx/electrumx_client.cpp
         ../src/config/electrumx_client_config.cpp
-        bitcoin_chain/electrumx/electrumx_client_test.cpp
+        chain/electrumx/electrumx_client_test.cpp
+)
+
+add_executable(
+        database_client_test
+        ../src/hash256.cpp
+        ../src/config/database_client_config.cpp
+        ../src/chain/database/database_client.cpp
+        chain/database/database_client_test.cpp
 )
 
 add_executable(
@@ -417,14 +417,6 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        cloud_test
-        LINK_PUBLIC ${Boost_LIBRARIES}
-        PkgConfig::LIBBITCOIN_SYSTEM
-        lmdb
-        stdc++fs # Remove after GCC9
-)
-
-target_link_libraries(
         bitcoin_chain_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -450,6 +442,14 @@ target_link_libraries(
         PocoJSON
         PocoXML
         PocoFoundation
+)
+
+target_link_libraries(
+        database_client_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
+        lmdb
+        stdc++fs # Remove after GCC9
 )
 
 target_link_libraries(
@@ -491,7 +491,6 @@ add_test(
         NAME hash160_test
         COMMAND $<TARGET_FILE:hash160_test> --report_format=HRF --logger=HRF,all
 )
-
 
 add_test(
         NAME hash256_test
@@ -564,11 +563,6 @@ add_test(
 )
 
 add_test(
-        NAME cloud_test
-        COMMAND $<TARGET_FILE:cloud_test> --report_format=HRF --logger=HRF,all
-)
-
-add_test(
         NAME bitcoin_chain_test
         COMMAND $<TARGET_FILE:bitcoin_chain_test> --report_format=HRF --logger=HRF,all
 )
@@ -576,6 +570,11 @@ add_test(
 add_test(
         NAME electrumx_client_test
         COMMAND $<TARGET_FILE:electrumx_client_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME database_client_test
+        COMMAND $<TARGET_FILE:database_client_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

@@ -35,28 +35,25 @@ namespace conclave
 {
     namespace chain
     {
-        namespace bitcoin
+        namespace electrumx
         {
-            namespace electrumx
+            const static size_t RECEIVE_BUFFER_SIZE = 4096;
+            
+            class ElectrumxClient
             {
-                const static size_t RECEIVE_BUFFER_SIZE = 4096;
-                
-                class ElectrumxClient
-                {
-                    public:
-                    ElectrumxClient(const std::string&, const unsigned short);
-                    ElectrumxClient(const ElectrumxClientConfig&);
-                    ~ElectrumxClient();
-                    const pt::ptree blockchainScripthashGetBalance(const std::string&);
-                    const pt::ptree blockchainTransactionBroadcast(const std::string&);
-                    private:
-                    const pt::ptree doRequest(const pt::ptree&);
-                    BYTE* receiveBuffer;
-                    const SocketAddress socketAddress;
-                    StreamSocket streamSocket;
-                    std::mutex receiveBufferMutex;
-                };
-            }
+                public:
+                ElectrumxClient(const std::string&, const unsigned short);
+                ElectrumxClient(const ElectrumxClientConfig&);
+                ~ElectrumxClient();
+                const pt::ptree blockchainScripthashGetBalance(const std::string&);
+                const pt::ptree blockchainTransactionBroadcast(const std::string&);
+                private:
+                const pt::ptree doRequest(const pt::ptree&);
+                BYTE* receiveBuffer;
+                const SocketAddress socketAddress;
+                StreamSocket streamSocket;
+                std::mutex receiveBufferMutex;
+            };
         }
     }
 }

@@ -16,22 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "conclave_chain.h"
+#pragma once
 
-namespace conclave
+#include <boost/property_tree/ptree.hpp>
+
+namespace pt = boost::property_tree;
+
+class DatabaseClientConfig
 {
-    namespace chain
-    {
-        namespace conclave
-        {
-            ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig)
-            {
-            }
-            
-            const uint64_t ConclaveChain::getAddressBalance(const Address& address)
-            {
-                return 4112;
-            }
-        };
-    }
-}
+    public:
+    DatabaseClientConfig(const pt::ptree&);
+    DatabaseClientConfig(const std::string&);
+    const std::string& getRootDirectory() const;
+    private:
+    std::string rootDirectory;
+};

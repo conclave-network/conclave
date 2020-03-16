@@ -37,7 +37,7 @@
  * classes.
  *
  * The checksum for Conclave addresses does not use a hash function but instead a cheaper calculation using modular
- * arithmetic. As with standard bitcoin_chain addresses, the hash remains 160 bits and the address is base58-encoded.
+ * arithmetic. As with standard chain addresses, the hash remains 160 bits and the address is base58-encoded.
  *
  * The bit-map of a Conclave address is as follows:
  * [b0 - mainnet/testnet (1 bit)] [b1-b3 Address class (3 bits)] [b4-b23 Checksum (20 bits)] [b24-b183 hash (160 bits)]
@@ -70,7 +70,7 @@ namespace conclave
     const static unsigned long CONCLAVE_CHECKSUM_MODULUS = (1 << 20) - 3;
     
     /***
-     * The `Address` class is used to represent all types of bitcoin_chain addresses. This class is deliberately marked final
+     * The `Address` class is used to represent all types of chain addresses. This class is deliberately marked final
      * and all subclassing is thus forbidden. The decision to implement all types of address in one monomorphic class
      * instead of going the subclassing route was made for several reasons:
      *

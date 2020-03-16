@@ -21,5 +21,16 @@
 namespace pt = boost::property_tree;
 
 ConclaveChainConfig::ConclaveChainConfig(const pt::ptree& tree)
+    : databaseClientConfig(tree.get_child("Database"))
 {
+}
+
+ConclaveChainConfig::ConclaveChainConfig(const DatabaseClientConfig& databaseClientConfig)
+    : databaseClientConfig(databaseClientConfig)
+{
+}
+
+const DatabaseClientConfig& ConclaveChainConfig::getDatabaseClientConfig() const
+{
+    return *databaseClientConfig;
 }

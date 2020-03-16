@@ -18,7 +18,9 @@
 
 #pragma once
 
+#include "database_client_config.h"
 #include <boost/property_tree/ptree.hpp>
+#include <optional>
 
 namespace pt = boost::property_tree;
 
@@ -26,5 +28,8 @@ class ConclaveChainConfig
 {
     public:
     ConclaveChainConfig(const pt::ptree&);
+    ConclaveChainConfig(const DatabaseClientConfig&);
+    const DatabaseClientConfig& getDatabaseClientConfig() const;
     private:
+    std::optional<DatabaseClientConfig> databaseClientConfig;
 };

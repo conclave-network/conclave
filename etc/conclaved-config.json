@@ -8,15 +8,16 @@
     },
     "NumProcessors": 3
   },
-  "Cloud": {
-    "RootDirectory": "/tmp/conclaveCloud.mdb"
-  },
   "BitcoinChain": {
     "ElectrumXClient": {
       "Host": "shogoth.no-ip.info",
       "Port": 50001
     }
   },
-  "ConclaveChain": {},
+  "ConclaveChain": {
+    "Database": {
+      "RootDirectory": "/tmp/conclaveCloud.mdb"
+    }
+  },
   "Chainwatch": {}
 }

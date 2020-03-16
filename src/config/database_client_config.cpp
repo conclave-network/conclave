@@ -16,18 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#include "database_client_config.h"
 
-#include <boost/property_tree/ptree.hpp>
-
-namespace pt = boost::property_tree;
-
-class CloudConfig
+DatabaseClientConfig::DatabaseClientConfig(const pt::ptree& tree)
+    : rootDirectory(tree.get<std::string>("RootDirectory"))
 {
-    public:
-    CloudConfig(const pt::ptree&);
-    CloudConfig(const std::string&);
-    const std::string& getRootDirectory() const;
-    private:
-    std::string rootDirectory;
-};
+}
+
+DatabaseClientConfig::DatabaseClientConfig(const std::string& rootDirectory)
+    : rootDirectory(rootDirectory)
+{
+}
+
+const std::string& DatabaseClientConfig::getRootDirectory() const
+{
+    return rootDirectory;
+}

@@ -16,19 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "cloud_config.h"
+#define BOOST_TEST_MODULE Bitcoin_Chain_Test
 
-CloudConfig::CloudConfig(const pt::ptree& tree)
-    : rootDirectory(tree.get<std::string>("RootDirectory"))
-{
-}
+#include <boost/test/included/unit_test.hpp>
+#include "../../src/chain/bitcoin_chain.h"
 
-CloudConfig::CloudConfig(const std::string& rootDirectory)
-    : rootDirectory(rootDirectory)
+namespace conclave
 {
-}
-
-const std::string& CloudConfig::getRootDirectory() const
-{
-    return rootDirectory;
-}
+    namespace chain
+    {
+        namespace bitcoin
+        {
+            BOOST_AUTO_TEST_CASE(BitcoinChainTest)
+            {
+                BOOST_TEST(true);
+            }
+        };
+    };
+};

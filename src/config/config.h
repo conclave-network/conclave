@@ -19,7 +19,6 @@
 #pragma once
 
 #include "rpc_config.h"
-#include "cloud_config.h"
 #include "bitcoin_chain_config.h"
 #include "conclave_chain_config.h"
 #include "chainwatch_config.h"
@@ -33,7 +32,6 @@ class Config
     const std::string& getDisplayName() const;
     const std::string& getPrivateKey() const;
     const RpcConfig& getRpcConfig() const;
-    const CloudConfig& getCloudConfig() const;
     const BitcoinChainConfig& getBitcoinChainConfig() const;
     const ConclaveChainConfig& getConclaveChainConfig() const;
     const ChainwatchConfig& getChainwatchConfig() const;
@@ -41,7 +39,6 @@ class Config
     std::string displayName;
     std::string privateKey;
     std::optional<RpcConfig> rpcConfig;
-    std::optional<CloudConfig> cloudConfig;
     std::optional<BitcoinChainConfig> bitcoinChainConfig;
     std::optional<ConclaveChainConfig> conclaveChainConfig;
     std::optional<ChainwatchConfig> chainwatchConfig;

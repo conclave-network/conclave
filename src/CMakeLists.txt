@@ -74,11 +74,11 @@ add_executable(
         config/config.cpp
         config/rpc_config.cpp
         config/rpc_acceptor_config.cpp
-        config/cloud_config.cpp
-        config/chainwatch_config.cpp
         config/bitcoin_chain_config.cpp
         config/conclave_chain_config.cpp
+        config/database_client_config.cpp
         config/electrumx_client_config.cpp
+        config/chainwatch_config.cpp
         chainwatch/chainwatch_manager.cpp
         p2p/p2p_manager.cpp
         rpc/rpc_manager.cpp
@@ -93,10 +93,10 @@ add_executable(
         rpc/methods/make_entry_tx/structs/sources.cpp
         rpc/methods/make_entry_tx/structs/destinations.cpp
         rpc/methods/submit_entry_tx/submit_entry_tx_handler.cpp
-        cloud/cloud.cpp
-        conclave_chain/conclave_chain.cpp
-        bitcoin_chain/bitcoin_chain.cpp
-        bitcoin_chain/electrumx/electrumx_client.cpp
+        chain/conclave_chain.cpp
+        chain/bitcoin_chain.cpp
+        chain/electrumx/electrumx_client.cpp
+        chain/database/database_client.cpp
 )
 
 target_link_libraries(

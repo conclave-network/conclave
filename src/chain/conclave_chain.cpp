@@ -16,31 +16,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
-
-#include "../config/cloud_config.h"
-#include "../hash256.h"
-#include "../conclave.h"
-#include <lmdb++.h>
-#include <vector>
-#include <optional>
-#include <string>
+#include "conclave_chain.h"
 
 namespace conclave
 {
-    namespace cloud
+    namespace chain
     {
-        class Cloud
+        ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig)
         {
-            public:
-            Cloud(const std::string&);
-            Cloud(const CloudConfig&);
-            Hash256 putItem(const std::vector<BYTE>&);
-            std::optional<std::vector<BYTE>> getItem(const Hash256&);
-            void putMutableItem(const Hash256&, const std::vector<BYTE>&);
-            std::optional<std::vector<BYTE>> getMutableItem(const Hash256&);
-            private:
-            lmdb::env env;
-        };
+        }
+        
+        const uint64_t ConclaveChain::getAddressBalance(const Address& address)
+        {
+            return 4112;
+        }
     }
 }

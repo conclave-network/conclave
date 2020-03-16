@@ -18,37 +18,31 @@
 
 #pragma once
 
-#include "../address.h"
-#include "../hash256.h"
-#include "../structs/bitcoin_tx.h"
-#include "../config/bitcoin_chain_config.h"
-#include "electrumx/electrumx_client.h"
-
-/***
- * Abstraction layer over the Bitcoin blockchain. All interaction with the bitcoin base chain
- * such as getting blocks, transactions, wallet balances, as well as submitting new transactions,
- * must be done through this class.
- *
- * Currently, a single electrumx (electrum-server) instance is used as the source of truth for all
- * blockchain stuff, but this may not be the case in the future.
- */
+#include "../../config/database_client_config.h"
+#include "../../hash256.h"
+#include "../../conclave.h"
+#include <lmdb++.h>
+#include <vector>
+#include <optional>
+#include <string>
 
 namespace conclave
 {
     namespace chain
     {
-        namespace bitcoin
+        namespace database
         {
-            using namespace electrumx;
-            
-            class BitcoinChain
+            class DatabaseClient
             {
                 public:
-                explicit BitcoinChain(const BitcoinChainConfig&);
-                const uint64_t getAddressBalance(const Address&);
-                const Hash256 submitTx(const BitcoinTx&);
+                DatabaseClient(const std::string&);
+                DatabaseClient(const DatabaseClientConfig&);
+                Hash256 putItem(const std::vector<BYTE>&);
+                std::optional<std::vector<BYTE>> getItem(const Hash256&);
+                void putMutableItem(const Hash256&, const std::vector<BYTE>&);
+                std::optional<std::vector<BYTE>> getMutableItem(const Hash256&);
                 private:
-                ElectrumxClient electrumxClient;
+                lmdb::env env;
             };
         }
     }

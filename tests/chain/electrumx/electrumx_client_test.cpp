@@ -16,21 +16,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE Bitcoin_Chain_Test
+#define BOOST_TEST_MODULE Electrumx_Client_Test
 
 #include <boost/test/included/unit_test.hpp>
-#include "../../src/bitcoin_chain/bitcoin_chain.h"
+#include "../../../src/chain/electrumx/electrumx_client.h"
 
+namespace pt = boost::property_tree;
 namespace conclave
 {
     namespace chain
     {
         namespace bitcoin
         {
-            BOOST_AUTO_TEST_CASE(BitcoinChainTest)
+            namespace electrumx
             {
-                BOOST_TEST(true);
-            }
+                BOOST_AUTO_TEST_CASE(ElectrumxClientTest)
+                {
+                    BOOST_TEST(true);
+                }
+            };
         };
     };
 };

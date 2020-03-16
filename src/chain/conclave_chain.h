@@ -16,25 +16,27 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE Electrumx_Client_Test
+#pragma once
 
-#include <boost/test/included/unit_test.hpp>
-#include "../../../src/bitcoin_chain/electrumx/electrumx_client.h"
+#include "../address.h"
+#include "../config/conclave_chain_config.h"
 
-namespace pt = boost::property_tree;
+/***
+ * Abstraction layer over the Conclave blockchain. All interaction with the Conclave chain
+ * such as getting blocks, transactions, wallet balances, as well as submitting new transactions,
+ * must be done through this class.
+ */
+
 namespace conclave
 {
     namespace chain
     {
-        namespace bitcoin
+        class ConclaveChain
         {
-            namespace electrumx
-            {
-                BOOST_AUTO_TEST_CASE(ElectrumxClientTest)
-                {
-                    BOOST_TEST(true);
-                }
-            };
+            public:
+            explicit ConclaveChain(const ConclaveChainConfig&);
+            const uint64_t getAddressBalance(const Address&);
+            private:
         };
-    };
-};
+    }
+}

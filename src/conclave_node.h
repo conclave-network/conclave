@@ -25,14 +25,13 @@
 #include "private_key.h"
 #include "public_key.h"
 #include "worker.h"
-#include "bitcoin_chain/bitcoin_chain.h"
-#include "conclave_chain/conclave_chain.h"
+#include "chain/bitcoin_chain.h"
+#include "chain/conclave_chain.h"
 
 using namespace conclave::chainwatch;
 using namespace conclave::p2p;
 using namespace conclave::rpc;
-using namespace conclave::chain::bitcoin;
-using namespace conclave::chain::conclave;
+using namespace conclave::chain;
 namespace conclave
 {
     class ConclaveNode final : public Worker
