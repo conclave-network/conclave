@@ -19,8 +19,7 @@
 #pragma once
 
 #include "../response.h"
-#include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/claim_tx.h"
+#include "../../../structs/entry_tx.h"
 #include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 
@@ -36,8 +35,8 @@ namespace conclave
                 class MakeEntryTxResponse : public Response
                 {
                     public:
-                    MakeEntryTxResponse(const BitcoinTx& fundTx, const ClaimTx& claimTx)
-                        : fundTx(fundTx), claimTx(claimTx)
+                    MakeEntryTxResponse(const EntryTx& entryTx)
+                        : entryTx(entryTx)
                     {
                     }
                     
@@ -55,14 +54,12 @@ namespace conclave
                     void serialize()
                     {
                         pt::ptree tree;
-                        tree.add_child("FundTx", static_cast<pt::ptree>(fundTx));
-                        tree.add_child("ClaimTx", static_cast<pt::ptree>(claimTx));
+                        tree.add_child("EntryTx", static_cast<pt::ptree>(entryTx));
                         serializedJson = jsonToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
-                    const BitcoinTx fundTx;
-                    const ClaimTx claimTx;
+                    const EntryTx entryTx;
                 };
             }
         }

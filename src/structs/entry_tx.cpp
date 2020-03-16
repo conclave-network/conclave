@@ -24,7 +24,7 @@ namespace conclave
     const std::string EntryTx::JSONKEY_CLAIM_TX = "ClaimTx";
     
     EntryTx::EntryTx(const BitcoinTx& fundTx, const ClaimTx& claimTx)
-        : bitcoinTx(fundTx), claimTx(claimTx)
+        : fundTx(fundTx), claimTx(claimTx)
     {
     }
     

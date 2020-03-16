@@ -29,7 +29,7 @@ namespace conclave
           displayName(config.getDisplayName()),
           privateKey(config.getPrivateKey()),
           bitcoinChain(BitcoinChain(config.getBitcoinChainConfig())),
-          conclaveChain(ConclaveChain(config.getConclaveChainConfig())),
+          conclaveChain(ConclaveChain(config.getConclaveChainConfig(), this->bitcoinChain)),
           chainwatchManager(config.getChainwatchConfig(), this->bitcoinChain),
           rpcManager(RpcManager(config.getRpcConfig(), *this))
     {

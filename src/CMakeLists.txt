@@ -64,13 +64,14 @@ add_executable(
         mongoose/mongoose.c
         structs/outpoint.cpp
         structs/destination.cpp
-        structs/bitcoin_tx.cpp
         structs/bitcoin_input.cpp
         structs/bitcoin_output.cpp
         structs/conclave_input.cpp
         structs/conclave_output.cpp
+        structs/bitcoin_tx.cpp
         structs/claim_tx.cpp
         structs/conclave_tx.cpp
+        structs/entry_tx.cpp
         config/config.cpp
         config/rpc_config.cpp
         config/rpc_acceptor_config.cpp

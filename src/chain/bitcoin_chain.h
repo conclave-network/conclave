@@ -18,8 +18,8 @@
 
 #pragma once
 
-#include "electrumx/electrumx_client.h"
 #include "../config/bitcoin_chain_config.h"
+#include "electrumx/electrumx_client.h"
 #include "../structs/bitcoin_tx.h"
 #include "../address.h"
 #include "../hash256.h"

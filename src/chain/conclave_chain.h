@@ -19,9 +19,11 @@
 #pragma once
 
 #include "../config/conclave_chain_config.h"
-#include "../structs/conclave_tx.h"
-#include "../address.h"
 #include "../hash256.h"
+#include "../address.h"
+#include "../structs/conclave_tx.h"
+#include "../structs/entry_tx.h"
+#include "bitcoin_chain.h"
 
 /***
  * Abstraction layer over the Conclave blockchain. All interaction with the Conclave chain
@@ -36,10 +38,12 @@ namespace conclave
         class ConclaveChain
         {
             public:
-            explicit ConclaveChain(const ConclaveChainConfig&);
+            explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             const uint64_t getAddressBalance(const Address&);
+            const Hash256 submitEntryTx(const EntryTx&);
             const Hash256 submitTx(const ConclaveTx&);
             private:
+            BitcoinChain& bitcoinChain;
         };
     }
 }

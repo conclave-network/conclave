@@ -36,7 +36,7 @@ namespace conclave
         explicit operator std::string() const;
         bool operator==(const EntryTx&) const;
         bool operator!=(const EntryTx&) const;
-        friend std::ostream& operator<<(std::ostream&, const EntrtyTx&);
+        friend std::ostream& operator<<(std::ostream&, const EntryTx&);
         // Properties
         const BitcoinTx fundTx;
         const ClaimTx claimTx;

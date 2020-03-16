@@ -17,18 +17,27 @@
  */
 
 #include "conclave_chain.h"
+#include <iostream>
 
 namespace conclave
 {
     namespace chain
     {
-        ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig)
+        ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig, BitcoinChain& bitcoinChain)
+            : bitcoinChain(bitcoinChain)
         {
         }
         
         const uint64_t ConclaveChain::getAddressBalance(const Address& address)
         {
             return 4112;
+        }
+        
+        const Hash256 ConclaveChain::submitEntryTx(const EntryTx& entryTx)
+        {
+            std::cout << "submitEntryTx" << std::endl;
+            std::cout << entryTx << std::endl;
+            return Hash256();
         }
         
         const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)

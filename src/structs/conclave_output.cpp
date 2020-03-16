@@ -37,9 +37,9 @@ namespace conclave
     }
     
     ConclaveOutput::ConclaveOutput(const pt::ptree& tree)
-        : ConclaveOutput(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY),
-                         getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE),
-                         *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_PREDECESSOR))
+        : scriptPubKey(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY)),
+          value(getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE)),
+          predecessor(getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_PREDECESSOR))
     {
     }
     

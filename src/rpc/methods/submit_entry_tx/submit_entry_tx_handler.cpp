@@ -32,10 +32,8 @@ namespace conclave
                     const SubmitEntryTxRequest& submitEntryTxRequest,
                     ConclaveNode& conclaveNode)
                 {
-                    const BitcoinTx fundTx = submitEntryTxRequest.getFundTx();
-                    BitcoinChain& bitcoinChain = conclaveNode.getBitcoinChain();
-                    ConclaveChain& conclaveChain = conclaveNode.getConclaveChain();
-                    bitcoinChain.submitTx(fundTx);
+                    const EntryTx entryTx = submitEntryTxRequest.getEntryTx();
+                    conclaveNode.getConclaveChain().submitEntryTx(entryTx);
                     return new SubmitEntryTxResponse();
                 }
             }

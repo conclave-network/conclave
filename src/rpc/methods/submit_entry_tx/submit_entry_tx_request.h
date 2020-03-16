@@ -20,8 +20,7 @@
 
 #include "submit_entry_tx_response.h"
 #include "../request.h"
-#include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/claim_tx.h"
+#include "../../../structs/entry_tx.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
@@ -42,8 +41,7 @@ namespace conclave
                 {
                     public:
                     SubmitEntryTxRequest(const pt::ptree& params)
-                        : fundTx(params.get_child("FundTx")),
-                          claimTx(params.get_child("ClaimTx"))
+                        : entryTx(params.get_child("EntryTx"))
                     {
                     }
                     
@@ -62,20 +60,14 @@ namespace conclave
                         return submitEntryTxHandler(*this, conclaveNode);
                     }
                     
-                    const BitcoinTx& getFundTx() const
+                    const EntryTx& getEntryTx() const
                     {
-                        return fundTx;
-                    }
-                    
-                    const ClaimTx& getClaimTx() const
-                    {
-                        return claimTx;
+                        return entryTx;
                     }
                     
                     private:
                     const static RpcMethod rpcMethod = RpcMethod::SubmitEntryTx;
-                    const BitcoinTx fundTx;
-                    const ClaimTx claimTx;
+                    const EntryTx entryTx;
                 };
             }
         }

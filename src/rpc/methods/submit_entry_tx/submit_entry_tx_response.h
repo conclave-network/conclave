@@ -19,8 +19,6 @@
 #pragma once
 
 #include "../response.h"
-#include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/claim_tx.h"
 #include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 

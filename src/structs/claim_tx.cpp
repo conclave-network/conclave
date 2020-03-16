@@ -42,10 +42,10 @@ namespace conclave
     }
     
     ClaimTx::ClaimTx(const pt::ptree& tree)
-        : ClaimTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
-                  tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
-                  getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
-                  *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
+        : outputs(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS)),
+          trustees(tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES)),
+          minSigs(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS)),
+          fundingOutpoint(getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
     {
     }
     

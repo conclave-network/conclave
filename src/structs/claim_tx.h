@@ -38,10 +38,11 @@ namespace conclave
         const static std::string JSONKEY_OUTPUTS;
         const static std::string JSONKEY_TRUSTEES;
         const static std::string JSONKEY_MIN_SIGS;
-        const static std::string JSONKEY_FUNDING_OUTPOINT;
+        const static std::string JSONKEY_FUNDING_OUTPOINT;;
         // Constructors
         ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
-        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t, const Outpoint&);
+        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
+                const Outpoint&);
         ClaimTx(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;

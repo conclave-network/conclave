@@ -124,7 +124,7 @@ namespace conclave
                     std::vector<BitcoinOutput> bitcoinOutputs =
                         makeBitcoinOutputs(bitcoinDestinations, TRUSTEES, MIN_SIGS, claimTx.getHash256(), fundValue);
                     BitcoinTx fundTx(FUND_TX_VERSION, bitcoinInputs, bitcoinOutputs, FUND_TX_LOCK_TIME);
-                    return new MakeEntryTxResponse(fundTx, claimTx);
+                    return new MakeEntryTxResponse(EntryTx(fundTx, claimTx));
                 }
             }
         }
