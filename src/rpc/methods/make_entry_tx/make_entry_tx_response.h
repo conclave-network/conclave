@@ -20,7 +20,7 @@
 
 #include "../response.h"
 #include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/conclave_claim_tx.h"
+#include "../../../structs/claim_tx.h"
 #include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 
@@ -36,7 +36,7 @@ namespace conclave
                 class MakeEntryTxResponse : public Response
                 {
                     public:
-                    MakeEntryTxResponse(const BitcoinTx& fundTx, const ConclaveClaimTx& claimTx)
+                    MakeEntryTxResponse(const BitcoinTx& fundTx, const ClaimTx& claimTx)
                         : fundTx(fundTx), claimTx(claimTx)
                     {
                     }
@@ -62,7 +62,7 @@ namespace conclave
                     
                     const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
                     const BitcoinTx fundTx;
-                    const ConclaveClaimTx claimTx;
+                    const ClaimTx claimTx;
                 };
             }
         }

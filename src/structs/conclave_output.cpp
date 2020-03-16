@@ -59,7 +59,7 @@ namespace conclave
     ConclaveOutput::operator pt::ptree() const
     {
         pt::ptree tree;
-        tree.add_child(JSONKEY_SCRIPTPUBKEY, (pt::ptree) scriptPubKey);
+        tree.add_child(JSONKEY_SCRIPTPUBKEY, static_cast<pt::ptree>(scriptPubKey));
         tree.add<uint64_t>(JSONKEY_VALUE, value);
         if (predecessor.has_value()) {
             tree.add_child(JSONKEY_PREDECESSOR, static_cast<pt::ptree>(*predecessor));

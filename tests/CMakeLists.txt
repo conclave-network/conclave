@@ -190,7 +190,7 @@ add_executable(
 )
 
 add_executable(
-        conclave_entry_tx_test
+        claim_tx_test
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
@@ -198,8 +198,24 @@ add_executable(
         ../src/script.cpp
         ../src/structs/outpoint.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/conclave_claim_tx.cpp
-        structs/conclave_claim_tx_test.cpp
+        ../src/structs/claim_tx.cpp
+        structs/claim_tx_test.cpp
+)
+
+add_executable(
+        entry_tx_test
+        ../src/hash160.cpp
+        ../src/hash256.cpp
+        ../src/public_key.cpp
+        ../src/address.cpp
+        ../src/script.cpp
+        ../src/structs/outpoint.cpp
+        ../src/structs/bitcoin_input.cpp
+        ../src/structs/bitcoin_output.cpp
+        ../src/structs/conclave_output.cpp
+        ../src/structs/claim_tx.cpp
+        ../src/structs/bitcoin_tx.cpp
+        structs/claim_tx_test.cpp
 )
 
 add_executable(
@@ -399,7 +415,17 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        conclave_tx_test
+        claim_tx_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        OpenSSL::Crypto
+        OpenSSL::SSL
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+
+target_link_libraries(
+        entry_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
@@ -408,7 +434,7 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        conclave_entry_tx_test
+        conclave_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
@@ -553,13 +579,18 @@ add_test(
 )
 
 add_test(
-        NAME conclave_tx_test
-        COMMAND $<TARGET_FILE:conclave_tx_test> --report_format=HRF --logger=HRF,all
+        NAME claim_tx_test
+        COMMAND $<TARGET_FILE:claim_tx_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(
-        NAME conclave_entry_tx_test
-        COMMAND $<TARGET_FILE:conclave_entry_tx_test> --report_format=HRF --logger=HRF,all
+        NAME entry_tx_test
+        COMMAND $<TARGET_FILE:entry_tx_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME conclave_tx_test
+        COMMAND $<TARGET_FILE:conclave_tx_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

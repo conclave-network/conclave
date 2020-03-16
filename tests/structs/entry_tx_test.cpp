@@ -16,29 +16,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#define BOOST_TEST_MODULE Entry_Tx_Test
 
-#include "bitcoin_tx.h"
-#include "claim_tx.h"
+#include <boost/test/included/unit_test.hpp>
+#include "../../src/structs/entry_tx.h"
 
 namespace conclave
 {
-    struct EntryTx final
+    BOOST_AUTO_TEST_CASE(EntryTxConstructorsTest)
     {
-        // JSON keys
-        const static std::string JSONKEY_FUND_TX;
-        const static std::string JSONKEY_CLAIM_TX;
-        // Constructors
-        EntryTx(const BitcoinTx&, const ClaimTx&);
-        EntryTx(const pt::ptree&);
-        // Operators
-        explicit operator pt::ptree() const;
-        explicit operator std::string() const;
-        bool operator==(const EntryTx&) const;
-        bool operator!=(const EntryTx&) const;
-        friend std::ostream& operator<<(std::ostream&, const EntrtyTx&);
-        // Properties
-        const BitcoinTx fundTx;
-        const ClaimTx claimTx;
-    };
+        BOOST_TEST(true); //TODO
+    }
 }

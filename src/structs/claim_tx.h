@@ -32,7 +32,7 @@
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    struct ConclaveClaimTx final
+    struct ClaimTx final
     {
         // JSON keys
         const static std::string JSONKEY_OUTPUTS;
@@ -40,19 +40,18 @@ namespace conclave
         const static std::string JSONKEY_MIN_SIGS;
         const static std::string JSONKEY_FUNDING_OUTPOINT;
         // Constructors
-        ConclaveClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
-        ConclaveClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
-                        const Outpoint&);
-        ConclaveClaimTx(const pt::ptree&);
+        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
+        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t, const Outpoint&);
+        ClaimTx(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
         const Hash256 getHash256() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
-        bool operator==(const ConclaveClaimTx&) const;
-        bool operator!=(const ConclaveClaimTx&) const;
-        friend std::ostream& operator<<(std::ostream&, const ConclaveClaimTx&);
+        bool operator==(const ClaimTx&) const;
+        bool operator!=(const ClaimTx&) const;
+        friend std::ostream& operator<<(std::ostream&, const ClaimTx&);
         // Properties
         const std::vector<ConclaveOutput> outputs;
         const std::vector<PublicKey> trustees;

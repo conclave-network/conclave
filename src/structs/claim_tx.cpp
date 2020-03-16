@@ -16,40 +16,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "conclave_claim_tx.h"
+#include "claim_tx.h"
 #include "../util/json.h"
 
 namespace conclave
 {
-    const std::string ConclaveClaimTx::JSONKEY_OUTPUTS = "outputs";
-    const std::string ConclaveClaimTx::JSONKEY_TRUSTEES = "trustees";
-    const std::string ConclaveClaimTx::JSONKEY_MIN_SIGS = "minSigs";
-    const std::string ConclaveClaimTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
+    const std::string ClaimTx::JSONKEY_OUTPUTS = "outputs";
+    const std::string ClaimTx::JSONKEY_TRUSTEES = "trustees";
+    const std::string ClaimTx::JSONKEY_MIN_SIGS = "minSigs";
+    const std::string ClaimTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
     
-    ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
-                                     const std::vector<PublicKey>& trustees,
-                                     const uint32_t minSigs)
+    ClaimTx::ClaimTx(const std::vector<ConclaveOutput>& outputs,
+                     const std::vector<PublicKey>& trustees,
+                     const uint32_t minSigs)
         : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
     {
     }
     
-    ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
-                                     const std::vector<PublicKey>& trustees,
-                                     const uint32_t minSigs,
-                                     const Outpoint& fundingOutpoint)
+    ClaimTx::ClaimTx(const std::vector<ConclaveOutput>& outputs,
+                     const std::vector<PublicKey>& trustees,
+                     const uint32_t minSigs,
+                     const Outpoint& fundingOutpoint)
         : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
     {
     }
     
-    ConclaveClaimTx::ConclaveClaimTx(const pt::ptree& tree)
-        : ConclaveClaimTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
-                          tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
-                          getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
-                          *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
+    ClaimTx::ClaimTx(const pt::ptree& tree)
+        : ClaimTx(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS),
+                  tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
+                  getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
+                  *getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
     {
     }
     
-    ConclaveClaimTx::operator pt::ptree() const
+    ClaimTx::operator pt::ptree() const
     {
         pt::ptree tree;
         tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
@@ -61,7 +61,7 @@ namespace conclave
         return tree;
     }
     
-    const std::vector<BYTE> ConclaveClaimTx::serialize() const
+    const std::vector<BYTE> ClaimTx::serialize() const
     {
         const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
         const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
@@ -76,29 +76,29 @@ namespace conclave
         return serialized;
     }
     
-    const Hash256 ConclaveClaimTx::getHash256() const
+    const Hash256 ClaimTx::getHash256() const
     {
         return Hash256::digest(serialize());
     }
     
-    ConclaveClaimTx::operator std::string() const
+    ClaimTx::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
-    bool ConclaveClaimTx::operator==(const ConclaveClaimTx& other) const
+    bool ClaimTx::operator==(const ClaimTx& other) const
     {
         return (outputs == other.outputs) && (trustees == other.trustees)
                && (minSigs == other.minSigs) && (fundingOutpoint == other.fundingOutpoint);
     }
     
-    bool ConclaveClaimTx::operator!=(const ConclaveClaimTx& other) const
+    bool ClaimTx::operator!=(const ClaimTx& other) const
     {
         return (outputs != other.outputs) || (trustees != other.trustees) ||
                (minSigs != other.minSigs) || (fundingOutpoint != other.fundingOutpoint);
     }
     
-    std::ostream& operator<<(std::ostream& os, const ConclaveClaimTx& conclaveClaimTx)
+    std::ostream& operator<<(std::ostream& os, const ClaimTx& conclaveClaimTx)
     {
         os << static_cast<std::string>(conclaveClaimTx);
         return os;
