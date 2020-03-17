@@ -63,6 +63,7 @@ add_executable(
         script.cpp
         mongoose/mongoose.c
         structs/outpoint.cpp
+        structs/inpoint.cpp
         structs/destination.cpp
         structs/bitcoin_input.cpp
         structs/bitcoin_output.cpp

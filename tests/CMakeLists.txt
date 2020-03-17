@@ -124,6 +124,13 @@ add_executable(
 )
 
 add_executable(
+        inpoint_test
+        ../src/hash256.cpp
+        ../src/structs/outpoint.cpp
+        structs/outpoint_test.cpp
+)
+
+add_executable(
         destination_test
         ../src/hash160.cpp
         ../src/hash256.cpp
@@ -361,6 +368,12 @@ target_link_libraries(
 )
 
 target_link_libraries(
+        inpoint_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+target_link_libraries(
         destination_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
@@ -545,6 +558,11 @@ add_test(
 
 add_test(
         NAME outpoint_test
+        COMMAND $<TARGET_FILE:outpoint_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME inpoint_test
         COMMAND $<TARGET_FILE:outpoint_test> --report_format=HRF --logger=HRF,all
 )
 
