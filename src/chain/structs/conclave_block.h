@@ -16,16 +16,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE Conclave_Tx_Test
-
-#include <boost/test/included/unit_test.hpp>
-#include "../../src/structs/conclave_tx.h"
-#include <cstdint>
-
 namespace conclave
 {
-    BOOST_AUTO_TEST_CASE(ConclaveTxConstructorsTest)
+    namespace chain
     {
-        BOOST_TEST(true);
+        class ConcalveBlock final
+        {
+        };
     }
 }

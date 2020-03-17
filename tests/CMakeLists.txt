@@ -198,8 +198,8 @@ add_executable(
         ../src/script.cpp
         ../src/structs/outpoint.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/claim_tx.cpp
-        structs/claim_tx_test.cpp
+        ../src/structs/conclave_claim_tx.cpp
+        structs/conclave_claim_tx_test.cpp
 )
 
 add_executable(
@@ -213,9 +213,9 @@ add_executable(
         ../src/structs/bitcoin_input.cpp
         ../src/structs/bitcoin_output.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/claim_tx.cpp
+        ../src/structs/conclave_claim_tx.cpp
         ../src/structs/bitcoin_tx.cpp
-        structs/claim_tx_test.cpp
+        structs/conclave_claim_tx_test.cpp
 )
 
 add_executable(
@@ -229,8 +229,8 @@ add_executable(
         ../src/structs/conclave_input.cpp
         ../src/structs/conclave_output.cpp
         ../src/structs/bitcoin_output.cpp
-        ../src/structs/conclave_tx.cpp
-        structs/conclave_tx_test.cpp
+        ../src/structs/conclave_standard_tx.cpp
+        structs/conclave_standard_tx_test.cpp
 )
 
 add_executable(

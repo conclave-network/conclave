@@ -16,37 +16,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "conclave_tx.h"
+#include "conclave_standard_tx.h"
 #include "../util/json.h"
 
 namespace conclave
 {
-    const std::string ConclaveTx::JSONKEY_VERSION = "version";
-    const std::string ConclaveTx::JSONKEY_INPUTS = "inputs";
-    const std::string ConclaveTx::JSONKEY_CONCLAVE_OUTPUTS = "conclaveOutputs";
-    const std::string ConclaveTx::JSONKEY_BITCOIN_OUTPUTS = "bitcoinOutputs";
-    const std::string ConclaveTx::JSONKEY_LOCKTIME = "lockTime";
+    const std::string ConclaveStandardTx::JSONKEY_VERSION = "version";
+    const std::string ConclaveStandardTx::JSONKEY_INPUTS = "inputs";
+    const std::string ConclaveStandardTx::JSONKEY_CONCLAVE_OUTPUTS = "conclaveOutputs";
+    const std::string ConclaveStandardTx::JSONKEY_BITCOIN_OUTPUTS = "bitcoinOutputs";
+    const std::string ConclaveStandardTx::JSONKEY_LOCKTIME = "lockTime";
     
-    ConclaveTx::ConclaveTx(const uint32_t version,
-                           const std::vector<ConclaveInput>& inputs,
-                           const std::vector<ConclaveOutput>& conclaveOutputs,
-                           const std::vector<BitcoinOutput>& bitcoinOutputs,
-                           const uint32_t lockTime)
+    ConclaveStandardTx::ConclaveStandardTx(const uint32_t version,
+                                           const std::vector<ConclaveInput>& inputs,
+                                           const std::vector<ConclaveOutput>& conclaveOutputs,
+                                           const std::vector<BitcoinOutput>& bitcoinOutputs,
+                                           const uint32_t lockTime)
         : version(version), inputs(inputs), conclaveOutputs(conclaveOutputs),
           bitcoinOutputs(bitcoinOutputs), lockTime(lockTime)
     {
     }
     
-    ConclaveTx::ConclaveTx(const pt::ptree& tree)
-        : ConclaveTx(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_VERSION),
-                     tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_INPUTS),
-                     tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS),
-                     tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
-                     getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCKTIME))
+    ConclaveStandardTx::ConclaveStandardTx(const pt::ptree& tree)
+        : ConclaveStandardTx(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_VERSION),
+                             tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_INPUTS),
+                             tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS),
+                             tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
+                             getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCKTIME))
     {
     }
     
-    ConclaveTx::operator pt::ptree() const
+    ConclaveStandardTx::operator pt::ptree() const
     {
         pt::ptree tree;
         tree.add<uint32_t>(JSONKEY_VERSION, version);
@@ -57,7 +57,7 @@ namespace conclave
         return tree;
     }
     
-    const std::vector<BYTE> ConclaveTx::serialize() const
+    const std::vector<BYTE> ConclaveStandardTx::serialize() const
     {
         const std::vector<BYTE> versionSerialized = serializeU32(version);
         const std::vector<BYTE> inputsSerialized = serializeVectorOfObjects(inputs);
@@ -75,29 +75,29 @@ namespace conclave
         return serialized;
     }
     
-    const Hash256 ConclaveTx::getHash256() const
+    const Hash256 ConclaveStandardTx::getHash256() const
     {
         return Hash256::digest(serialize());
     }
     
-    ConclaveTx::operator std::string() const
+    ConclaveStandardTx::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
-    bool ConclaveTx::operator==(const ConclaveTx& other) const
+    bool ConclaveStandardTx::operator==(const ConclaveStandardTx& other) const
     {
         return (version == other.version) && (inputs == other.inputs) && (conclaveOutputs == other.conclaveOutputs) &&
                (bitcoinOutputs == other.bitcoinOutputs) && (lockTime == other.lockTime);
     }
     
-    bool ConclaveTx::operator!=(const ConclaveTx& other) const
+    bool ConclaveStandardTx::operator!=(const ConclaveStandardTx& other) const
     {
         return (version != other.version) && (inputs != other.inputs) && (conclaveOutputs != other.conclaveOutputs) &&
                (bitcoinOutputs != other.bitcoinOutputs) && (lockTime != other.lockTime);
     }
     
-    std::ostream& operator<<(std::ostream& os, const ConclaveTx& conclaveTx)
+    std::ostream& operator<<(std::ostream& os, const ConclaveStandardTx& conclaveTx)
     {
         os << static_cast<std::string>(conclaveTx);
         return os;

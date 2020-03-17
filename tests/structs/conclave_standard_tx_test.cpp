@@ -16,10 +16,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#define BOOST_TEST_MODULE Conclave_Tx_Test
+
+#include <boost/test/included/unit_test.hpp>
+#include "../../src/structs/conclave_standard_tx.h"
+#include <cstdint>
+
 namespace conclave
 {
-    struct ConclaveTx
+    BOOST_AUTO_TEST_CASE(ConclaveStandardTxConstructorsTest)
     {
-    };
+        BOOST_TEST(true);
+    }
 }

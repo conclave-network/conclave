@@ -19,44 +19,47 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
+#include "conclave_tx.h"
+#include "conclave_input.h"
 #include "conclave_output.h"
-#include "outpoint.h"
+#include "bitcoin_output.h"
 #include "../hash256.h"
-#include "../public_key.h"
-#include "../util/serialization.h"
-#include "../conclave.h"
-#include <optional>
 #include <cstdint>
 #include <string>
+#include <vector>
 
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    struct ClaimTx final
+    struct ConclaveStandardTx final : public ConclaveTx
     {
         // JSON keys
-        const static std::string JSONKEY_OUTPUTS;
-        const static std::string JSONKEY_TRUSTEES;
-        const static std::string JSONKEY_MIN_SIGS;
-        const static std::string JSONKEY_FUNDING_OUTPOINT;;
+        const static std::string JSONKEY_VERSION;
+        const static std::string JSONKEY_INPUTS;
+        const static std::string JSONKEY_CONCLAVE_OUTPUTS;
+        const static std::string JSONKEY_BITCOIN_OUTPUTS;
+        const static std::string JSONKEY_LOCKTIME;
         // Constructors
-        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
-        ClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
-                const Outpoint&);
-        ClaimTx(const pt::ptree&);
+        ConclaveStandardTx(const uint32_t,
+                           const std::vector<ConclaveInput>&,
+                           const std::vector<ConclaveOutput>&,
+                           const std::vector<BitcoinOutput>&,
+                           const uint32_t);
+        ConclaveStandardTx(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
         const Hash256 getHash256() const;
         // Operators
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
-        bool operator==(const ClaimTx&) const;
-        bool operator!=(const ClaimTx&) const;
-        friend std::ostream& operator<<(std::ostream&, const ClaimTx&);
+        bool operator==(const ConclaveStandardTx&) const;
+        bool operator!=(const ConclaveStandardTx&) const;
+        friend std::ostream& operator<<(std::ostream&, const ConclaveStandardTx&);
         // Properties
-        const std::vector<ConclaveOutput> outputs;
-        const std::vector<PublicKey> trustees;
-        const uint32_t minSigs;
-        const std::optional<Outpoint> fundingOutpoint;
+        const uint32_t version;
+        const std::vector<ConclaveInput> inputs;
+        const std::vector<ConclaveOutput> conclaveOutputs;
+        const std::vector<BitcoinOutput> bitcoinOutputs;
+        const uint32_t lockTime;
     };
 }
