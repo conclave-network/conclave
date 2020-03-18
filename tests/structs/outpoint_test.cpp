@@ -68,10 +68,13 @@ namespace conclave
         {
             Outpoint outpointFromProps(TXID_1, INDEX_1);
             Outpoint outpointFromPtree(OUTPOINT_1_PTREE);
+            Outpoint outpointFromByteVector(OUTPOINT_1_SERIALIZED);
             BOOST_TEST((outpointFromProps.txId == TXID_1));
             BOOST_TEST((outpointFromProps.index == INDEX_1));
             BOOST_TEST((outpointFromPtree.txId == TXID_1));
             BOOST_TEST((outpointFromPtree.index == INDEX_1));
+            BOOST_TEST((outpointFromByteVector.txId == TXID_1));
+            BOOST_TEST((outpointFromByteVector.index == INDEX_1));
         }
         
         BOOST_AUTO_TEST_CASE(OutpointCastToStringTest)

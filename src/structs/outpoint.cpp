@@ -35,6 +35,11 @@ namespace conclave
     {
     }
     
+    Outpoint::Outpoint(const std::vector<BYTE>& bytes)
+        : Outpoint(&bytes[0], *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
+    {
+    }
+    
     const std::vector<BYTE> Outpoint::serialize() const
     {
         std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);

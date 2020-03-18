@@ -38,6 +38,7 @@ namespace conclave
         // Constructors
         Outpoint(const Hash256&, const uint32_t);
         Outpoint(const pt::ptree&);
+        Outpoint(const std::vector<BYTE>&);
         // Public functions
         const std::vector<BYTE> serialize() const;
         // Operators
