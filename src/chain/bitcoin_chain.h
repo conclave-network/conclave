@@ -21,6 +21,7 @@
 #include "../config/bitcoin_chain_config.h"
 #include "electrumx/electrumx_client.h"
 #include "../structs/bitcoin_tx.h"
+#include "../structs/outpoint.h"
 #include "../address.h"
 #include "../hash256.h"
 
@@ -45,6 +46,8 @@ namespace conclave
             explicit BitcoinChain(const BitcoinChainConfig&);
             const uint64_t getAddressBalance(const Address&);
             const Hash256 submitTx(const BitcoinTx&);
+            const bool txIsConfirmed(const Hash256&);
+            const bool outputIsSpendable(const Outpoint&);
             private:
             ElectrumxClient electrumxClient;
         };

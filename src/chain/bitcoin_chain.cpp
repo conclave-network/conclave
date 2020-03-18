@@ -50,5 +50,15 @@ namespace conclave
             }
             return returnedTxid;
         }
+        
+        const bool BitcoinChain::txIsConfirmed(const Hash256& txid)
+        {
+            return true; //TODO
+        }
+        
+        const bool BitcoinChain::outputIsSpendable(const Outpoint& outpoint)
+        {
+            return true; //TODO
+        }
     }
 }

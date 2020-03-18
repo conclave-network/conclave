@@ -23,7 +23,7 @@
 #include "../config/conclave_chain_config.h"
 #include "../hash256.h"
 #include "../address.h"
-#include "../structs/conclave_tx.h"
+#include "../structs/conclave_standard_tx.h"
 #include "../structs/entry_tx.h"
 
 /***
@@ -43,9 +43,10 @@ namespace conclave
             public:
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             const uint64_t getAddressBalance(const Address&);
-            const Hash256 submitEntryTx(const EntryTx&);
-            const Hash256 submitTx(const ConclaveTx&);
+            void submitEntryTx(const EntryTx&);
+            const Hash256 submitStandardTx(const ConclaveStandardTx&);
             private:
+            void appendToChain(const ConclaveTx&);
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
         };

@@ -17,7 +17,6 @@
  */
 
 #include "conclave_chain.h"
-#include <iostream> // temp
 
 namespace conclave
 {
@@ -33,16 +32,26 @@ namespace conclave
             return 4112;
         }
         
-        const Hash256 ConclaveChain::submitEntryTx(const EntryTx& entryTx)
+        void ConclaveChain::submitEntryTx(const EntryTx& entryTx)
         {
-            std::cout << "submitEntryTx" << std::endl;
-            std::cout << entryTx << std::endl;
+            // Check if the funding transaction has been confirmed or not
+            if (!bitcoinChain.txIsConfirmed(entryTx.fundTx.getHash256())) {
+                bitcoinChain.submitTx(entryTx.fundTx);
+            } else if (!bitcoinChain.outputIsSpendable(entryTx.claimTx.fundingOutpoint.value())) {
+                throw std::runtime_error(std::string("Output is not spendable: "));
+            } else {
+                // Output is spendable
+                appendToChain(entryTx.claimTx);
+            }
+        }
+        
+        const Hash256 ConclaveChain::submitStandardTx(const ConclaveStandardTx& conclaveStandardTx)
+        {
             return Hash256();
         }
         
-        const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
+        void ConclaveChain::appendToChain(const ConclaveTx& conclaveTx)
         {
-            return Hash256();
         }
     }
 }
