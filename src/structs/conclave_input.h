@@ -18,10 +18,12 @@
 
 #pragma once
 
+#include <boost/property_tree/ptree.hpp>
 #include "outpoint.h"
+#include "inpoint.h"
 #include "../script.h"
 #include "../util/json.h"
-#include <boost/property_tree/ptree.hpp>
+#include <optional>
 #include <cstdint>
 #include <string>
 
@@ -34,8 +36,10 @@ namespace conclave
         const static std::string JSONKEY_OUTPOINT;
         const static std::string JSONKEY_SCRIPTSIG;
         const static std::string JSONKEY_SEQUENCE;
+        const static std::string JSONKEY_PREDECESSOR;
         // Constructors
         ConclaveInput(const Outpoint&, const Script&, const uint32_t);
+        ConclaveInput(const Outpoint&, const Script&, const uint32_t, const Inpoint&);
         ConclaveInput(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
@@ -49,5 +53,6 @@ namespace conclave
         const Outpoint outpoint;
         const Script scriptSig;
         const uint32_t sequence;
+        const std::optional<Inpoint> predecessor;
     };
 }

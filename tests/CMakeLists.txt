@@ -167,6 +167,7 @@ add_executable(
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/outpoint.cpp
+        ../src/structs/inpoint.cpp
         ../src/structs/conclave_input.cpp
         structs/conclave_input_test.cpp
 )
@@ -226,13 +227,14 @@ add_executable(
 )
 
 add_executable(
-        conclave_tx_test
+        conclave_standard_tx_test
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/outpoint.cpp
+        ../src/structs/inpoint.cpp
         ../src/structs/conclave_input.cpp
         ../src/structs/conclave_output.cpp
         ../src/structs/bitcoin_output.cpp
@@ -447,7 +449,7 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        conclave_tx_test
+        conclave_standard_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
@@ -563,7 +565,7 @@ add_test(
 
 add_test(
         NAME inpoint_test
-        COMMAND $<TARGET_FILE:outpoint_test> --report_format=HRF --logger=HRF,all
+        COMMAND $<TARGET_FILE:inpoint_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(
@@ -607,8 +609,8 @@ add_test(
 )
 
 add_test(
-        NAME conclave_tx_test
-        COMMAND $<TARGET_FILE:conclave_tx_test> --report_format=HRF --logger=HRF,all
+        NAME conclave_standard_tx_test
+        COMMAND $<TARGET_FILE:conclave_standard_tx_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

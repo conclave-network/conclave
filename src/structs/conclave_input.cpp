@@ -25,16 +25,24 @@ namespace conclave
     const std::string ConclaveInput::JSONKEY_OUTPOINT = "outpoint";
     const std::string ConclaveInput::JSONKEY_SCRIPTSIG = "scriptSig";
     const std::string ConclaveInput::JSONKEY_SEQUENCE = "sequence";
+    const std::string ConclaveInput::JSONKEY_PREDECESSOR = "predecessor";
     
     ConclaveInput::ConclaveInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence)
-        : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence)
+        : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence), predecessor(std::nullopt)
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence,
+                                 const Inpoint& predecessor)
+        : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence), predecessor(predecessor)
     {
     }
     
     ConclaveInput::ConclaveInput(const pt::ptree& tree)
-        : ConclaveInput(getObjectFromJson<Outpoint>(tree, JSONKEY_OUTPOINT),
-                        getObjectFromJson<Script>(tree, JSONKEY_SCRIPTSIG),
-                        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_SEQUENCE))
+        : outpoint(getObjectFromJson<Outpoint>(tree, JSONKEY_OUTPOINT)),
+          scriptSig(getObjectFromJson<Script>(tree, JSONKEY_SCRIPTSIG)),
+          sequence(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_SEQUENCE)),
+          predecessor(getOptionalObjectFromJson<Inpoint>(tree, JSONKEY_PREDECESSOR))
     {
     }
     
@@ -43,11 +51,14 @@ namespace conclave
         const std::vector<BYTE> outpointSerialized = outpoint.serialize();
         const std::vector<BYTE> scriptSigSerialized = scriptSig.serialize();
         const std::vector<BYTE> sequenceSerialized = serializeU32(sequence);
+        const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
         std::vector<BYTE> serialized(
-            outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size());
+            outpointSerialized.size() + scriptSigSerialized.size() +
+            sequenceSerialized.size() + predecessorSerialized.size());
         size_t pos = writeToByteVector(serialized, outpointSerialized);
         pos += writeToByteVector(serialized, scriptSigSerialized, pos);
-        writeToByteVector(serialized, sequenceSerialized, pos);
+        pos += writeToByteVector(serialized, sequenceSerialized, pos);
+        writeToByteVector(serialized, predecessorSerialized);
         return serialized;
     }
     
@@ -57,6 +68,9 @@ namespace conclave
         tree.add_child(JSONKEY_OUTPOINT, static_cast<pt::ptree>(outpoint));
         tree.add_child(JSONKEY_SCRIPTSIG, static_cast<pt::ptree>(scriptSig));
         tree.add<uint32_t>(JSONKEY_SEQUENCE, sequence);
+        if (predecessor.has_value()) {
+            tree.add_child(JSONKEY_PREDECESSOR, static_cast<pt::ptree>(*predecessor));
+        }
         return tree;
     }
     
@@ -67,12 +81,14 @@ namespace conclave
     
     bool ConclaveInput::operator==(const ConclaveInput& other) const
     {
-        return (outpoint == other.outpoint) && (scriptSig == other.scriptSig) && (sequence == other.sequence);
+        return (outpoint == other.outpoint) && (scriptSig == other.scriptSig) &&
+               (sequence == other.sequence) && (predecessor == other.predecessor);
     }
     
     bool ConclaveInput::operator!=(const ConclaveInput& other) const
     {
-        return (outpoint != other.outpoint) || (scriptSig != other.scriptSig) || (sequence != other.sequence);
+        return (outpoint != other.outpoint) || (scriptSig != other.scriptSig) ||
+               (sequence != other.sequence) || (predecessor != other.predecessor);
     }
     
     std::ostream& operator<<(std::ostream& os, const ConclaveInput& ConclaveInput)

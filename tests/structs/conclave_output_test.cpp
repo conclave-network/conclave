@@ -20,7 +20,6 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include "../../src/structs/conclave_output.h"
-#include "../../src/util/serialization.h"
 #include <boost/property_tree/json_parser.hpp>
 #include <sstream>
 
@@ -32,7 +31,7 @@ namespace conclave
     const static uint64_t VALUE_1 = 0xffffffffffffffff;
     const static uint64_t VALUE_2 = 0x0000000000000001;
     const static Outpoint PREDECESSOR_1("f214030b76c722a3564887ef667c33424b64b2a1ab8c5f72d2fc5ff284b4e3d4", 53);
-    std::string CONCLAVE_OUTPUT_STR =
+    const static std::string CONCLAVE_OUTPUT_STR =
         "{\n"
         "    \"scriptPubKey\": [\n"
         "        \"dup\",\n"
@@ -43,7 +42,7 @@ namespace conclave
         "    ],\n"
         "    \"value\": \"18446744073709551615\"\n"
         "}\n";
-    std::string CONCLAVE_OUTPUT_STR_WITH_PREDECESSOR =
+    const static std::string CONCLAVE_OUTPUT_STR_WITH_PREDECESSOR =
         "{\n"
         "    \"scriptPubKey\": [\n"
         "        \"dup\",\n"
@@ -79,7 +78,7 @@ namespace conclave
         HEX_TO_BYTE_VECTOR("17a91439a95df3c155a9c017c2099723a0a70ef85721b087010000000000000024"
                            "d4e3b484f25ffcd2725f8caba1b2644b42337c66ef874856a322c7760b0314f235000000");
     
-    pt::ptree makeConclaveOutputTree()
+    const static pt::ptree makeConclaveOutputTree()
     {
         std::stringstream ss(CONCLAVE_OUTPUT_STR);
         pt::ptree tree;
@@ -87,7 +86,7 @@ namespace conclave
         return tree;
     }
     
-    pt::ptree makeConclaveOutputTreeWithPredecessor()
+    const static pt::ptree makeConclaveOutputTreeWithPredecessor()
     {
         std::stringstream ss(CONCLAVE_OUTPUT_STR_WITH_PREDECESSOR);
         pt::ptree tree;
@@ -105,11 +104,13 @@ namespace conclave
             ConclaveOutput conclaveOutputFromPtreeWithPredecessor(makeConclaveOutputTreeWithPredecessor());
             BOOST_TEST((conclaveOutputFromProps.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((conclaveOutputFromProps.value == VALUE_1));
+            BOOST_TEST((conclaveOutputFromProps.predecessor == std::nullopt));
             BOOST_TEST((conclaveOutputFromPropsWithPredecessor.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((conclaveOutputFromPropsWithPredecessor.value == VALUE_1));
             BOOST_TEST((conclaveOutputFromPropsWithPredecessor.predecessor == PREDECESSOR_1));
             BOOST_TEST((conclaveOutputFromPtree.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((conclaveOutputFromPtree.value == VALUE_1));
+            BOOST_TEST((conclaveOutputFromPtree.predecessor == std::nullopt));
             BOOST_TEST((conclaveOutputFromPtreeWithPredecessor.scriptPubKey == SCRIPTPUBKEY_1));
             BOOST_TEST((conclaveOutputFromPtreeWithPredecessor.value == VALUE_1));
             BOOST_TEST((conclaveOutputFromPtreeWithPredecessor.predecessor == PREDECESSOR_1));
@@ -117,16 +118,16 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(ConclaveOutputCastToPtreeTest)
         {
-            BOOST_TEST((makeConclaveOutputTree() == (pt::ptree) ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1)));
+            BOOST_TEST((makeConclaveOutputTree() == static_cast<pt::ptree>(ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1))));
             BOOST_TEST((makeConclaveOutputTreeWithPredecessor() ==
-                        (pt::ptree) ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1, PREDECESSOR_1)));
+                        static_cast<pt::ptree>(ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1, PREDECESSOR_1))));
         }
         
         BOOST_AUTO_TEST_CASE(ConclaveOutputCastToStringTest)
         {
-            BOOST_TEST((CONCLAVE_OUTPUT_STR == (std::string) ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1)));
+            BOOST_TEST((CONCLAVE_OUTPUT_STR == static_cast<std::string>(ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1))));
             BOOST_TEST((CONCLAVE_OUTPUT_STR_WITH_PREDECESSOR ==
-                        (std::string) ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1, PREDECESSOR_1)));
+                        static_cast<std::string>(ConclaveOutput(SCRIPTPUBKEY_1, VALUE_1, PREDECESSOR_1))));
         }
         
         BOOST_AUTO_TEST_CASE(ConclaveOutputOperatorsTest)
