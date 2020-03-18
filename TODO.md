@@ -18,3 +18,4 @@
 * Change all occurances of `TxId` to `Txid`
 * Tests for `util/json`
 * Split `tests/CMakeLists.txt` over test directories
+* Refactor ConcalveNode and subsystems so they use DI and builder pattern
