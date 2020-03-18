@@ -17,14 +17,14 @@
  */
 
 #include "conclave_chain.h"
-#include <iostream>
+#include <iostream> // temp
 
 namespace conclave
 {
     namespace chain
     {
         ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig, BitcoinChain& bitcoinChain)
-            : bitcoinChain(bitcoinChain)
+            : bitcoinChain(bitcoinChain), databaseClient(DatabaseClient(conclaveChainConfig.getDatabaseClientConfig()))
         {
         }
         

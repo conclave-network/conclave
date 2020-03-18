@@ -18,12 +18,13 @@
 
 #pragma once
 
+#include "database/database_client.h"
+#include "bitcoin_chain.h"
 #include "../config/conclave_chain_config.h"
 #include "../hash256.h"
 #include "../address.h"
 #include "../structs/conclave_tx.h"
 #include "../structs/entry_tx.h"
-#include "bitcoin_chain.h"
 
 /***
  * Abstraction layer over the Conclave blockchain. All interaction with the Conclave chain
@@ -35,6 +36,8 @@ namespace conclave
 {
     namespace chain
     {
+        using namespace database;
+        
         class ConclaveChain
         {
             public:
@@ -44,6 +47,7 @@ namespace conclave
             const Hash256 submitTx(const ConclaveTx&);
             private:
             BitcoinChain& bitcoinChain;
+            DatabaseClient databaseClient;
         };
     }
 }
