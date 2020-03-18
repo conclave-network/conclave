@@ -55,7 +55,7 @@ namespace conclave
     }
     
     Hash256::Hash256(const BYTE* data)
-        : data(bytePointerToByteArray<LARGE_HASH_SIZE_BYTES>(data))
+        : data(bytePointerToByteArrayReversed<LARGE_HASH_SIZE_BYTES>(data))
     {
     }
     
