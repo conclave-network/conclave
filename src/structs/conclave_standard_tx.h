@@ -19,7 +19,6 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
-#include "conclave_tx.h"
 #include "conclave_input.h"
 #include "conclave_output.h"
 #include "bitcoin_output.h"
@@ -31,7 +30,7 @@
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    struct ConclaveStandardTx final : public ConclaveTx
+    struct ConclaveStandardTx final
     {
         // JSON keys
         const static std::string JSONKEY_VERSION;

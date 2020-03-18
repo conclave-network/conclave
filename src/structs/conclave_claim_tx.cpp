@@ -29,7 +29,7 @@ namespace conclave
     ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs)
-        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
+        : conclaveOutputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
     {
     }
     
@@ -37,12 +37,12 @@ namespace conclave
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs,
                                      const Outpoint& fundingOutpoint)
-        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
+        : conclaveOutputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
     {
     }
     
     ConclaveClaimTx::ConclaveClaimTx(const pt::ptree& tree)
-        : outputs(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS)),
+        : conclaveOutputs(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS)),
           trustees(tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES)),
           minSigs(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS)),
           fundingOutpoint(getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
@@ -52,7 +52,7 @@ namespace conclave
     ConclaveClaimTx::operator pt::ptree() const
     {
         pt::ptree tree;
-        tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
+        tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(conclaveOutputs));
         tree.add_child(JSONKEY_TRUSTEES, vectorOfPrimitivesToArray(trustees));
         tree.add<uint32_t>(JSONKEY_MIN_SIGS, minSigs);
         if (fundingOutpoint.has_value()) {
@@ -63,7 +63,7 @@ namespace conclave
     
     const std::vector<BYTE> ConclaveClaimTx::serialize() const
     {
-        const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
+        const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(conclaveOutputs);
         const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
         const std::vector<BYTE> minSigsSerialized = serializeU32(minSigs);
         const std::vector<BYTE> fundingOutpointSerialized = serializeOptionalObject(fundingOutpoint);
@@ -88,13 +88,13 @@ namespace conclave
     
     bool ConclaveClaimTx::operator==(const ConclaveClaimTx& other) const
     {
-        return (outputs == other.outputs) && (trustees == other.trustees)
+        return (conclaveOutputs == other.conclaveOutputs) && (trustees == other.trustees)
                && (minSigs == other.minSigs) && (fundingOutpoint == other.fundingOutpoint);
     }
     
     bool ConclaveClaimTx::operator!=(const ConclaveClaimTx& other) const
     {
-        return (outputs != other.outputs) || (trustees != other.trustees) ||
+        return (conclaveOutputs != other.conclaveOutputs) || (trustees != other.trustees) ||
                (minSigs != other.minSigs) || (fundingOutpoint != other.fundingOutpoint);
     }
     

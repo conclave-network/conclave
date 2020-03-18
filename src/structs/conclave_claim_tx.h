@@ -19,7 +19,6 @@
 #pragma once
 
 #include <boost/property_tree/ptree.hpp>
-#include "conclave_tx.h"
 #include "conclave_output.h"
 #include "outpoint.h"
 #include "../hash256.h"
@@ -33,7 +32,7 @@
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    struct ConclaveClaimTx final : public ConclaveTx
+    struct ConclaveClaimTx final
     {
         // JSON keys
         const static std::string JSONKEY_OUTPUTS;
@@ -55,7 +54,7 @@ namespace conclave
         bool operator!=(const ConclaveClaimTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveClaimTx&);
         // Properties
-        const std::vector<ConclaveOutput> outputs;
+        const std::vector<ConclaveOutput> conclaveOutputs;
         const std::vector<PublicKey> trustees;
         const uint32_t minSigs;
         const std::optional<Outpoint> fundingOutpoint;
