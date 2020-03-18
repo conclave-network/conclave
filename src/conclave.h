@@ -21,6 +21,7 @@
 #include "util/hex.h"
 #include <array>
 #include <vector>
+#include <algorithm>
 #include <ostream>
 
 typedef unsigned char BYTE;
@@ -44,6 +45,14 @@ inline const std::array<BYTE, size> bytePointerToByteArray(const BYTE* ptr)
 {
     std::array<BYTE, size> arr;
     std::copy(ptr, ptr + size, arr.begin());
+    return arr;
+}
+
+template<size_t size>
+inline const std::array<BYTE, size> bytePointerToByteArrayReversed(const BYTE* ptr)
+{
+    std::array<BYTE, size> arr;
+    std::reverse_copy(ptr, ptr + size, arr.begin());
     return arr;
 }
 
