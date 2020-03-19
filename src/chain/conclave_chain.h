@@ -46,7 +46,6 @@ namespace conclave
             void submitEntryTx(const EntryTx&);
             const Hash256 submitStandardTx(const ConclaveStandardTx&);
             private:
-            void appendToChain(const ConclaveTx&);
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
         };

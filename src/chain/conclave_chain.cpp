@@ -34,24 +34,29 @@ namespace conclave
         
         void ConclaveChain::submitEntryTx(const EntryTx& entryTx)
         {
+            BitcoinTx fundTx = entryTx.fundTx;
+            ConclaveClaimTx claimTx = entryTx.claimTx;
             // Check if the funding transaction has been confirmed or not
-            if (!bitcoinChain.txIsConfirmed(entryTx.fundTx.getHash256())) {
-                bitcoinChain.submitTx(entryTx.fundTx);
-            } else if (!bitcoinChain.outputIsSpendable(entryTx.claimTx.fundingOutpoint.value())) {
+            if (!bitcoinChain.txIsConfirmed(fundTx.getHash256())) {
+                bitcoinChain.submitTx(fundTx);
+            } else if (!bitcoinChain.outputIsSpendable(*claimTx.fundingOutpoint)) {
                 throw std::runtime_error(std::string("Output is not spendable: "));
             } else {
-                // Output is spendable
-                appendToChain(entryTx.claimTx);
+                // Tx is confirmed and output is spendable
+                for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
+                    ConclaveOutput conclaveOutput = claimTx.conclaveOutputs[i];
+                    Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
+                    // Set predecessor to fundTip (or nullopt)
+                    //conclaveOutput.predecessor = databaseClient.getMutableItem(walletHash);
+                    // Update fundTip
+                    //databaseClient.putMutableItem(walletHash, Outpoint(claimTx.getHash256(), i));
+                }
             }
         }
         
         const Hash256 ConclaveChain::submitStandardTx(const ConclaveStandardTx& conclaveStandardTx)
         {
             return Hash256();
-        }
-        
-        void ConclaveChain::appendToChain(const ConclaveTx& conclaveTx)
-        {
         }
     }
 }
