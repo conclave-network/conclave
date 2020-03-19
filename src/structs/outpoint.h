@@ -37,8 +37,8 @@ namespace conclave
         const static std::string JSONKEY_INDEX;
         // Constructors
         Outpoint(const Hash256&, const uint32_t);
-        Outpoint(const pt::ptree&);
         Outpoint(const std::vector<BYTE>&);
+        Outpoint(const pt::ptree&);
         // Public functions
         const std::vector<BYTE> serialize() const;
         // Operators

@@ -100,6 +100,12 @@ add_executable(
 )
 
 add_executable(
+        ecdsa_signature_test
+        ../src/hash256.cpp
+        ecdsa_signature_test.cpp
+)
+
+add_executable(
         address_test
         ../src/hash160.cpp
         ../src/hash256.cpp
@@ -126,8 +132,8 @@ add_executable(
 add_executable(
         inpoint_test
         ../src/hash256.cpp
-        ../src/structs/outpoint.cpp
-        structs/outpoint_test.cpp
+        ../src/structs/inpoint.cpp
+        structs/inpoint_test.cpp
 )
 
 add_executable(
@@ -329,6 +335,15 @@ target_link_libraries(
 
 target_link_libraries(
         private_key_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        OpenSSL::Crypto
+        OpenSSL::SSL
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+target_link_libraries(
+        ecdsa_signature_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
@@ -549,6 +564,11 @@ add_test(
 )
 
 add_test(
+        NAME ecdsa_signature_test
+        COMMAND $<TARGET_FILE:ecdsa_signature_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
         NAME address_test
         COMMAND $<TARGET_FILE:address_test> --report_format=HRF --logger=HRF,all
 )
@@ -580,7 +600,7 @@ add_test(
 
 add_test(
         NAME conclave_input_test
-        COMMAND $<TARGET_FILE:bitcoin_input_test> --report_format=HRF --logger=HRF,all
+        COMMAND $<TARGET_FILE:conclave_input_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

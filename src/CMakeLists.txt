@@ -61,6 +61,7 @@ add_executable(
         hash256.cpp
         address.cpp
         script.cpp
+        ecdsa_signature.cpp
         mongoose/mongoose.c
         structs/outpoint.cpp
         structs/inpoint.cpp

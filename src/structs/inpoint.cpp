@@ -29,6 +29,11 @@ namespace conclave
     {
     }
     
+    Inpoint::Inpoint(const std::vector<BYTE>& bytes)
+        : Inpoint(Hash256::deserialize(bytes), *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
+    {
+    }
+    
     Inpoint::Inpoint(const pt::ptree& tree)
         : Inpoint(getPrimitiveFromJson<std::string>(tree, JSONKEY_TXID),
                   getPrimitiveFromJson<uint32_t>(tree, JSONKEY_INDEX))

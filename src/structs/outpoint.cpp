@@ -29,14 +29,14 @@ namespace conclave
     {
     }
     
-    Outpoint::Outpoint(const pt::ptree& tree)
-        : Outpoint(getPrimitiveFromJson<std::string>(tree, JSONKEY_TXID),
-                   getPrimitiveFromJson<uint32_t>(tree, JSONKEY_INDEX))
+    Outpoint::Outpoint(const std::vector<BYTE>& bytes)
+        : Outpoint(Hash256::deserialize(bytes), *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
     {
     }
     
-    Outpoint::Outpoint(const std::vector<BYTE>& bytes)
-        : Outpoint(&bytes[0], *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
+    Outpoint::Outpoint(const pt::ptree& tree)
+        : Outpoint(getPrimitiveFromJson<std::string>(tree, JSONKEY_TXID),
+                   getPrimitiveFromJson<uint32_t>(tree, JSONKEY_INDEX))
     {
     }
     
