@@ -764,13 +764,12 @@ namespace conclave
             hash2 = hash1;
             hash3 = std::move(Hash256(hash1));
             BOOST_TEST((hash1 == hash2));
-            BOOST_TEST((hash1 == hash3));
             BOOST_TEST((hash2 == hash3));
+            BOOST_TEST((hash3 == hash1));
         }
         
         BOOST_AUTO_TEST_CASE(Hash256SerializeTest)
         {
-            std::cout << BYTE_VECTOR_TO_HEX(ARBITRARY_HASH.serialize()) << std::endl;
             BOOST_TEST((ARBITRARY_HASH.serialize() == std::vector<BYTE>{
                 0xf0, 0x11, 0x16, 0x92, 0xe5, 0x8c, 0x0c, 0xef,
                 0x2e, 0xaf, 0x35, 0xa8, 0x6f, 0x54, 0x23, 0x37,
