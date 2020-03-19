@@ -48,14 +48,14 @@ namespace conclave
         static Script p2wshScript(const Script&);
         // Constructors
         Script();
-        Script(const Script&);
-        Script(const Script&&);
-        Script(const std::vector<ScriptElement>&);
         Script(const std::vector<BYTE>&);
+        Script(const std::vector<ScriptElement>&);
         Script(const std::vector<std::string>&);
         Script(const std::string&);
         Script(const char*);
         Script(const pt::ptree&);
+        Script(const Script&);
+        Script(Script&&);
         // Public functions
         const std::string toHexString() const;
         const Hash160 getHash160() const;
@@ -63,6 +63,8 @@ namespace conclave
         const Hash256 getSingleSHA256() const;
         const std::vector<BYTE> serialize() const;
         // Operators
+        Script& operator=(const Script&);
+        Script& operator=(Script&&);
         bool operator==(const Script& other) const;
         bool operator!=(const Script& other) const;
         explicit operator std::vector<BYTE>() const;
@@ -74,6 +76,6 @@ namespace conclave
         // Private constructors
         Script(const std::vector<machine::operation>&); // Only used by factories
         // Properties
-        const bc_chain::script script;
+        bc_chain::script script;
     };
 };

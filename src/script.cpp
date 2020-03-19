@@ -157,48 +157,48 @@ namespace conclave
     {
     }
     
-    Script::Script(const Script& other)
-        : script(other.script)
-    {
-    }
-    
-    Script::Script(const Script&& other)
-        : script(std::move(other.script))
-    {
-    }
-    
     Script::Script(const std::vector<BYTE>& data)
         : script(data, false)
     {
     }
     
-    Script::Script(const std::vector<machine::operation>& operations)
-        : script(chain::script(operations))
+    Script::Script(const std::vector<ScriptElement>& seVec)
+        : Script(scriptElementVectorToMachineOpVector(seVec))
     {
     }
     
-    Script::Script(const std::vector<ScriptElement>& eleVector)
-        : Script(scriptElementVectorToMachineOpVector(eleVector))
+    Script::Script(const std::vector<std::string>& strVec)
+        : Script(stringVectorToMachineOpVector(strVec))
     {
     }
     
-    Script::Script(const std::vector<std::string>& opVector)
-        : Script(stringVectorToMachineOpVector(opVector))
+    Script::Script(const std::string& str)
+        : Script(scriptStrToScriptStrVector(str))
     {
     }
     
-    Script::Script(const std::string& scriptStr)
-        : Script(scriptStrToScriptStrVector(scriptStr))
-    {
-    }
-    
-    Script::Script(const char* scriptCStr)
-        : Script(std::string(scriptCStr))
+    Script::Script(const char* cStr)
+        : Script(std::string(cStr))
     {
     }
     
     Script::Script(const pt::ptree& tree)
         : Script(arrayToVectorOfPrimitives<std::string>(tree))
+    {
+    }
+    
+    Script::Script(const Script& other)
+        : script(other.script)
+    {
+    }
+    
+    Script::Script(Script&& other)
+        : script(std::move(other.script))
+    {
+    }
+    
+    Script::Script(const std::vector<machine::operation>& operations)
+        : script(chain::script(operations))
     {
     }
     
@@ -225,6 +225,18 @@ namespace conclave
     const std::vector<BYTE> Script::serialize() const
     {
         return script.to_data(true);
+    }
+    
+    Script& Script::operator=(const Script& other)
+    {
+        script = other.script;
+        return *this;
+    }
+    
+    Script& Script::operator=(Script&& other)
+    {
+        script = std::move(other.script);
+        return *this;
     }
     
     bool Script::operator==(const Script& other) const
