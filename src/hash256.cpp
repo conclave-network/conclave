@@ -101,7 +101,7 @@ namespace conclave
     
     const std::vector<BYTE> Hash256::serialize() const
     {
-        return static_cast<std::vector<BYTE>>(*this);
+        return static_cast<std::vector<BYTE>>(this->reversed());
     }
     
     //
@@ -121,7 +121,7 @@ namespace conclave
     Hash256::operator std::vector<BYTE>() const
     {
         std::vector<BYTE> vector(LARGE_HASH_SIZE_BYTES);
-        std::reverse_copy(data.begin(), data.end(), vector.begin());
+        std::copy(data.begin(), data.end(), vector.begin());
         return vector;
     }
     
