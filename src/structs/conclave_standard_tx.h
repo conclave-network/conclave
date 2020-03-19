@@ -55,10 +55,10 @@ namespace conclave
         bool operator!=(const ConclaveStandardTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveStandardTx&);
         // Properties
-        const uint32_t version;
-        const std::vector<ConclaveInput> inputs;
-        const std::vector<ConclaveOutput> conclaveOutputs;
-        const std::vector<BitcoinOutput> bitcoinOutputs;
-        const uint32_t lockTime;
+        uint32_t version;
+        std::vector<ConclaveInput> inputs;
+        std::vector<ConclaveOutput> conclaveOutputs;
+        std::vector<BitcoinOutput> bitcoinOutputs;
+        uint32_t lockTime;
     };
 }

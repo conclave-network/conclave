@@ -43,7 +43,7 @@ namespace conclave
         bool operator!=(const BitcoinOutput&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinOutput&);
         // Properties
-        const uint64_t value;
-        const Script scriptPubKey;
+        uint64_t value;
+        Script scriptPubKey;
     };
 }

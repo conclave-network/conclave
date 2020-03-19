@@ -38,7 +38,7 @@ namespace conclave
         bool operator!=(const EntryTx&) const;
         friend std::ostream& operator<<(std::ostream&, const EntryTx&);
         // Properties
-        const BitcoinTx fundTx;
-        const ConclaveClaimTx claimTx;
+        BitcoinTx fundTx;
+        ConclaveClaimTx claimTx;
     };
 }

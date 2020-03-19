@@ -50,9 +50,9 @@ namespace conclave
         bool operator!=(const BitcoinTx&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinTx&);
         // Properties
-        const uint32_t version;
-        const std::vector<BitcoinInput> inputs;
-        const std::vector<BitcoinOutput> outputs;
-        const uint32_t lockTime;
+        uint32_t version;
+        std::vector<BitcoinInput> inputs;
+        std::vector<BitcoinOutput> outputs;
+        uint32_t lockTime;
     };
 }

@@ -117,6 +117,6 @@ namespace conclave
         }
         
         private:
-        const machine::operation operation;
+        machine::operation operation;
     };
 }

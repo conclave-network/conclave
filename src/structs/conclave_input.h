@@ -50,9 +50,9 @@ namespace conclave
         bool operator!=(const ConclaveInput&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveInput&);
         // Properties
-        const Outpoint outpoint;
-        const Script scriptSig;
-        const uint32_t sequence;
-        const std::optional<Inpoint> predecessor;
+        Outpoint outpoint;
+        Script scriptSig;
+        uint32_t sequence;
+        std::optional<Inpoint> predecessor;
     };
 }

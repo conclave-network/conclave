@@ -47,7 +47,7 @@ namespace conclave
         bool operator!=(const Inpoint&) const;
         friend std::ostream& operator<<(std::ostream&, const Inpoint&);
         // Properties
-        const Hash256 txId;
-        const uint32_t index;
+        Hash256 txId;
+        uint32_t index;
     };
 }

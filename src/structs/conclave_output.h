@@ -47,8 +47,8 @@ namespace conclave
         bool operator!=(const ConclaveOutput&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveOutput&);
         // Properties
-        const Script scriptPubKey;
-        const uint64_t value;
-        const std::optional<Outpoint> predecessor;
+        Script scriptPubKey;
+        uint64_t value;
+        std::optional<Outpoint> predecessor;
     };
 }

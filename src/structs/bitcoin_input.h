@@ -46,8 +46,8 @@ namespace conclave
         bool operator!=(const BitcoinInput&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinInput&);
         // Properties
-        const Outpoint outpoint;
-        const Script scriptSig;
-        const uint32_t sequence;
+        Outpoint outpoint;
+        Script scriptSig;
+        uint32_t sequence;
     };
 }

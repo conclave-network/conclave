@@ -49,7 +49,7 @@ namespace conclave
         bool operator!=(const Outpoint&) const;
         friend std::ostream& operator<<(std::ostream&, const Outpoint&);
         // Properties
-        const Hash256 txId;
-        const uint32_t index;
+        Hash256 txId;
+        uint32_t index;
     };
 }

@@ -45,7 +45,7 @@ namespace conclave
                     bool operator!=(const Sources&) const;
                     friend std::ostream& operator<<(std::ostream&, const Sources&);
                     // Properties
-                    const std::vector<Outpoint> outpoints;
+                    std::vector<Outpoint> outpoints;
                 };
             }
         }

@@ -56,6 +56,6 @@ namespace conclave
         friend std::ostream& operator<<(std::ostream&, const Hash160&);
         private:
         // Properties
-        const std::array<BYTE, SMALL_HASH_SIZE_BYTES> data;
+        std::array<BYTE, SMALL_HASH_SIZE_BYTES> data;
     };
 }

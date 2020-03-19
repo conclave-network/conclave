@@ -58,7 +58,7 @@ namespace conclave
         friend std::ostream& operator<<(std::ostream&, const PublicKey&);
         private:
         // Properties
-        const Hash256 x;
-        const Hash256 y;
+        Hash256 x;
+        Hash256 y;
     };
 }

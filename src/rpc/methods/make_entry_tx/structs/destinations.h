@@ -46,8 +46,8 @@ namespace conclave
                     bool operator!=(const Destinations&) const;
                     friend std::ostream& operator<<(std::ostream&, const Destinations&);
                     // Properties
-                    const std::vector<Destination> bitcoinDestinations;
-                    const std::vector<Destination> conclaveDestinations;
+                    std::vector<Destination> bitcoinDestinations;
+                    std::vector<Destination> conclaveDestinations;
                 };
             }
         }

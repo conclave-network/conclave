@@ -54,9 +54,9 @@ namespace conclave
         bool operator!=(const ConclaveClaimTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveClaimTx&);
         // Properties
-        const std::vector<ConclaveOutput> conclaveOutputs;
-        const std::vector<PublicKey> trustees;
-        const uint32_t minSigs;
-        const std::optional<Outpoint> fundingOutpoint;
+        std::vector<ConclaveOutput> conclaveOutputs;
+        std::vector<PublicKey> trustees;
+        uint32_t minSigs;
+        std::optional<Outpoint> fundingOutpoint;
     };
 }

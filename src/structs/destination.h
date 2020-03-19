@@ -42,7 +42,7 @@ namespace conclave
         bool operator!=(const Destination&) const;
         friend std::ostream& operator<<(std::ostream&, const Destination&);
         // Properties
-        const Address address;
-        const uint64_t value;
+        Address address;
+        uint64_t value;
     };
 }
