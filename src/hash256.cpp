@@ -19,28 +19,27 @@
 #include "hash256.h"
 #include "util/random.h"
 #include "util/hex.h"
+#include <bitcoin/system.hpp>
 #include <algorithm>
 #include <string>
 
 namespace conclave
 {
+    //
+    // Factories
+    //
+    
     Hash256 Hash256::digest(const std::vector<BYTE>& data)
     {
         return static_cast<Hash256>(bc::system::bitcoin_hash(data)).reversed();
     }
     
+    //
+    // Constructors
+    //
+    
     Hash256::Hash256()
         : data(makeRandomByteArray<LARGE_HASH_SIZE_BYTES>())
-    {
-    }
-    
-    Hash256::Hash256(const Hash256& other)
-        : data(other.data)
-    {
-    }
-    
-    Hash256::Hash256(Hash256&& other)
-        : data(std::move(other.data))
     {
     }
     
@@ -54,13 +53,13 @@ namespace conclave
     {
     }
     
-    Hash256::Hash256(const BYTE* data)
-        : data(bytePointerToByteArrayReversed<LARGE_HASH_SIZE_BYTES>(data))
+    Hash256::Hash256(const std::string& hex)
+        : Hash256(hexStringToByteArray<LARGE_HASH_SIZE_BYTES>(hex))
     {
     }
     
-    Hash256::Hash256(const std::string& hex)
-        : Hash256(hexStringToByteArray<LARGE_HASH_SIZE_BYTES>(hex))
+    Hash256::Hash256(const BYTE* data)
+        : data(bytePointerToByteArray<LARGE_HASH_SIZE_BYTES>(data))
     {
     }
     
@@ -69,6 +68,20 @@ namespace conclave
     {
     }
     
+    Hash256::Hash256(const Hash256& other)
+        : data(other.data)
+    {
+    }
+    
+    Hash256::Hash256(Hash256&& other)
+        : data(std::move(other.data))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
     const Hash256 Hash256::reversed() const
     {
         std::array<BYTE, LARGE_HASH_SIZE_BYTES> revData = data;
@@ -76,22 +89,24 @@ namespace conclave
         return Hash256(revData);
     }
     
-    std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator Hash256::begin() const
+    std::array<BYTE, LARGE_HASH_SIZE_BYTES>::const_iterator Hash256::begin() const
     {
         return data.begin();
     }
     
-    std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator Hash256::end() const
+    std::array<BYTE, LARGE_HASH_SIZE_BYTES>::const_iterator Hash256::end() const
     {
         return data.end();
     }
     
     const std::vector<BYTE> Hash256::serialize() const
     {
-        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES);
-        std::reverse_copy(data.begin(), data.end(), serialized.begin());
-        return serialized;
+        return static_cast<std::vector<BYTE>>(*this);
     }
+    
+    //
+    // Conversions
+    //
     
     Hash256::operator std::string() const
     {
@@ -106,7 +121,7 @@ namespace conclave
     Hash256::operator std::vector<BYTE>() const
     {
         std::vector<BYTE> vector(LARGE_HASH_SIZE_BYTES);
-        std::copy(data.begin(), data.end(), vector.begin());
+        std::reverse_copy(data.begin(), data.end(), vector.begin());
         return vector;
     }
     
@@ -115,9 +130,20 @@ namespace conclave
         return data.data();
     }
     
-    BYTE& Hash256::operator[](size_t index) const
+    //
+    // Operator Overloads
+    //
+    
+    Hash256& Hash256::operator=(const Hash256& other)
     {
-        return const_cast<BYTE&>(data[index]);
+        data = other.data;
+        return *this;
+    }
+    
+    Hash256& Hash256::operator=(Hash256&& other)
+    {
+        data = std::move(other.data);
+        return *this;
     }
     
     bool Hash256::operator==(const Hash256& other) const
@@ -128,6 +154,11 @@ namespace conclave
     bool Hash256::operator!=(const Hash256& other) const
     {
         return data != other.data;
+    }
+    
+    BYTE& Hash256::operator[](const size_t index) const
+    {
+        return const_cast<BYTE&>(data[index]);
     }
     
     std::ostream& operator<<(std::ostream& os, const Hash256& hash256)

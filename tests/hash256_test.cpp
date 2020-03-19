@@ -756,6 +756,17 @@ namespace conclave
             BOOST_TEST(ARBITRARY_HASH[30] == 0x11);
             BOOST_TEST(ARBITRARY_HASH[31] == 0xf0);
         }
+    
+        BOOST_AUTO_TEST_CASE(Hash256AssignmentOperatorsTest)
+        {
+            const Hash256 hash1;
+            Hash256 hash2, hash3;
+            hash2 = hash1;
+            hash3 = std::move(Hash256(hash1));
+            BOOST_TEST((hash1 == hash2));
+            BOOST_TEST((hash1 == hash3));
+            BOOST_TEST((hash2 == hash3));
+        }
         
         BOOST_AUTO_TEST_CASE(Hash256SerializeTest)
         {
