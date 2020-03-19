@@ -29,6 +29,8 @@ namespace conclave
     const static std::vector<BYTE> ONE_LENGTH_VECTOR{0x42};
     const static std::vector<BYTE> TWO_LENGTH_VECTOR{0x77, 0xfd};
     const static std::vector<BYTE> THREE_LENGTH_VECTOR{0x00, 0xff, 0x49};
+    const static std::vector<BYTE> SERIALIZED_HASH = HEX_TO_BYTE_VECTOR("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
+    const static Hash160 DESERIALIZED_HASH("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
     const static Hash160 ZERO_LENGTH_DATA_DIGEST("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
     const static Hash160 ONE_LENGTH_DATA_DIGEST("6b050eeb2b581fc02616246d0b038126fb3bf238");
     const static Hash160 TWO_LENGTH_DATA_DIGEST("8c6c792569398c4e93bbd213ced7d22635234e7a");
@@ -62,7 +64,7 @@ namespace conclave
     const static Hash160 ARBITRARY_HASH("97f6c464f25e32f444912fb4a9a53f3c62f2ef62");
     BOOST_AUTO_TEST_SUITE(Hash160TestSuite)
         
-        BOOST_AUTO_TEST_CASE(Hash160FactoryTest)
+        BOOST_AUTO_TEST_CASE(Hash160DigestFactoryTest)
         {
             Hash160 zeroLengthVectorDigest = Hash160::digest(ZERO_LENGTH_VECTOR);
             Hash160 oneLengthVectorDigest = Hash160::digest(ONE_LENGTH_VECTOR);
@@ -72,6 +74,11 @@ namespace conclave
             BOOST_TEST((oneLengthVectorDigest == ONE_LENGTH_DATA_DIGEST));
             BOOST_TEST((twoLengthVectorDigest == TWO_LENGTH_DATA_DIGEST));
             BOOST_TEST((threeLengthVectorDigest == THREE_LENGTH_DATA_DIGEST));
+        }
+        
+        BOOST_AUTO_TEST_CASE(Hash160DeserializeFactoryTest)
+        {
+            BOOST_TEST((Hash160::deserialize(SERIALIZED_HASH) == DESERIALIZED_HASH));
         }
         
         BOOST_AUTO_TEST_CASE(Hash160DefaultConstructorTest)

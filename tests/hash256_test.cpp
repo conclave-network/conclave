@@ -29,6 +29,9 @@ namespace conclave
     const static std::vector<BYTE> ONE_LENGTH_VECTOR{0x42};
     const static std::vector<BYTE> TWO_LENGTH_VECTOR{0x77, 0xfd};
     const static std::vector<BYTE> THREE_LENGTH_VECTOR{0x00, 0xff, 0x49};
+    const static std::vector<BYTE> SERIALIZED_HASH =
+        HEX_TO_BYTE_VECTOR("83592c17920fd3b8f47b028a67682404de45a681eda23ef651f61e57aedd2604");
+    const static Hash256 DESERIALIZED_HASH("0426ddae571ef651f63ea2ed81a645de042468678a027bf4b8d30f92172c5983");
     const static Hash256 ZERO_LENGTH_DATA_DIGEST("56944c5d3f98413ef45cf54545538103cc9f298e0575820ad3591376e2e0f65d");
     const static Hash256 ONE_LENGTH_DATA_DIGEST("01517aea572935ff9eb1455bc1147f98fb60957f4f9f868f06824ede3bb0550b");
     const static Hash256 TWO_LENGTH_DATA_DIGEST("20f0ef39afb3f4a9146ed564ad4c366ef1a5216079101abb9d2c0e041196ffe9");
@@ -70,7 +73,7 @@ namespace conclave
     const static Hash256 ARBITRARY_HASH("5942bb725f27989943d672de52bd92843723546fa835af2eef0c8ce5921611f0");
     BOOST_AUTO_TEST_SUITE(Hash256TestSuite)
         
-        BOOST_AUTO_TEST_CASE(Hash256FactoryTest)
+        BOOST_AUTO_TEST_CASE(Hash256DigestFactoryTest)
         {
             Hash256 zeroLengthVectorDigest = Hash256::digest(ZERO_LENGTH_VECTOR);
             Hash256 oneLengthVectorDigest = Hash256::digest(ONE_LENGTH_VECTOR);
@@ -80,6 +83,11 @@ namespace conclave
             BOOST_TEST((oneLengthVectorDigest == ONE_LENGTH_DATA_DIGEST));
             BOOST_TEST((twoLengthVectorDigest == TWO_LENGTH_DATA_DIGEST));
             BOOST_TEST((threeLengthVectorDigest == THREE_LENGTH_DATA_DIGEST));
+        }
+        
+        BOOST_AUTO_TEST_CASE(Hash256DeserializeFactoryTest)
+        {
+            BOOST_TEST((Hash256::deserialize(SERIALIZED_HASH) == DESERIALIZED_HASH));
         }
         
         BOOST_AUTO_TEST_CASE(Hash256DefaultConstructorTest)

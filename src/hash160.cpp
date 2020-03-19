@@ -34,6 +34,13 @@ namespace conclave
         return static_cast<Hash160>(bc::system::bitcoin_short_hash(data));
     }
     
+    Hash160 Hash160::deserialize(const std::vector<BYTE>& data, const size_t pos)
+    {
+        std::array<BYTE, SMALL_HASH_SIZE_BYTES> arr;
+        std::copy(data.begin() + pos, data.begin() + pos + SMALL_HASH_SIZE_BYTES, arr.begin());
+        return Hash160(arr);
+    }
+    
     //
     // Constructors
     //

@@ -34,6 +34,13 @@ namespace conclave
         return static_cast<Hash256>(bc::system::bitcoin_hash(data)).reversed();
     }
     
+    Hash256 Hash256::deserialize(const std::vector<BYTE>& data, const size_t pos)
+    {
+        std::array<BYTE, LARGE_HASH_SIZE_BYTES> arr;
+        std::reverse_copy(data.begin() + pos, data.begin() + pos + LARGE_HASH_SIZE_BYTES, arr.begin());
+        return Hash256(arr);
+    }
+    
     //
     // Constructors
     //

@@ -30,6 +30,7 @@ namespace conclave
         public:
         // Factories
         static Hash160 digest(const std::vector<BYTE>&);
+        static Hash160 deserialize(const std::vector<BYTE>&, const size_t = 0);
         // Constructors
         Hash160();
         Hash160(const std::array<BYTE, SMALL_HASH_SIZE_BYTES>&);
