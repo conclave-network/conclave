@@ -42,10 +42,7 @@ namespace conclave
     
     const std::vector<BYTE> Outpoint::serialize() const
     {
-        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
-        writeToByteVector(serialized, txId.serialize(), 0);
-        writeToByteVector(serialized, serializeU32(index), LARGE_HASH_SIZE_BYTES);
-        return serialized;
+        return static_cast<std::vector<BYTE>>(*this);
     }
     
     Outpoint::operator pt::ptree() const
@@ -59,6 +56,14 @@ namespace conclave
     Outpoint::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
+    }
+    
+    Outpoint::operator std::vector<BYTE>() const
+    {
+        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
+        writeToByteVector(serialized, txId.serialize(), 0);
+        writeToByteVector(serialized, serializeU32(index), LARGE_HASH_SIZE_BYTES);
+        return serialized;
     }
     
     bool Outpoint::operator==(const Outpoint& other) const
