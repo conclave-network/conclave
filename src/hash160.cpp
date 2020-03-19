@@ -19,28 +19,27 @@
 #include "hash160.h"
 #include "util/random.h"
 #include "util/hex.h"
+#include <bitcoin/system.hpp>
 #include <algorithm>
 #include <string>
 
 namespace conclave
 {
+    //
+    // Factories
+    //
+    
     Hash160 Hash160::digest(const std::vector<BYTE>& data)
     {
         return static_cast<Hash160>(bc::system::bitcoin_short_hash(data));
     }
     
+    //
+    // Constructors
+    //
+    
     Hash160::Hash160()
         : data(makeRandomByteArray<SMALL_HASH_SIZE_BYTES>())
-    {
-    }
-    
-    Hash160::Hash160(const Hash160& other)
-        : data(other.data)
-    {
-    }
-    
-    Hash160::Hash160(Hash160&& other)
-        : data(std::move(other.data))
     {
     }
     
@@ -54,13 +53,13 @@ namespace conclave
     {
     }
     
-    Hash160::Hash160(const BYTE* data)
-        : data(bytePointerToByteArray<SMALL_HASH_SIZE_BYTES>(data))
+    Hash160::Hash160(const std::string& hex)
+        : Hash160(hexStringToByteArray<SMALL_HASH_SIZE_BYTES>(hex))
     {
     }
     
-    Hash160::Hash160(const std::string& hex)
-        : Hash160(hexStringToByteArray<SMALL_HASH_SIZE_BYTES>(hex))
+    Hash160::Hash160(const BYTE* data)
+        : data(bytePointerToByteArray<SMALL_HASH_SIZE_BYTES>(data))
     {
     }
     
@@ -68,6 +67,20 @@ namespace conclave
         : Hash160(std::string(hex))
     {
     }
+    
+    Hash160::Hash160(const Hash160& other)
+        : data(other.data)
+    {
+    }
+    
+    Hash160::Hash160(Hash160&& other)
+        : data(std::move(other.data))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
     
     const Hash160 Hash160::reversed() const
     {
@@ -88,10 +101,12 @@ namespace conclave
     
     const std::vector<BYTE> Hash160::serialize() const
     {
-        std::vector<BYTE> serialized(SMALL_HASH_SIZE_BYTES);
-        std::copy(data.begin(), data.end(), serialized.begin());
-        return serialized;
+        return static_cast<std::vector<BYTE>>(*this);
     }
+    
+    //
+    // Conversions
+    //
     
     Hash160::operator std::string() const
     {
@@ -115,9 +130,20 @@ namespace conclave
         return data.data();
     }
     
-    BYTE& Hash160::operator[](const size_t index) const
+    //
+    // Operator Overloads
+    //
+    
+    Hash160& Hash160::operator=(const Hash160& other)
     {
-        return const_cast<BYTE&>(data[index]);
+        data = other.data;
+        return *this;
+    }
+    
+    Hash160& Hash160::operator=(Hash160&& other)
+    {
+        data = std::move(other.data);
+        return *this;
     }
     
     bool Hash160::operator==(const Hash160& other) const
@@ -128,6 +154,11 @@ namespace conclave
     bool Hash160::operator!=(const Hash160& other) const
     {
         return data != other.data;
+    }
+    
+    BYTE& Hash160::operator[](const size_t index) const
+    {
+        return const_cast<BYTE&>(data[index]);
     }
     
     std::ostream& operator<<(std::ostream& os, const Hash160& hash160)

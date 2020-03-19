@@ -19,8 +19,9 @@
 #pragma once
 
 #include "conclave.h"
-#include <bitcoin/system.hpp>
 #include <array>
+#include <string>
+#include <vector>
 
 namespace conclave
 {
@@ -31,28 +32,29 @@ namespace conclave
         static Hash160 digest(const std::vector<BYTE>&);
         // Constructors
         Hash160();
-        Hash160(const Hash160& other);
-        Hash160(Hash160&& other);
         Hash160(const std::array<BYTE, SMALL_HASH_SIZE_BYTES>&);
         Hash160(std::array<BYTE, SMALL_HASH_SIZE_BYTES>&&);
-        Hash160(const BYTE*);
         Hash160(const std::string&);
+        Hash160(const BYTE*);
         Hash160(const char*);
+        Hash160(const Hash160& other);
+        Hash160(Hash160&& other);
         // Public Functions
         const Hash160 reversed() const;
         std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator begin() const;
         std::array<BYTE, SMALL_HASH_SIZE_BYTES>::const_iterator end() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         operator std::string() const;
         operator std::array<BYTE, SMALL_HASH_SIZE_BYTES>() const;
         operator std::vector<BYTE>() const;
         operator const unsigned char*() const;
-        BYTE& operator[](const size_t) const;
-        Hash160& operator=(const Hash160&) = delete;
-        Hash160& operator=(Hash160&&) = delete;
+        // Operator Overloads
+        Hash160& operator=(const Hash160&);
+        Hash160& operator=(Hash160&&);
         bool operator==(const Hash160&) const;
         bool operator!=(const Hash160&) const;
+        BYTE& operator[](const size_t) const;
         friend std::ostream& operator<<(std::ostream&, const Hash160&);
         private:
         // Properties
