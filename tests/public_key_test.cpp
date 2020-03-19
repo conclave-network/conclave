@@ -79,5 +79,17 @@ namespace conclave
             BOOST_TEST(publicKey2FromXY.serialize() == PUBKEY_2_SERIALIZED);
         }
     
+        BOOST_AUTO_TEST_CASE(PublicKeyAssignmentOperatorsTest)
+        {
+            const PublicKey publicKey1(X_1, Y_1);
+            PublicKey publicKey2(X_2, Y_2);
+            PublicKey publicKey3(X_2, Y_2);
+            publicKey2 = publicKey1;
+            publicKey3 = std::move(PublicKey(publicKey1));
+            BOOST_TEST((publicKey1 == publicKey2));
+            BOOST_TEST((publicKey2 == publicKey3));
+            BOOST_TEST((publicKey3 == publicKey1));
+        }
+    
     BOOST_AUTO_TEST_SUITE_END()
 }

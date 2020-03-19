@@ -24,6 +24,10 @@ namespace conclave
 {
     using namespace libbitcoin::system;
     
+    //
+    // Helpers
+    //
+    
     inline const static Hash256 getY(const Hash256& x, const bool odd)
     {
         ec_compressed ecc;
@@ -34,15 +38,9 @@ namespace conclave
         return Hash256(&ecu[1 + EC_POINT_SIZE_BYTES]);
     }
     
-    PublicKey::PublicKey(const PublicKey& other)
-        : x(other.x), y(other.y)
-    {
-    }
-    
-    PublicKey::PublicKey(PublicKey&& other)
-        : x(std::move(other.x)), y(std::move(other.y))
-    {
-    }
+    //
+    // Constructors
+    //
     
     PublicKey::PublicKey(const Hash256& x, const Hash256& y)
         : x(x), y(y)
@@ -84,6 +82,20 @@ namespace conclave
     {
     }
     
+    PublicKey::PublicKey(const PublicKey& other)
+        : x(other.x), y(other.y)
+    {
+    }
+    
+    PublicKey::PublicKey(PublicKey&& other)
+        : x(std::move(other.x)), y(std::move(other.y))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
     const std::string PublicKey::asHexStringUncompressed() const
     {
         return byteArrayToHexString(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
@@ -118,21 +130,12 @@ namespace conclave
     
     const std::vector<BYTE> PublicKey::serialize() const
     {
-        const auto arr = static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this);
-        std::vector<BYTE> serialized(COMPRESSED_PUBKEY_SIZE_BYTES);
-        std::copy(arr.begin(), arr.end(), serialized.begin());
-        return serialized;
+        return static_cast<std::vector<BYTE>>(*this);
     }
     
-    bool PublicKey::operator==(const PublicKey& other) const
-    {
-        return (x == other.x) && (y == other.y);
-    }
-    
-    bool PublicKey::operator!=(const PublicKey& other) const
-    {
-        return (x != other.x) || (y != other.y);
-    }
+    //
+    // Conversions
+    //
     
     PublicKey::operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const
     {
@@ -164,6 +167,34 @@ namespace conclave
     {
         // Stringify as a compressed pubkey by default
         return asHexStringCompressed();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    PublicKey& PublicKey::operator=(const PublicKey& other)
+    {
+        x = other.x;
+        y = other.y;
+        return *this;
+    }
+    
+    PublicKey& PublicKey::operator=(PublicKey&& other)
+    {
+        x = std::move(other.x);
+        y = std::move(other.y);
+        return *this;
+    }
+    
+    bool PublicKey::operator==(const PublicKey& other) const
+    {
+        return (x == other.x) && (y == other.y);
+    }
+    
+    bool PublicKey::operator!=(const PublicKey& other) const
+    {
+        return (x != other.x) || (y != other.y);
     }
     
     std::ostream& operator<<(std::ostream& os, const PublicKey& publicKey)

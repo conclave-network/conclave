@@ -30,8 +30,6 @@ namespace conclave
     {
         public:
         // Constructors
-        PublicKey(const PublicKey&);
-        PublicKey(PublicKey&&);
         PublicKey(const Hash256&, const Hash256&);
         PublicKey(Hash256&&, Hash256&&);
         PublicKey(const Hash256&, const bool);
@@ -40,7 +38,9 @@ namespace conclave
         PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
         PublicKey(const std::string&);
         PublicKey(const char*);
-        // Public functions
+        PublicKey(const PublicKey&);
+        PublicKey(PublicKey&&);
+        // Public Functions
         const std::string asHexStringUncompressed() const;
         const std::string asHexStringCompressed() const;
         const Hash160 getHash160Uncompressed() const;
@@ -48,11 +48,14 @@ namespace conclave
         const Hash256 getHash256Uncompressed() const;
         const Hash256 getHash256Compressed() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
         operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
         operator std::vector<BYTE>() const;
         operator std::string() const;
+        // Operator Overloads
+        PublicKey& operator=(const PublicKey&);
+        PublicKey& operator=(PublicKey&&);
         bool operator==(const PublicKey&) const;
         bool operator!=(const PublicKey&) const;
         friend std::ostream& operator<<(std::ostream&, const PublicKey&);
