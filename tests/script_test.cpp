@@ -198,14 +198,13 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(ScriptAssignmentOperatorsTest)
         {
-            Script script1(P2PKH_SCRIPT_BYTES);
-            Script script2;
-            Script script3;
+            const Script script1(P2PKH_SCRIPT_BYTES);
+            Script script2, script3;
             script2 = script1;
             script3 = std::move(Script(script1));
             BOOST_TEST((script1 == script2));
-            BOOST_TEST((script1 == script3));
             BOOST_TEST((script2 == script3));
+            BOOST_TEST((script3 == script1));
         }
         
         BOOST_AUTO_TEST_CASE(ScriptEqualityOperatorsTest)

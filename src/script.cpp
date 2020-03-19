@@ -27,7 +27,7 @@ namespace conclave
     using namespace bc::system::machine;
     
     //
-    // Helpers for constructors
+    // Helpers For Constructors
     //
     
     inline const static
@@ -60,7 +60,7 @@ namespace conclave
     }
     
     //
-    // Helpers for casts
+    // Helpers For Casts
     //
     
     inline const static
@@ -72,6 +72,10 @@ namespace conclave
         }
         return sv;
     }
+    
+    //
+    // Factories
+    //
     
     /***
      * Convenience factory which checks what kind of address was passed and
@@ -152,6 +156,10 @@ namespace conclave
         });
     }
     
+    //
+    // Constructors
+    //
+    
     Script::Script()
         : script()
     {
@@ -202,6 +210,10 @@ namespace conclave
     {
     }
     
+    //
+    // Public Functions
+    //
+    
     const std::string Script::toHexString() const
     {
         return byteVectorToHexString(script.to_data(false));
@@ -227,6 +239,34 @@ namespace conclave
         return script.to_data(true);
     }
     
+    //
+    // Conversions
+    //
+    
+    Script::operator std::vector<BYTE>() const
+    {
+        return script.to_data(false);
+    }
+    
+    Script::operator std::vector<std::string>() const
+    {
+        return machineOpVectorToStringVector(script.operations());
+    }
+    
+    Script::operator std::string() const
+    {
+        return script.to_string(0);
+    }
+    
+    Script::operator pt::ptree() const
+    {
+        return vectorOfPrimitivesToArray<std::string>(static_cast<std::vector<std::string>>(*this));
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
     Script& Script::operator=(const Script& other)
     {
         script = other.script;
@@ -247,26 +287,6 @@ namespace conclave
     bool Script::operator!=(const Script& other) const
     {
         return (script != other.script);
-    }
-    
-    Script::operator std::vector<BYTE>() const
-    {
-        return script.to_data(false);
-    }
-    
-    Script::operator std::vector<std::string>() const
-    {
-        return machineOpVectorToStringVector(script.operations());
-    }
-    
-    Script::operator std::string() const
-    {
-        return script.to_string(0);
-    }
-    
-    Script::operator pt::ptree() const
-    {
-        return vectorOfPrimitivesToArray<std::string>(static_cast<std::vector<std::string>>(*this));
     }
     
     std::ostream& operator<<(std::ostream& os, const Script& script)
