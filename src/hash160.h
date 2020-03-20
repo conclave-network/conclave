@@ -59,6 +59,7 @@ namespace conclave
         bool operator!=(const Hash160&) const;
         BYTE& operator[](const size_t) const;
         friend std::ostream& operator<<(std::ostream&, const Hash160&);
+        friend Hash160 operator^(const Hash160&, const Hash160&);
         private:
         // Properties
         std::array<BYTE, SMALL_HASH_SIZE_BYTES> data;

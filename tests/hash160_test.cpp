@@ -69,7 +69,9 @@ namespace conclave
     const static char* ALL_ONES_CSTR_2 = "ffffffffffffffffffffffffffffffffffffffff";
     const static Hash160 RANDOM_HASH_1;
     const static Hash160 RANDOM_HASH_2;
-    const static Hash160 ARBITRARY_HASH("97f6c464f25e32f444912fb4a9a53f3c62f2ef62");
+    const static Hash160 ARBITRARY_HASH_1("97f6c464f25e32f444912fb4a9a53f3c62f2ef62");
+    const static Hash160 ARBITRARY_HASH_2("c6523779b9d753afcad2d77aa1a5771f39d0cdcf");
+    const static Hash160 ARBHASH1_XOR_ARBHASH2("51a4f31d4b89615b8e43f8ce080048235b2222ad");
     BOOST_AUTO_TEST_SUITE(Hash160TestSuite)
         
         BOOST_AUTO_TEST_CASE(Hash160DigestFactoryTest)
@@ -734,26 +736,26 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(Hash160IndexOperatorTest)
         {
-            BOOST_TEST((ARBITRARY_HASH[0] == 0x97));
-            BOOST_TEST((ARBITRARY_HASH[1] == 0xf6));
-            BOOST_TEST((ARBITRARY_HASH[2] == 0xc4));
-            BOOST_TEST((ARBITRARY_HASH[3] == 0x64));
-            BOOST_TEST((ARBITRARY_HASH[4] == 0xf2));
-            BOOST_TEST((ARBITRARY_HASH[5] == 0x5e));
-            BOOST_TEST((ARBITRARY_HASH[6] == 0x32));
-            BOOST_TEST((ARBITRARY_HASH[7] == 0xf4));
-            BOOST_TEST((ARBITRARY_HASH[8] == 0x44));
-            BOOST_TEST((ARBITRARY_HASH[9] == 0x91));
-            BOOST_TEST((ARBITRARY_HASH[10] == 0x2f));
-            BOOST_TEST((ARBITRARY_HASH[11] == 0xb4));
-            BOOST_TEST((ARBITRARY_HASH[12] == 0xa9));
-            BOOST_TEST((ARBITRARY_HASH[13] == 0xa5));
-            BOOST_TEST((ARBITRARY_HASH[14] == 0x3f));
-            BOOST_TEST((ARBITRARY_HASH[15] == 0x3c));
-            BOOST_TEST((ARBITRARY_HASH[16] == 0x62));
-            BOOST_TEST((ARBITRARY_HASH[17] == 0xf2));
-            BOOST_TEST((ARBITRARY_HASH[18] == 0xef));
-            BOOST_TEST((ARBITRARY_HASH[19] == 0x62));
+            BOOST_TEST((ARBITRARY_HASH_1[0] == 0x97));
+            BOOST_TEST((ARBITRARY_HASH_1[1] == 0xf6));
+            BOOST_TEST((ARBITRARY_HASH_1[2] == 0xc4));
+            BOOST_TEST((ARBITRARY_HASH_1[3] == 0x64));
+            BOOST_TEST((ARBITRARY_HASH_1[4] == 0xf2));
+            BOOST_TEST((ARBITRARY_HASH_1[5] == 0x5e));
+            BOOST_TEST((ARBITRARY_HASH_1[6] == 0x32));
+            BOOST_TEST((ARBITRARY_HASH_1[7] == 0xf4));
+            BOOST_TEST((ARBITRARY_HASH_1[8] == 0x44));
+            BOOST_TEST((ARBITRARY_HASH_1[9] == 0x91));
+            BOOST_TEST((ARBITRARY_HASH_1[10] == 0x2f));
+            BOOST_TEST((ARBITRARY_HASH_1[11] == 0xb4));
+            BOOST_TEST((ARBITRARY_HASH_1[12] == 0xa9));
+            BOOST_TEST((ARBITRARY_HASH_1[13] == 0xa5));
+            BOOST_TEST((ARBITRARY_HASH_1[14] == 0x3f));
+            BOOST_TEST((ARBITRARY_HASH_1[15] == 0x3c));
+            BOOST_TEST((ARBITRARY_HASH_1[16] == 0x62));
+            BOOST_TEST((ARBITRARY_HASH_1[17] == 0xf2));
+            BOOST_TEST((ARBITRARY_HASH_1[18] == 0xef));
+            BOOST_TEST((ARBITRARY_HASH_1[19] == 0x62));
         }
         
         BOOST_AUTO_TEST_CASE(Hash160AssignmentOperatorsTest)
@@ -767,9 +769,14 @@ namespace conclave
             BOOST_TEST((hash3 == hash1));
         }
         
+        BOOST_AUTO_TEST_CASE(Hash160XorOperatorTest)
+        {
+            BOOST_TEST(((ARBITRARY_HASH_1 ^ ARBITRARY_HASH_2) == ARBHASH1_XOR_ARBHASH2));
+        }
+        
         BOOST_AUTO_TEST_CASE(Hash160SerializeTest)
         {
-            BOOST_TEST((ARBITRARY_HASH.serialize() == std::vector<BYTE>{
+            BOOST_TEST((ARBITRARY_HASH_1.serialize() == std::vector<BYTE>{
                 0x97, 0xf6, 0xc4, 0x64, 0xf2, 0x5e, 0x32, 0xf4, 0x44, 0x91,
                 0x2f, 0xb4, 0xa9, 0xa5, 0x3f, 0x3c, 0x62, 0xf2, 0xef, 0x62
             }));

@@ -183,4 +183,13 @@ namespace conclave
         os << static_cast<std::string>(hash256);
         return os;
     }
+    
+    Hash256 operator^(const Hash256& lhs, const Hash256& rhs)
+    {
+        std::array<BYTE, LARGE_HASH_SIZE_BYTES> newData;
+        for (size_t i = 0; i < LARGE_HASH_SIZE_BYTES; i++) {
+            newData[i] = lhs.data[i] ^ rhs.data[i];
+        }
+        return newData;
+    }
 }
