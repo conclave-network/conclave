@@ -20,4 +20,55 @@
 
 namespace conclave
 {
+    //
+    // Constructors
+    //
+    
+    EcdsaSignature::EcdsaSignature(const Hash256& r, const Hash256& s)
+        : r(r), s(s)
+    {
+    }
+    
+    EcdsaSignature::EcdsaSignature(Hash256&& r, Hash256&& s)
+        : r(std::move(r)), s(std::move(s))
+    {
+    }
+    
+    EcdsaSignature::EcdsaSignature(const EcdsaSignature& other)
+        : r(other.r), s(other.s)
+    {
+    }
+    
+    EcdsaSignature::EcdsaSignature(EcdsaSignature&& other)
+        : r(std::move(other.r)), s(std::move(other.s))
+    {
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    EcdsaSignature& EcdsaSignature::operator=(const EcdsaSignature& other)
+    {
+        r = other.r;
+        s = otther.s;
+        return *this;
+    }
+    
+    EcdsaSignature& EcdsaSignature::operator=(EcdsaSignature&& other)
+    {
+        r = std::move(other.r);
+        s = std::move(other.s);
+        return *this;
+    }
+    
+    bool EcdsaSignature::operator==(const EcdsaSignature& other) const
+    {
+        return (r == other.r) && (s == other.s);
+    }
+    
+    bool EcdsaSignature::operator!=(const EcdsaSignature& other) const
+    {
+        return (r != other.r) || (s == other.s);
+    }
 }

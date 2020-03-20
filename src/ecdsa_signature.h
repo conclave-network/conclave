@@ -28,14 +28,23 @@ namespace conclave
     class EcdsaSignature final
     {
         public:
+        // Factories
         // Constructors
+        EcdsaSignature(const Hash256& r, const Hash256& s);
+        EcdsaSignature(Hash256&& r, Hash256&& s);
+        EcdsaSignature(const EcdsaSignature&);
+        EcdsaSignature(EcdsaSignature&&);
         // Public Functions
         // Conversions
+        operator std::vector<BYTE>() const;
         // Operator Overloads
+        EcdsaSignature& operator=(const EcdsaSignature&);
+        EcdsaSignature& operator=(EcdsaSignature&&);
+        bool operator==(const EcdsaSignature&) const;
+        bool operator!=(const EcdsaSignature&) const;
         private:
         // Properties
         Hash256 r;
         Hash256 s;
-        BYTE sighash;
     };
 }
