@@ -25,16 +25,24 @@
 
 namespace conclave
 {
-    const static std::vector<BYTE> ZERO_LENGTH_VECTOR{};
-    const static std::vector<BYTE> ONE_LENGTH_VECTOR{0x42};
-    const static std::vector<BYTE> TWO_LENGTH_VECTOR{0x77, 0xfd};
-    const static std::vector<BYTE> THREE_LENGTH_VECTOR{0x00, 0xff, 0x49};
+    const static std::vector<BYTE> ZERO_LENGTH_BV{};
+    const static std::vector<BYTE> ONE_LENGTH_BV{0x42};
+    const static std::vector<BYTE> TWO_LENGTH_BV{0x77, 0xfd};
+    const static std::vector<BYTE> THREE_LENGTH_BV{0x00, 0xff, 0x49};
+    const static std::string ZERO_LENGTH_STR = "";
+    const static std::string ONE_LENGTH_STR = "A";
+    const static std::string TWO_LENGTH_STR = "AB";
+    const static std::string THREE_LENGTH_STR = "ABC";
+    const static Hash160 ZERO_LENGTH_BV_DIGEST("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
+    const static Hash160 ONE_LENGTH_BV_DIGEST("6b050eeb2b581fc02616246d0b038126fb3bf238");
+    const static Hash160 TWO_LENGTH_BV_DIGEST("8c6c792569398c4e93bbd213ced7d22635234e7a");
+    const static Hash160 THREE_LENGTH_BV_DIGEST("1eed7ac281b147e5158eebe8c601be6f599b151d");
+    const static Hash160 ZERO_LENGTH_STR_DIGEST("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
+    const static Hash160 ONE_LENGTH_STR_DIGEST("6ebb1a03e5a035dd08605491085e58f05449188d");
+    const static Hash160 TWO_LENGTH_STR_DIGEST("cb7093454b1b0f0ba18b550abfe4758e18f116f3");
+    const static Hash160 THREE_LENGTH_STR_DIGEST("f82aaa97042382b2d75713bce7520929d1194008");
     const static std::vector<BYTE> SERIALIZED_HASH = HEX_TO_BYTE_VECTOR("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
     const static Hash160 DESERIALIZED_HASH("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
-    const static Hash160 ZERO_LENGTH_DATA_DIGEST("b472a266d0bd89c13706a4132ccfb16f7c3b9fcb");
-    const static Hash160 ONE_LENGTH_DATA_DIGEST("6b050eeb2b581fc02616246d0b038126fb3bf238");
-    const static Hash160 TWO_LENGTH_DATA_DIGEST("8c6c792569398c4e93bbd213ced7d22635234e7a");
-    const static Hash160 THREE_LENGTH_DATA_DIGEST("1eed7ac281b147e5158eebe8c601be6f599b151d");
     const static std::array<BYTE, SMALL_HASH_SIZE_BYTES> ALL_ZEROS_BA_1{
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
         0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
@@ -66,14 +74,30 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(Hash160DigestFactoryTest)
         {
-            Hash160 zeroLengthVectorDigest = Hash160::digest(ZERO_LENGTH_VECTOR);
-            Hash160 oneLengthVectorDigest = Hash160::digest(ONE_LENGTH_VECTOR);
-            Hash160 twoLengthVectorDigest = Hash160::digest(TWO_LENGTH_VECTOR);
-            Hash160 threeLengthVectorDigest = Hash160::digest(THREE_LENGTH_VECTOR);
-            BOOST_TEST((zeroLengthVectorDigest == ZERO_LENGTH_DATA_DIGEST));
-            BOOST_TEST((oneLengthVectorDigest == ONE_LENGTH_DATA_DIGEST));
-            BOOST_TEST((twoLengthVectorDigest == TWO_LENGTH_DATA_DIGEST));
-            BOOST_TEST((threeLengthVectorDigest == THREE_LENGTH_DATA_DIGEST));
+            Hash160 zeroLengthByteVectorDigest = Hash160::digest(ZERO_LENGTH_BV);
+            Hash160 oneLengthByteVectorDigest = Hash160::digest(ONE_LENGTH_BV);
+            Hash160 twoLengthByteVectorDigest = Hash160::digest(TWO_LENGTH_BV);
+            Hash160 threeLengthByteVectorDigest = Hash160::digest(THREE_LENGTH_BV);
+            Hash160 zeroLengthStringDigest = Hash160::digest(ZERO_LENGTH_STR);
+            Hash160 oneLengthStringDigest = Hash160::digest(ONE_LENGTH_STR);
+            Hash160 twoLengthStringDigest = Hash160::digest(TWO_LENGTH_STR);
+            Hash160 threeLengthStringDigest = Hash160::digest(THREE_LENGTH_STR);
+            Hash160 zeroLengthCStringDigest = Hash160::digest(ZERO_LENGTH_STR.c_str());
+            Hash160 oneLengthCStringDigest = Hash160::digest(ONE_LENGTH_STR.c_str());
+            Hash160 twoLengthCStringDigest = Hash160::digest(TWO_LENGTH_STR.c_str());
+            Hash160 threeLengthCStringDigest = Hash160::digest(THREE_LENGTH_STR.c_str());
+            BOOST_TEST((zeroLengthByteVectorDigest == ZERO_LENGTH_BV_DIGEST));
+            BOOST_TEST((oneLengthByteVectorDigest == ONE_LENGTH_BV_DIGEST));
+            BOOST_TEST((twoLengthByteVectorDigest == TWO_LENGTH_BV_DIGEST));
+            BOOST_TEST((threeLengthByteVectorDigest == THREE_LENGTH_BV_DIGEST));
+            BOOST_TEST((zeroLengthStringDigest == ZERO_LENGTH_STR_DIGEST));
+            BOOST_TEST((oneLengthStringDigest == ONE_LENGTH_STR_DIGEST));
+            BOOST_TEST((twoLengthStringDigest == TWO_LENGTH_STR_DIGEST));
+            BOOST_TEST((threeLengthStringDigest == THREE_LENGTH_STR_DIGEST));
+            BOOST_TEST((zeroLengthCStringDigest == ZERO_LENGTH_STR_DIGEST));
+            BOOST_TEST((oneLengthCStringDigest == ONE_LENGTH_STR_DIGEST));
+            BOOST_TEST((twoLengthCStringDigest == TWO_LENGTH_STR_DIGEST));
+            BOOST_TEST((threeLengthCStringDigest == THREE_LENGTH_STR_DIGEST));
         }
         
         BOOST_AUTO_TEST_CASE(Hash160DeserializeFactoryTest)

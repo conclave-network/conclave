@@ -19,6 +19,7 @@
 #include "hash256.h"
 #include "util/random.h"
 #include "util/hex.h"
+#include "conclave.h"
 #include <bitcoin/system.hpp>
 #include <algorithm>
 #include <string>
@@ -32,6 +33,16 @@ namespace conclave
     Hash256 Hash256::digest(const std::vector<BYTE>& data)
     {
         return static_cast<Hash256>(bc::system::bitcoin_hash(data)).reversed();
+    }
+    
+    Hash256 Hash256::digest(const std::string& str)
+    {
+        return digest(STRING_TO_BYTE_VECTOR(str));
+    }
+    
+    Hash256 Hash256::digest(const char* cStr)
+    {
+        return digest(std::string(cStr));
     }
     
     Hash256 Hash256::deserialize(const std::vector<BYTE>& data, const size_t pos)

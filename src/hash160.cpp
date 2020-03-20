@@ -19,6 +19,7 @@
 #include "hash160.h"
 #include "util/random.h"
 #include "util/hex.h"
+#include "conclave.h"
 #include <bitcoin/system.hpp>
 #include <algorithm>
 #include <string>
@@ -32,6 +33,16 @@ namespace conclave
     Hash160 Hash160::digest(const std::vector<BYTE>& data)
     {
         return static_cast<Hash160>(bc::system::bitcoin_short_hash(data));
+    }
+    
+    Hash160 Hash160::digest(const std::string& str)
+    {
+        return digest(STRING_TO_BYTE_VECTOR(str));
+    }
+    
+    Hash160 Hash160::digest(const char* cStr)
+    {
+        return digest(std::string(cStr));
     }
     
     Hash160 Hash160::deserialize(const std::vector<BYTE>& data, const size_t pos)
