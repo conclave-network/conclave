@@ -57,18 +57,6 @@
 using namespace bc::system;
 namespace conclave
 {
-    const static size_t STANDARD_ADDRESS_DECODED_LENGTH = 25;
-    const static size_t CONCLAVE_ADDRESS_DECODED_LENGTH = 23;
-    const static std::string WITNESS_MAINNET_PREFIX = "bc";
-    const static std::string WITNESS_TESTNET_PREFIX = "tb";
-    const static size_t BECH32_CONTRACTED_BIT_SIZE = 5;
-    const static size_t BECH32_EXPANDED_BIT_SIZE = 8;
-    /***
-     * Conclave address checksums are computed with a simple modulus operation over the 164 bits of the prefix and
-     * address. The 164 bits are modulo'ed by 1048573 which is the largest prime that can fit into 20 bits.
-     */
-    const static unsigned long CONCLAVE_CHECKSUM_MODULUS = (1 << 20) - 3;
-    
     /***
      * The `Address` class is used to represent all types of chain addresses. This class is deliberately marked final
      * and all subclassing is thus forbidden. The decision to implement all types of address in one monomorphic class
@@ -88,17 +76,19 @@ namespace conclave
     class Address final
     {
         public:
-        enum StandardAddressPrefix : BYTE
-        {
-            BITCOIN_MAINNET_P2PKH = 0x00,
-            BITCOIN_MAINNET_P2SH = 0x05,
-            BITCOIN_TESTNET_P2PKH = 0x6F,
-            BITCOIN_TESTNET_P2SH = 0xC4
-        };
+        // Constants
+        const static size_t CLASSIC_ADDRESS_DECODED_LENGTH;
+        const static size_t CONCLAVE_ADDRESS_DECODED_LENGTH;
+        const static std::string SEGWIT_MAINNET_PREFIX;
+        const static std::string SEGWIT_TESTNET_PREFIX;
+        const static size_t BECH32_CONTRACTED_BIT_SIZE;
+        const static size_t BECH32_EXPANDED_BIT_SIZE;
+        const static unsigned long CONCLAVE_CHECKSUM_MODULUS;
+        // Enums
         enum class AddressFormat
         {
-            STANDARD,   // Most Bitcoin addresses, such as P2PKH and P2SH have this format
-            BECH32,     // Brought in with BIP-173. See https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
+            CLASSIC,   // Most Bitcoin addresses, such as P2PKH and P2SH have this format
+            SEGWIT,     // Brought in with BIP-173. See https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
             CONCLAVE    // Shorter address which uses 23 bytes and is base58-encoded
         };
         enum class NetworkType
@@ -106,53 +96,63 @@ namespace conclave
             MAINNET,
             TESTNET
         };
-        enum class StandardAddressType
+        enum class PayeeType
         {
-            P2PKH,
-            P2SH
+            PUBKEY,
+            SCRIPT
         };
-        enum class ConclaveAddressType
+        enum ClassicAddressPrefix : BYTE
         {
-            P2PKH_ANALOG,
-            P2SH_ANALOG
+            BITCOIN_MAINNET_P2PKH = 0x00,
+            BITCOIN_MAINNET_P2SH = 0x05,
+            BITCOIN_TESTNET_P2PKH = 0x6F,
+            BITCOIN_TESTNET_P2SH = 0xC4
         };
-        enum class Bech32AddressType
-        {
-            WITNESS_PUBKEY,
-            WITNESS_SCRIPT
-        };
-        Address(const Hash160&, const NetworkType&, const StandardAddressType&);
-        Address(const Hash160&, const NetworkType&, const ConclaveAddressType&);
-        Address(const Hash160&, const NetworkType&, const Bech32AddressType&);
-        Address(const Hash256&, const NetworkType&, const Bech32AddressType&);
+        // Constructors
+        Address(const Hash160&, const AddressFormat&, const NetworkType&, const PayeeType&);
+        Address(const Hash256&, const AddressFormat&, const NetworkType&, const PayeeType&);
         Address(const std::string&);
         Address(const char*);
+        Address(const Address&);
+        Address(Address&&);
+        // Public Functions
         const Hash160& getHash() const;
-        const Hash256& getP2wshHash() const;
+        const Hash256& getP2WSHHash() const;
         const std::vector<BYTE> getHashData() const;
-        const bool isStandard() const;
+        const bool isClassic() const;
+        const bool isSegwit() const;
         const bool isConclave() const;
-        const bool isBech32() const;
-        const bool isToPublicKeyHash() const;
-        const bool isToScriptHash() const;
-        bool operator==(const Address& other) const;
-        bool operator!=(const Address& other) const;
+        const bool isMainnet() const;
+        const bool isTestnet() const;
+        const bool payeeIsPubKey() const;
+        const bool payeeIsScript() const;
+        const bool isP2PKH() const;
+        const bool isP2SH() const;
+        const bool isP2WPKH() const;
+        const bool isP2WSH() const;
+        const bool isP2CPKH() const;
+        const bool isP2CSH() const;
+        // Conversions
         explicit operator std::string() const;
+        // Operator Overloads
+        Address& operator=(const Address&);
+        Address& operator=(Address&&);
+        bool operator==(const Address&) const;
+        bool operator!=(const Address&) const;
         friend std::ostream& operator<<(std::ostream&, const Address&);
         private:
-        std::string makeStandardAddressString();
+        // Private Functions
+        void constructClassicAddress(const data_chunk&);
+        void constructSegwitAddress(const base32&);
+        void constructConclaveAddress(const data_chunk&);
+        std::string makeClassicAddressString();
+        std::string makeSegwitAddressString();
         std::string makeConclaveAddressString();
-        std::string makeBech32AddressString();
-        void constructStandardAddress(const data_chunk& addressData);
-        void constructConclaveAddress(const data_chunk& addressData);
-        void constructBech32Address(const base32&);
-        AddressFormat addressFormat;
-        NetworkType networkType;
-        StandardAddressType standardAddressType;   // Only used if addressFormat is AddressFormat::STANDARD
-        ConclaveAddressType conclaveAddressType;   // Only used if addressFormat is AddressFormat::CONCLAVE
-        Bech32AddressType bech32AddressType;       // Only used if addressFormat is AddressFormat::BECH32
+        // Properties
         Hash160 hash;
-        Hash256 p2wshHash; // Only used if addressFormat is AddressFormat::BECH32
-        std::string string;
+        Hash256 p2WSHHash; // Only used if addressFormat is SEGWIT
+        NetworkType networkType;
+        AddressFormat addressFormat;
+        PayeeType payeeType;
     };
 };
