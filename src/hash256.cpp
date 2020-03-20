@@ -19,7 +19,6 @@
 #include "hash256.h"
 #include "util/random.h"
 #include "util/hex.h"
-#include "conclave.h"
 #include <bitcoin/system.hpp>
 #include <algorithm>
 #include <string>
