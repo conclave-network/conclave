@@ -87,16 +87,16 @@ namespace conclave
      */
     Script Script::p2hScript(const Address& address)
     {
-        if (address.isStandard() || address.isConclave()) {
-            if (address.isToPublicKeyHash()) {
+        if (address.isClassic() || address.isConclave()) {
+            if (address.payeeIsPubKey()) {
                 return p2pkhScript(address);
-            } else if (address.isToScriptHash()) {
+            } else if (address.payeeIsScript()) {
                 return p2shScript(address);
             }
-        } else if (address.isBech32()) {
-            if (address.isToPublicKeyHash()) {
+        } else if (address.isSegwit()) {
+            if (address.payeeIsPubKey()) {
                 return p2wpkhScript(address);
-            } else if (address.isToScriptHash()) {
+            } else if (address.payeeIsScript()) {
                 return p2wshScript(address);
             }
         }

@@ -117,7 +117,7 @@ namespace conclave
         Address(Address&&);
         // Public Functions
         const Hash160& getHash() const;
-        const Hash256& getP2WSHHash() const;
+        const Hash256& getP2WSHash() const;
         const std::vector<BYTE> getHashData() const;
         const bool isClassic() const;
         const bool isSegwit() const;
@@ -145,14 +145,14 @@ namespace conclave
         void constructClassicAddress(const data_chunk&);
         void constructSegwitAddress(const base32&);
         void constructConclaveAddress(const data_chunk&);
-        std::string makeClassicAddressString();
-        std::string makeSegwitAddressString();
-        std::string makeConclaveAddressString();
+        std::string makeClassicAddressString() const;
+        std::string makeSegwitAddressString() const;
+        std::string makeConclaveAddressString() const;
         // Properties
         Hash160 hash;
-        Hash256 p2WSHHash; // Only used if addressFormat is SEGWIT
-        NetworkType networkType;
+        Hash256 wsHash; // Only used if addressFormat is SEGWIT
         AddressFormat addressFormat;
+        NetworkType networkType;
         PayeeType payeeType;
     };
 };

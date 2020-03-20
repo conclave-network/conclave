@@ -45,13 +45,21 @@ namespace conclave
     }
     
     //
+    // Conversions
+    //
+    
+    EcdsaSignature::operator std::vector<BYTE>() const
+    {
+    }
+    
+    //
     // Operator Overloads
     //
     
     EcdsaSignature& EcdsaSignature::operator=(const EcdsaSignature& other)
     {
         r = other.r;
-        s = otther.s;
+        s = other.s;
         return *this;
     }
     

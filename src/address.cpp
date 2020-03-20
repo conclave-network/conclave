@@ -82,8 +82,8 @@ namespace conclave
         return (extractConclaveChecksum(addressData) == computeConclaveChecksum(addressData));
     }
     
-    static Address::ClassicAddressPrefix getStandardAddressPrefix(const Address::NetworkType& networkType,
-                                                                  const Address::PayeeType& payeeType)
+    static Address::ClassicAddressPrefix getClassicAddressPrefix(const Address::NetworkType& networkType,
+                                                                 const Address::PayeeType& payeeType)
     {
         if (networkType == Address::NetworkType::MAINNET) {
             if (payeeType == Address::PayeeType::PUBKEY) {
@@ -98,6 +98,7 @@ namespace conclave
                 return Address::ClassicAddressPrefix::BITCOIN_TESTNET_P2SH;
             }
         }
+        throw std::logic_error("Address::getClassicAddressPrefix failed");
     }
     
     static std::string getSegwitAddressPrefix(const Address::NetworkType& networkType)
@@ -152,7 +153,7 @@ namespace conclave
     
     Address::Address(const Hash256& hash, const AddressFormat& addressFormat,
                      const NetworkType& networkType, const PayeeType& payeeType)
-        : p2WSHHash(hash), addressFormat(addressFormat), networkType(networkType), payeeType(payeeType)
+        : wsHash(hash), addressFormat(addressFormat), networkType(networkType), payeeType(payeeType)
     {
     }
     
@@ -164,11 +165,14 @@ namespace conclave
             decode_base58(addressData, addressString);
             if (addressData.size() == CLASSIC_ADDRESS_DECODED_LENGTH) {
                 constructClassicAddress(addressData);
+                return;
             } else if (addressData.size() == CONCLAVE_ADDRESS_DECODED_LENGTH) {
                 constructConclaveAddress(addressData);
+                return;
             }
         } else if (decode_base32(bech32, addressString)) {
             constructSegwitAddress(bech32);
+            return;
         }
         throw std::runtime_error("Unable to parse address: " + addressString);
     }
@@ -178,32 +182,44 @@ namespace conclave
     {
     }
     
+    Address::Address(const Address& other)
+        : hash(other.hash), wsHash(other.wsHash), addressFormat(other.addressFormat),
+          networkType(other.networkType), payeeType(other.payeeType)
+    {
+    }
+    
+    Address::Address(Address&& other)
+        : hash(std::move(other.hash)), wsHash(std::move(other.wsHash)), addressFormat(std::move(other.addressFormat)),
+          networkType(std::move(other.networkType)), payeeType(std::move(other.payeeType))
+    {
+    }
+    
     //
     // Public Functions
     //
     
     const Hash160& Address::getHash() const
     {
-        if (addressFormat == AddressFormat::SEGWIT && payeeType == PayeeType::SCRIPT) {
+        if (isP2WSH()) {
             throw std::logic_error("getHash() called on p2wsh address");
         } else {
             return hash;
         }
     }
     
-    const Hash256& Address::getP2WSHHash() const
+    const Hash256& Address::getP2WSHash() const
     {
-        if (!(addressFormat == AddressFormat::SEGWIT && payeeType == PayeeType::SCRIPT)) {
-            throw std::logic_error("getP2wshHash() called on non p2wsh address");
+        if (!isP2WSH()) {
+            throw std::logic_error("getP2WSHash() called on non p2wsh address");
         } else {
-            return p2WSHHash;
+            return wsHash;
         }
     }
     
     const std::vector<BYTE> Address::getHashData() const
     {
-        if (addressFormat == AddressFormat::BECH32 && bech32AddressType == Bech32AddressType::WITNESS_SCRIPT) {
-            return std::vector<BYTE>(p2WSHHash.begin(), p2WSHHash.end());
+        if (isP2WSH()) {
+            return std::vector<BYTE>(wsHash.begin(), wsHash.end());
         } else {
             return std::vector<BYTE>(hash.begin(), hash.end());
         }
@@ -275,8 +291,45 @@ namespace conclave
     }
     
     //
+    // Conversions
+    //
+    
+    Address::operator std::string() const
+    {
+        switch (addressFormat) {
+            case AddressFormat::CLASSIC:
+                return makeClassicAddressString();
+            case AddressFormat::SEGWIT:
+                return makeSegwitAddressString();
+            case AddressFormat::CONCLAVE:
+                return makeConclaveAddressString();
+        }
+        throw std::logic_error("Unknown address format");
+    }
+    
+    //
     // Operator Overloads
     //
+    
+    Address& Address::operator=(const Address& other)
+    {
+        hash = other.hash;
+        wsHash = other.wsHash;
+        networkType = other.networkType;
+        addressFormat = other.addressFormat;
+        payeeType = other.payeeType;
+        return *this;
+    }
+    
+    Address& Address::operator=(Address&& other)
+    {
+        hash = std::move(other.hash);
+        wsHash = std::move(other.wsHash);
+        networkType = std::move(other.networkType);
+        addressFormat = std::move(other.addressFormat);
+        payeeType = std::move(other.payeeType);
+        return *this;
+    }
     
     /***
      * Two addresses are considered equal if only their underlying hashes match. This is intended to prevent bugs
@@ -292,24 +345,12 @@ namespace conclave
      */
     bool Address::operator==(const Address& other) const
     {
-        return (hash == other.hash);
+        return (isP2WSH() && other.isP2WSH()) ? (wsHash == other.wsHash) : (hash == other.hash);
     }
     
     bool Address::operator!=(const Address& other) const
     {
-        return (hash != other.hash);
-    }
-    
-    Address::operator std::string() const
-    {
-        switch (addressFormat) {
-            case AddressFormat::CLASSIC:
-                return makeClassicAddressString();
-            case AddressFormat::SEGWIT:
-                return makeSegwitAddressString();
-            case AddressFormat::CONCLAVE:
-                return makeConclaveAddressString();
-        }
+        return !(*this == other);
     }
     
     std::ostream& operator<<(std::ostream& os, const Address& address)
@@ -376,7 +417,7 @@ namespace conclave
             std::memcpy(&hash[0], &expanded[0], SMALL_HASH_SIZE_BYTES);
         } else if (expanded.size() == LARGE_HASH_SIZE_BYTES) {
             payeeType = PayeeType::SCRIPT;
-            std::memcpy(&p2WSHHash[0], &expanded[0], LARGE_HASH_SIZE_BYTES);
+            std::memcpy(&wsHash[0], &expanded[0], LARGE_HASH_SIZE_BYTES);
         } else {
             throw std::runtime_error("Invalid bech32 payload length:" + std::to_string(bech32.payload.size()));
         }
@@ -405,10 +446,10 @@ namespace conclave
         }
     }
     
-    std::string Address::makeClassicAddressString()
+    std::string Address::makeClassicAddressString() const
     {
         one_byte addr_prefix = {
-            {getStandardAddressPrefix(networkType, standardAddressType)}
+            {getClassicAddressPrefix(networkType, payeeType)}
         };
         data_chunk prefix_pubkey_checksum(to_chunk(addr_prefix));
         extend_data(prefix_pubkey_checksum, hash);
@@ -416,23 +457,23 @@ namespace conclave
         return encode_base58(prefix_pubkey_checksum);
     }
     
-    std::string Address::makeSegwitAddressString()
+    std::string Address::makeSegwitAddressString() const
     {
         one_byte witness_version = {{0x00}};
         data_chunk hash_chunk = (payeeType == PayeeType::SCRIPT) ?
-                                data_chunk(p2WSHHash.begin(), p2WSHHash.end()) :
+                                data_chunk(wsHash.begin(), wsHash.end()) :
                                 data_chunk(hash.begin(), hash.end());
         data_chunk payload(to_chunk(witness_version));
         extend_data(payload, convertBits(BECH32_EXPANDED_BIT_SIZE, BECH32_CONTRACTED_BIT_SIZE, true,
                                          to_chunk(hash_chunk), 0));
         // Build the bech32 structure
         base32 bech32;
-        bech32.prefix = getWitnessAddressPrefix(networkType);
+        bech32.prefix = getSegwitAddressPrefix(networkType);
         bech32.payload = payload;
         return encode_base32(bech32);
     }
     
-    std::string Address::makeConclaveAddressString()
+    std::string Address::makeConclaveAddressString() const
     {
         data_chunk addressData{
             getConclaveAddressPrefix(networkType, payeeType),
