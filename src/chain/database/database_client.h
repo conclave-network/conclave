@@ -37,6 +37,7 @@ namespace conclave
                 public:
                 DatabaseClient(const std::string&);
                 DatabaseClient(const DatabaseClientConfig&);
+                ~DatabaseClient();
                 Hash256 putItem(const std::vector<BYTE>&);
                 std::optional<std::vector<BYTE>> getItem(const Hash256&);
                 void putMutableItem(const std::string&, const Hash256&, const std::vector<BYTE>&);

@@ -25,9 +25,14 @@ namespace conclave
     {
         namespace database
         {
-            static inline const Hash256 makeFQKey(const std::string& collectionName, const Hash256& key)
+            static inline const Hash256 makeCollectionKey(const std::string& collectionName, const Hash256& key)
             {
                 return Hash256::digest(collectionName) ^ key;
+            }
+            
+            static inline const lmdb::val makeValue(const std::vector<BYTE>& value)
+            {
+                return lmdb::val(value.data(), value.size());
             }
             
             static lmdb::env initLmdb(const std::string& rootDirectory)
@@ -40,7 +45,7 @@ namespace conclave
             }
             
             DatabaseClient::DatabaseClient(const std::string& rootDirectory)
-                : env(initLmdb(rootDirectory))
+                : env(std::move(initLmdb(rootDirectory)))
             {
             }
             
@@ -49,12 +54,21 @@ namespace conclave
             {
             }
             
+            DatabaseClient::~DatabaseClient()
+            {
+                env.sync();
+                env.close();
+            }
+            
             Hash256 DatabaseClient::putItem(const std::vector<BYTE>& value)
             {
                 Hash256 key = Hash256::digest(value);
+                std::vector<BYTE> keyBV = static_cast<std::vector<BYTE>>(key);
+                lmdb::val k(keyBV.data(), keyBV.size());
+                lmdb::val v(value.data(), value.size());
                 lmdb::txn wtxn = lmdb::txn::begin(env);
-                lmdb::dbi dbi = lmdb::dbi::open(wtxn, nullptr);
-                if (!dbi.put(wtxn, key, value)) {
+                lmdb::dbi dbi = lmdb::dbi::open(wtxn);
+                if (!dbi.put(wtxn, k, v)) {
                     throw std::runtime_error("putItem failed");
                 }
                 wtxn.commit();
@@ -63,12 +77,15 @@ namespace conclave
             
             std::optional<std::vector<BYTE>> DatabaseClient::getItem(const Hash256& key)
             {
-                lmdb::txn rtxn = lmdb::txn::begin(env, nullptr, MDB_RDONLY);
-                lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
-                std::vector<BYTE> value;
-                if (!dbi.get(rtxn, key, value)) {
+                std::vector<BYTE> keyBV = static_cast<std::vector<BYTE>>(key);
+                lmdb::val k(keyBV.data(), keyBV.size());
+                lmdb::val v;
+                lmdb::txn rtxn = lmdb::txn::begin(env);
+                lmdb::dbi dbi = lmdb::dbi::open(rtxn);
+                if (!dbi.get(rtxn, k, v)) {
                     return std::nullopt;
                 }
+                std::vector<BYTE> value(v.data(), v.data() + v.size());
                 // Compute hash of value and ensure it matches the key
                 if (Hash256::digest(value) != key) {
                     throw std::runtime_error("getItem failed: data hash does not match key");
@@ -79,10 +96,13 @@ namespace conclave
             void DatabaseClient::putMutableItem(const std::string& collectionName,
                                                 const Hash256& key, const std::vector<BYTE>& value)
             {
+                Hash256 collectionKey = makeCollectionKey(collectionName, key);
+                std::vector<BYTE> keyBV = static_cast<std::vector<BYTE>>(collectionKey);
+                lmdb::val k(keyBV.data(), keyBV.size());
+                lmdb::val v(value.data(), value.size());
                 lmdb::txn wtxn = lmdb::txn::begin(env);
-                lmdb::dbi dbi = lmdb::dbi::open(wtxn, nullptr);
-                Hash256 fqKey = makeFQKey(collectionName, key);
-                if (!dbi.put(wtxn, fqKey, value)) {
+                lmdb::dbi dbi = lmdb::dbi::open(wtxn);
+                if (!dbi.put(wtxn, k, v)) {
                     throw std::runtime_error("putMutableItem failed");
                 }
                 wtxn.commit();
@@ -91,14 +111,17 @@ namespace conclave
             std::optional<std::vector<BYTE>>
             DatabaseClient::getMutableItem(const std::string& collectionName, const Hash256& key)
             {
-                lmdb::txn rtxn = lmdb::txn::begin(env, nullptr, MDB_RDONLY);
-                lmdb::dbi dbi = lmdb::dbi::open(rtxn, nullptr);
-                Hash256 fqKey = makeFQKey(collectionName, key);
-                std::vector<BYTE> value;
-                if (!dbi.get(rtxn, fqKey, value)) {
+                Hash256 collectionKey = makeCollectionKey(collectionName, key);
+                std::vector<BYTE> keyBV = static_cast<std::vector<BYTE>>(collectionKey);
+                lmdb::val k(keyBV.data(), keyBV.size());
+                lmdb::val v;
+                lmdb::txn rtxn = lmdb::txn::begin(env);
+                lmdb::dbi dbi = lmdb::dbi::open(rtxn);
+                if (dbi.get(rtxn, k, v)) {
+                    return std::vector<BYTE>(v.data(), v.data() + v.size());
+                } else {
                     return std::nullopt;
                 }
-                return value;
             }
         }
     }
