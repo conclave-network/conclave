@@ -60,7 +60,7 @@ namespace conclave
                     // Set predecessor to fundTip (or nullopt)
                     conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
                     // Update fundTip
-                    Outpoint outpoint = Outpoint(claimTx.getHash256(), i);
+                    Outpoint outpoint(claimTx.getHash256(), i);
                     databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
                 }
             }
