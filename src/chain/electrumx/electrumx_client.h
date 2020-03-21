@@ -47,6 +47,7 @@ namespace conclave
                 ~ElectrumxClient();
                 const pt::ptree blockchainScripthashGetBalance(const std::string&);
                 const pt::ptree blockchainTransactionBroadcast(const std::string&);
+                const pt::ptree blockchainHeadersSubscribe();
                 private:
                 const pt::ptree doRequest(const pt::ptree&);
                 BYTE* receiveBuffer;

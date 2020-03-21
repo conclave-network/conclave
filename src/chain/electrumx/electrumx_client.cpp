@@ -73,6 +73,17 @@ namespace conclave
                 return doRequest(request);
             }
             
+            /***
+             * blockchain.headers.subscribe
+             * https://electrumx.readthedocs.io/en/latest/protocol-methods.html#blockchain-headers-subscribe
+             */
+            const pt::ptree ElectrumxClient::blockchainHeadersSubscribe()
+            {
+                pt::ptree params;
+                pt::ptree request = buildRequest("blockchain.headers.subscribe");
+                return doRequest(request);
+            }
+            
             const pt::ptree ElectrumxClient::doRequest(const pt::ptree& request)
             {
                 std::string requestString = jsonToString(request, false);
@@ -84,7 +95,6 @@ namespace conclave
                     throw std::runtime_error("Error receiving response from ElectrumX client");
                 }
                 receiveBuffer[br] = '\0';
-                std::cout << receiveBuffer << std::endl;
                 const pt::ptree response = parseJson((char*) receiveBuffer);
                 receiveBufferMutex.unlock();
                 return getResultOrThrowError(response);
