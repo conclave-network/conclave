@@ -41,6 +41,10 @@ namespace conclave
         class ConclaveChain
         {
             public:
+            // Collection Names
+            const static std::string COLLECTION_SPEND_TIPS;
+            const static std::string COLLECTION_FUND_TIPS;
+            // Constructors
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             const uint64_t getAddressBalance(const Address&);
             void submitEntryTx(const EntryTx&);

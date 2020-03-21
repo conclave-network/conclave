@@ -22,6 +22,17 @@ namespace conclave
 {
     namespace chain
     {
+        //
+        // Collection Names
+        //
+        
+        const std::string ConclaveChain::COLLECTION_SPEND_TIPS = "SpendTips";
+        const std::string ConclaveChain::COLLECTION_FUND_TIPS = "FundTips";
+        
+        //
+        // Constructors
+        //
+        
         ConclaveChain::ConclaveChain(const ConclaveChainConfig& conclaveChainConfig, BitcoinChain& bitcoinChain)
             : bitcoinChain(bitcoinChain), databaseClient(DatabaseClient(conclaveChainConfig.getDatabaseClientConfig()))
         {
@@ -44,12 +55,13 @@ namespace conclave
             } else {
                 // Tx is confirmed and output is spendable
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
-                    ConclaveOutput conclaveOutput = claimTx.conclaveOutputs[i];
+                    ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
                     // Set predecessor to fundTip (or nullopt)
-                    //conclaveOutput.predecessor = databaseClient.getMutableItem(walletHash);
+                    conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
                     // Update fundTip
-                    //databaseClient.putMutableItem(walletHash, Outpoint(claimTx.getHash256(), i));
+                    Outpoint outpoint = Outpoint(claimTx.getHash256(), i);
+                    databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
                 }
             }
         }
