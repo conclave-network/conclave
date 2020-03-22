@@ -37,6 +37,7 @@ namespace conclave
         Hash160();
         Hash160(const std::array<BYTE, SMALL_HASH_SIZE_BYTES>&);
         Hash160(std::array<BYTE, SMALL_HASH_SIZE_BYTES>&&);
+        Hash160(const std::vector<BYTE>&);
         Hash160(const std::string&);
         Hash160(const BYTE*);
         Hash160(const char*);

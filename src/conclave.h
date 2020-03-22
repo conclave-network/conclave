@@ -26,10 +26,10 @@
 
 typedef unsigned char BYTE;
 #define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
+#define BYTE_VECTOR_TO_ARRAY(byteVector, size) bytePointerToByteArray<size>(byteVector.data())
 #define STRING_TO_BYTE_VECTOR(str) std::vector<BYTE>(str.begin(), str.end())
 #define BYTE_VECTOR_TO_HEX(byteVector) byteVectorToHexString(byteVector)
 #define HEX_TO_BYTE_VECTOR(hex) hexStringToByteVector(hex)
-
 // Sizes of things
 const static size_t UINT8_SIZE = 1;
 const static size_t UINT16_SIZE = 2;

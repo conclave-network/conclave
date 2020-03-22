@@ -71,6 +71,11 @@ namespace conclave
     {
     }
     
+    Hash160::Hash160(const std::vector<BYTE>& data)
+        : data(BYTE_VECTOR_TO_ARRAY(data, SMALL_HASH_SIZE_BYTES))
+    {
+    }
+    
     Hash160::Hash160(const std::string& hex)
         : Hash160(hexStringToByteArray<SMALL_HASH_SIZE_BYTES>(hex))
     {

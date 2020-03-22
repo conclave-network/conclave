@@ -37,6 +37,7 @@ namespace conclave
         Hash256();
         Hash256(const std::array<BYTE, LARGE_HASH_SIZE_BYTES>&);
         Hash256(std::array<BYTE, LARGE_HASH_SIZE_BYTES>&&);
+        Hash256(const std::vector<BYTE>&);
         Hash256(const std::string&);
         Hash256(const BYTE*);
         Hash256(const char*);

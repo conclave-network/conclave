@@ -71,6 +71,11 @@ namespace conclave
     {
     }
     
+    Hash256::Hash256(const std::vector<BYTE>& data)
+        : data(BYTE_VECTOR_TO_ARRAY(data, LARGE_HASH_SIZE_BYTES))
+    {
+    }
+    
     Hash256::Hash256(const std::string& hex)
         : Hash256(hexStringToByteArray<LARGE_HASH_SIZE_BYTES>(hex))
     {
