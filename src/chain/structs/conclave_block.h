@@ -18,8 +18,6 @@
 
 #pragma once
 
-#include "../../structs/conclave_claim_tx.h"
-#include "../../structs/conclave_standard_tx.h"
 #include "../../hash256.h"
 #include <boost/property_tree/ptree.hpp>
 #include <cstdint>
@@ -44,10 +42,12 @@ namespace conclave
             const static std::string JSONKEY_TX_HASH;
             // Factories
             static ConclaveBlock deserialize(const std::vector<BYTE>&, size_t&);
+            static ConclaveBlock deserialize(const std::vector<BYTE>&);
             // Constructors
             ConclaveBlock(const uint64_t, const uint64_t, const uint32_t, const Hash256&,
                           const Hash256&, const uint16_t, const uint16_t, const Hash256&);
             ConclaveBlock(const pt::ptree&);
+            ConclaveBlock(const std::vector<BYTE>&);
             ConclaveBlock(const ConclaveBlock&);
             ConclaveBlock(ConclaveBlock&&);
             // Public Functions

@@ -56,6 +56,12 @@ namespace conclave
                                  lowestParentBitcoinBlockHash, txTypeId, txVersion, txHash);
         }
         
+        ConclaveBlock ConclaveBlock::deserialize(const std::vector<BYTE>& data)
+        {
+            size_t pos = 0;
+            return deserialize(data, pos);
+        }
+        
         //
         // Constructors
         //
@@ -66,6 +72,37 @@ namespace conclave
             : pot(pot), height(height), epoch(epoch), hashPrevBlock(hashPrevBlock),
               lowestParentBitcoinBlockHash(lowestParentBitcoinBlockHash),
               txTypeId(txTypeId), txVersion(txVersion), txHash(txHash)
+        {
+        }
+        
+        ConclaveBlock::ConclaveBlock(const pt::ptree& tree)
+            : ConclaveBlock(
+            getPrimitiveFromJson<uint64_t>(tree, JSONKEY_POT),
+            getPrimitiveFromJson<uint64_t>(tree, JSONKEY_HEIGHT),
+            getPrimitiveFromJson<uint32_t>(tree, JSONKEY_EPOCH),
+            getPrimitiveFromJson<std::string>(tree, JSONKEY_HASH_PREV_BLOCK),
+            getPrimitiveFromJson<std::string>(tree, JSONKEY_LOWEST_PARENT_BITCOIN_BLOCK_HASH),
+            getPrimitiveFromJson<uint16_t>(tree, JSONKEY_TX_TYPE_ID),
+            getPrimitiveFromJson<uint16_t>(tree, JSONKEY_TX_VERSION),
+            getPrimitiveFromJson<std::string>(tree, JSONKEY_TX_HASH))
+        {
+        }
+        
+        ConclaveBlock::ConclaveBlock(const std::vector<BYTE>& data)
+            : ConclaveBlock(deserialize(data))
+        {
+        }
+        
+        ConclaveBlock::ConclaveBlock(const ConclaveBlock& other)
+            : ConclaveBlock(other.pot, other.height, other.epoch, other.hashPrevBlock,
+                            other.lowestParentBitcoinBlockHash, other.txTypeId, other.txVersion, other.txHash)
+        {
+        }
+        
+        ConclaveBlock::ConclaveBlock(ConclaveBlock&& other)
+            : ConclaveBlock(other.pot, other.height, other.epoch, std::move(other.hashPrevBlock),
+                            std::move(other.lowestParentBitcoinBlockHash), other.txTypeId,
+                            other.txVersion, std::move(other.txHash))
         {
         }
         
