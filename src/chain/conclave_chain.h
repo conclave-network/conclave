@@ -43,7 +43,7 @@ namespace conclave
         {
             public:
             // Genesis
-            const static ConclaveBlock ConclaveChain::GENESIS_BLOCK;
+            const static ConclaveBlock GENESIS_BLOCK;
             // Collection Names
             const static std::string COLLECTION_CHAIN_TIP;
             const static std::string COLLECTION_SPEND_TIPS;
