@@ -52,7 +52,7 @@ namespace conclave
             const uint64_t getAddressBalance(const Address&);
             void submitEntryTx(const EntryTx&);
             const Hash256 submitStandardTx(const ConclaveStandardTx&);
-            const ConclaveBlock getChainTip();
+            const Hash256 getChainTipHash();
             private:
             // Properties
             BitcoinChain& bitcoinChain;

@@ -57,7 +57,7 @@ namespace conclave
             } else {
                 // Tx is confirmed and output is spendable
                 // TODO: Put claimTx into block
-                ConclaveBlock chainTip = getChainTip();
+                const Hash256 chainTipHash = getChainTipHash();
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                     ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
@@ -75,10 +75,14 @@ namespace conclave
             return Hash256();
         }
         
-        const ConclaveBlock ConclaveChain::getChainTip()
+        const Hash256 ConclaveChain::getChainTipHash()
         {
             std::optional<Hash256> chainTipHash = databaseClient.getSingletonItem(COLLECTION_CHAIN_TIP);
             if (chainTipHash.has_value()) {
+                return *chainTipHash;
+            } else {
+                // "Genesis" hash
+                return Hash256("C07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7E");
             }
         }
     }
