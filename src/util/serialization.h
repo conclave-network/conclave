@@ -171,9 +171,9 @@ namespace conclave
     /**
      * Deserialize integral values
      *
-     * @tparam T - integral type being deserialized
-     * @param data - data stream
-     * @param pos - position within data stream where first byte appears
+     * @tparam T - Integral type being deserialized
+     * @param data - Data stream
+     * @param pos - Position within data stream where first byte appears
      * @return - Deserialized value
      */
     template<typename T>
