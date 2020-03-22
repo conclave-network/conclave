@@ -73,14 +73,21 @@ namespace conclave
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderDeserializeFactoryTest)
             {
                 size_t pos = 0;
-                BitcoinBlockHeader bitcoinBlockHeader = BitcoinBlockHeader::deserialize(BLOCK_1_SERIALIZED, pos);
-                BOOST_TEST((bitcoinBlockHeader.version == VERSION_1));
-                BOOST_TEST((bitcoinBlockHeader.hashPrevBlock == HASH_PREV_BLOCK_1));
-                BOOST_TEST((bitcoinBlockHeader.hashMerkleRoot == HASH_MERKLE_ROOT_1));
-                BOOST_TEST((bitcoinBlockHeader.time == TIME_1));
-                BOOST_TEST((bitcoinBlockHeader.bits == BITS_1));
-                BOOST_TEST((bitcoinBlockHeader.nonce == NONCE_1));
+                BitcoinBlockHeader bitcoinBlockHeader1 = BitcoinBlockHeader::deserialize(BLOCK_1_SERIALIZED, pos);
+                BitcoinBlockHeader bitcoinBlockHeader2 = BitcoinBlockHeader::deserialize(BLOCK_2_SERIALIZED);
+                BOOST_TEST((bitcoinBlockHeader1.version == VERSION_1));
+                BOOST_TEST((bitcoinBlockHeader1.hashPrevBlock == HASH_PREV_BLOCK_1));
+                BOOST_TEST((bitcoinBlockHeader1.hashMerkleRoot == HASH_MERKLE_ROOT_1));
+                BOOST_TEST((bitcoinBlockHeader1.time == TIME_1));
+                BOOST_TEST((bitcoinBlockHeader1.bits == BITS_1));
+                BOOST_TEST((bitcoinBlockHeader1.nonce == NONCE_1));
                 BOOST_TEST((pos == 4 + 32 + 32 + 4 + 4 + 4));
+                BOOST_TEST((bitcoinBlockHeader2.version == VERSION_2));
+                BOOST_TEST((bitcoinBlockHeader2.hashPrevBlock == HASH_PREV_BLOCK_2));
+                BOOST_TEST((bitcoinBlockHeader2.hashMerkleRoot == HASH_MERKLE_ROOT_2));
+                BOOST_TEST((bitcoinBlockHeader2.time == TIME_2));
+                BOOST_TEST((bitcoinBlockHeader2.bits == BITS_2));
+                BOOST_TEST((bitcoinBlockHeader2.nonce == NONCE_2));
             }
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderConstructorsTest)
@@ -88,6 +95,7 @@ namespace conclave
                 BitcoinBlockHeader bitcoinBlockHeaderFromProps(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
                                                                TIME_1, BITS_1, NONCE_1);
                 BitcoinBlockHeader bitcoinBlockHeaderFromPtree(makeBitcoinBlockHeaderTree());
+                BitcoinBlockHeader bitcoinBlockHeaderFromByteVector(BLOCK_1_SERIALIZED);
                 BOOST_TEST((bitcoinBlockHeaderFromProps.version == VERSION_1));
                 BOOST_TEST((bitcoinBlockHeaderFromProps.hashPrevBlock == HASH_PREV_BLOCK_1));
                 BOOST_TEST((bitcoinBlockHeaderFromProps.hashMerkleRoot == HASH_MERKLE_ROOT_1));
@@ -100,6 +108,12 @@ namespace conclave
                 BOOST_TEST((bitcoinBlockHeaderFromPtree.time == TIME_1));
                 BOOST_TEST((bitcoinBlockHeaderFromPtree.bits == BITS_1));
                 BOOST_TEST((bitcoinBlockHeaderFromPtree.nonce == NONCE_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.version == VERSION_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.hashPrevBlock == HASH_PREV_BLOCK_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.hashMerkleRoot == HASH_MERKLE_ROOT_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.time == TIME_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.bits == BITS_1));
+                BOOST_TEST((bitcoinBlockHeaderFromByteVector.nonce == NONCE_1));
             }
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderCopyAndMoveConstructorTest)
@@ -150,6 +164,21 @@ namespace conclave
                 BitcoinBlockHeader bitcoinBlockHeader(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
                                                       TIME_1, BITS_1, NONCE_1);
                 BOOST_TEST((BITCOIN_BLOCK_HEADER_1_STR == static_cast<std::string>(bitcoinBlockHeader)));
+            }
+            
+            BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderAssignmentOperatorsTest)
+            {
+                const BitcoinBlockHeader bitcoinBlockHeader1(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                             TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader2(VERSION_2, HASH_PREV_BLOCK_2, HASH_MERKLE_ROOT_2,
+                                                       TIME_2, BITS_2, NONCE_2);
+                BitcoinBlockHeader bitcoinBlockHeader3(VERSION_2, HASH_PREV_BLOCK_2, HASH_MERKLE_ROOT_2,
+                                                       TIME_2, BITS_2, NONCE_2);
+                bitcoinBlockHeader2 = bitcoinBlockHeader1;
+                bitcoinBlockHeader3 = std::move(BitcoinBlockHeader(bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader1 == bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader2 == bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader3 == bitcoinBlockHeader1));
             }
         
         BOOST_AUTO_TEST_SUITE_END()

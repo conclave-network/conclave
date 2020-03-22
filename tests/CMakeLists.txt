@@ -314,6 +314,13 @@ add_executable(
         chain/structs/bitcoin_block_header_test.cpp
 )
 
+add_executable(
+        conclave_block_test
+        ../src/hash256.cpp
+        ../src/chain/structs/conclave_block.cpp
+        chain/structs/conclave_block_test.cpp
+)
+
 #
 # Target Link Libraries
 #
@@ -545,6 +552,13 @@ target_link_libraries(
         PkgConfig::LIBBITCOIN_SYSTEM
 )
 
+target_link_libraries(
+        conclave_block_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
 #
 # Tests
 #
@@ -687,6 +701,11 @@ add_test(
 add_test(
         NAME bitcoin_block_header_test
         COMMAND $<TARGET_FILE:bitcoin_block_header_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME conclave_block_test
+        COMMAND $<TARGET_FILE:conclave_block_test> --report_format=HRF --logger=HRF,all
 )
 
 enable_testing()
