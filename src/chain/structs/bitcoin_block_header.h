@@ -17,6 +17,12 @@
  */
 
 #pragma once
+
+#include "../../hash256.h"
+#include <boost/property_tree/ptree.hpp>
+#include <string>
+
+namespace pt = boost::property_tree;
 namespace conclave
 {
     namespace chain
@@ -38,7 +44,7 @@ namespace conclave
             BitcoinBlockHeader(BitcoinBlockHeader&&);
             // Public Functions
             const Hash256 getHash256() const;
-            const std::vector <BYTE> serialize() const;
+            const std::vector<BYTE> serialize() const;
             // Conversions
             explicit operator pt::ptree() const;
             explicit operator std::string() const;

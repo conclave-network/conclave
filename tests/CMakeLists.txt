@@ -50,6 +50,10 @@ pkg_check_modules(
         libbitcoin-system
 )
 
+#
+# Executables
+#
+
 add_executable(
         hex_test
         util/hex_test.cpp
@@ -303,6 +307,17 @@ add_executable(
         rpc/methods/make_entry_tx/structs/destinations_test.cpp
 )
 
+add_executable(
+        bitcoin_block_header_test
+        ../src/hash256.cpp
+        ../src/chain/structs/bitcoin_block_header.cpp
+        chain/structs/bitcoin_block_header_test.cpp
+)
+
+#
+# Target Link Libraries
+#
+
 target_link_libraries(
         hex_test
 )
@@ -523,6 +538,17 @@ target_link_libraries(
         PkgConfig::LIBBITCOIN_SYSTEM
 )
 
+target_link_libraries(
+        bitcoin_block_header_test
+        LINK_PUBLIC ${Boost_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+        PkgConfig::LIBBITCOIN_SYSTEM
+)
+
+#
+# Tests
+#
+
 add_test(
         NAME hex_test
         COMMAND $<TARGET_FILE:hex_test> --report_format=HRF --logger=HRF,all
@@ -656,6 +682,11 @@ add_test(
 add_test(
         NAME destinations_test
         COMMAND $<TARGET_FILE:destinations_test> --report_format=HRF --logger=HRF,all
+)
+
+add_test(
+        NAME bitcoin_block_header_test
+        COMMAND $<TARGET_FILE:bitcoin_block_header_test> --report_format=HRF --logger=HRF,all
 )
 
 enable_testing()

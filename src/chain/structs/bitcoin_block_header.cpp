@@ -29,12 +29,12 @@ namespace conclave
         // JSON keys
         //
         
-        const std::string BitcoinBlockHeader::JSONKEY_VERSION = "Version";
-        const std::string BitcoinBlockHeader::JSONKEY_HASH_PREV_BLOCK = "HashPrevBlock";
-        const std::string BitcoinBlockHeader::JSONKEY_HASH_MERKLE_ROOT = "HashMerkleRoot";
-        const std::string BitcoinBlockHeader::JSONKEY_TIME = "Time";
-        const std::string BitcoinBlockHeader::JSONKEY_BITS = "Bits";
-        const std::string BitcoinBlockHeader::JSONKEY_NONCE = "Nonce";
+        const std::string BitcoinBlockHeader::JSONKEY_VERSION = "version";
+        const std::string BitcoinBlockHeader::JSONKEY_HASH_PREV_BLOCK = "hashPrevBlock";
+        const std::string BitcoinBlockHeader::JSONKEY_HASH_MERKLE_ROOT = "hashMerkleRoot";
+        const std::string BitcoinBlockHeader::JSONKEY_TIME = "time";
+        const std::string BitcoinBlockHeader::JSONKEY_BITS = "bits";
+        const std::string BitcoinBlockHeader::JSONKEY_NONCE = "nonce";
         
         //
         // Constructors
@@ -61,7 +61,7 @@ namespace conclave
         
         BitcoinBlockHeader::BitcoinBlockHeader(const BitcoinBlockHeader& other)
             : BitcoinBlockHeader(other.version, other.hashPrevBlock, other.hashMerkleRoot,
-                                 other.time, other.bitts, other.nonce)
+                                 other.time, other.bits, other.nonce)
         {
         }
         
@@ -94,7 +94,7 @@ namespace conclave
                 bitsSerialized.size() + nonceSerialized.size()
             );
             size_t pos = writeToByteVector(serialized, versionSerialized);
-            pos += writeToByteVector(serialized, hashMerkleRootSerialized, pos);
+            pos += writeToByteVector(serialized, hashPrevBlockSerialized, pos);
             pos += writeToByteVector(serialized, hashMerkleRootSerialized, pos);
             pos += writeToByteVector(serialized, timeSerialized, pos);
             pos += writeToByteVector(serialized, bitsSerialized, pos);
@@ -106,7 +106,7 @@ namespace conclave
         // Conversions
         //
         
-        explicit BitcoinBlockHeader::operator pt::ptree() const
+        BitcoinBlockHeader::operator pt::ptree() const
         {
             pt::ptree tree;
             tree.add<uint32_t>(JSONKEY_VERSION, version);
@@ -168,7 +168,7 @@ namespace conclave
                    (bits != other.bits) || (nonce != other.nonce);
         }
         
-        friend std::ostream& operator<<(std::ostream& os, const BitcoinBlockHeader& bitcoinBlockHeader)
+        std::ostream& operator<<(std::ostream& os, const BitcoinBlockHeader& bitcoinBlockHeader)
         {
             os << static_cast<std::string>(bitcoinBlockHeader);
             return os;
