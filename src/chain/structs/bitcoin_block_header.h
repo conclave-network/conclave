@@ -20,6 +20,7 @@
 
 #include "../../hash256.h"
 #include <boost/property_tree/ptree.hpp>
+#include <cstdint>
 #include <string>
 
 namespace pt = boost::property_tree;
@@ -38,10 +39,12 @@ namespace conclave
             const static std::string JSONKEY_NONCE;
             // Factories
             static BitcoinBlockHeader deserialize(const std::vector<BYTE>&, size_t&);
+            static BitcoinBlockHeader deserialize(const std::vector<BYTE>&);
             // Constructors
             BitcoinBlockHeader(const uint32_t, const Hash256&, const Hash256&,
                                const uint32_t, const uint32_t, const uint32_t);
             BitcoinBlockHeader(const pt::ptree&);
+            BitcoinBlockHeader(const std::vector<BYTE>&);
             BitcoinBlockHeader(const BitcoinBlockHeader&);
             BitcoinBlockHeader(BitcoinBlockHeader&&);
             // Public Functions

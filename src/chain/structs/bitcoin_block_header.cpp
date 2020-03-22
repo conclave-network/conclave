@@ -51,6 +51,12 @@ namespace conclave
             return BitcoinBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce);
         }
         
+        BitcoinBlockHeader BitcoinBlockHeader::deserialize(const std::vector<BYTE>& data)
+        {
+            size_t pos = 0;
+            return deserialize(data, pos);
+        }
+        
         //
         // Constructors
         //
@@ -71,6 +77,11 @@ namespace conclave
             getPrimitiveFromJson<uint32_t>(tree, JSONKEY_TIME),
             getPrimitiveFromJson<uint32_t>(tree, JSONKEY_BITS),
             getPrimitiveFromJson<uint32_t>(tree, JSONKEY_NONCE))
+        {
+        }
+        
+        BitcoinBlockHeader::BitcoinBlockHeader(const std::vector<BYTE>& data)
+            : BitcoinBlockHeader(deserialize(data))
         {
         }
         
