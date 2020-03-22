@@ -42,6 +42,8 @@ namespace conclave
         class ConclaveChain
         {
             public:
+            // Genesis
+            const static ConclaveBlock ConclaveChain::GENESIS_BLOCK;
             // Collection Names
             const static std::string COLLECTION_CHAIN_TIP;
             const static std::string COLLECTION_SPEND_TIPS;
@@ -53,6 +55,7 @@ namespace conclave
             void submitEntryTx(const EntryTx&);
             const Hash256 submitStandardTx(const ConclaveStandardTx&);
             const Hash256 getChainTipHash();
+            const ConclaveBlock getChainTip();
             private:
             // Properties
             BitcoinChain& bitcoinChain;

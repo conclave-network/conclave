@@ -34,20 +34,44 @@ namespace conclave
         struct ConclaveBlock final
         {
             // JSON keys
+            const static std::string JSONKEY_POT;
             const static std::string JSONKEY_HEIGHT;
-            const static std::string JSONKEY_PREV_BLOCK_HASH;
+            const static std::string JSONKEY_EPOCH;
+            const static std::string JSONKEY_HASH_PREV_BLOCK;
             const static std::string JSONKEY_LOWEST_PARENT_BITCOIN_BLOCK_HASH;
-            const static std::string JSONKEY_CONCLAVE_TX;
+            const static std::string JSONKEY_TX_TYPE_ID;
+            const static std::string JSONKEY_TX_VERSION;
+            const static std::string JSONKEY_TX_HASH;
+            // Factories
+            static ConclaveBlock deserialize(const std::vector<BYTE>&, size_t&);
             // Constructors
+            ConclaveBlock(const uint64_t, const uint64_t, const uint32_t, const Hash256&,
+                          const Hash256&, const uint16_t, const uint16_t, const Hash256&);
+            ConclaveBlock(const pt::ptree&);
+            ConclaveBlock(const ConclaveBlock&);
+            ConclaveBlock(ConclaveBlock&&);
+            // Public Functions
+            const Hash256 getHash256() const;
+            const std::vector<BYTE> serialize() const;
+            // Conversions
+            explicit operator pt::ptree() const;
+            explicit operator std::string() const;
+            operator std::vector<BYTE>() const;
+            // Operator Overloads
+            ConclaveBlock& operator=(const ConclaveBlock&);
+            ConclaveBlock& operator=(ConclaveBlock&&);
+            bool operator==(const ConclaveBlock&) const;
+            bool operator!=(const ConclaveBlock&) const;
+            friend std::ostream& operator<<(std::ostream&, const ConclaveBlock&);
             // Properties
+            uint64_t pot;
             uint64_t height;
-            uint64_t time;
-            uint32_t txTypeId;
-            uint32_t txVersion;
+            uint32_t epoch;
             Hash256 hashPrevBlock;
             Hash256 lowestParentBitcoinBlockHash;
-            std::optional<ConclaveClaimTx> concalveClaimTx;
-            std::optional<ConclaveStandardTx> conclaveStandardTx;
+            uint16_t txTypeId;
+            uint16_t txVersion;
+            Hash256 txHash;
         };
     }
 }

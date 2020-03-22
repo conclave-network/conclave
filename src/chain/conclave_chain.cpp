@@ -23,6 +23,21 @@ namespace conclave
     namespace chain
     {
         //
+        // Genesis
+        //
+        
+        const ConclaveBlock ConclaveChain::GENESIS_BLOCK(
+            0,
+            0,
+            0,
+            Hash256("0000000000000000000000000000000000000000000000000000000000000000"),
+            Hash256("0000000000000000000ec9fb4c1ddcfd51b366278a1bdddb7dbee1e9a1aba654"),
+            0,
+            0,
+            Hash256("0000000000000000000000000000000000000000000000000000000000000000")
+        );
+        
+        //
         // Collection Names
         //
         
@@ -57,7 +72,7 @@ namespace conclave
             } else {
                 // Tx is confirmed and output is spendable
                 // TODO: Put claimTx into block
-                const Hash256 chainTipHash = getChainTipHash();
+                Hash256 chainTipHash = getChainTipHash();
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                     ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
@@ -84,6 +99,11 @@ namespace conclave
                 // "Genesis" hash
                 return Hash256("C07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7E");
             }
+        }
+        
+        const ConclaveBlock ConclaveChain::getChainTip()
+        {
+            //return databaseClient.getItem(getChainTipHash());
         }
     }
 }
