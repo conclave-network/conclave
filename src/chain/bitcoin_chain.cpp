@@ -60,5 +60,10 @@ namespace conclave
         {
             return true; //TODO
         }
+        
+        const Hash256 BitcoinChain::getLatestBlockHash()
+        {
+            return Hash256(); // TODO
+        }
     }
 }

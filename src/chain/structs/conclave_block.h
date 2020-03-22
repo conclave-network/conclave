@@ -16,12 +16,38 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
+#include "../../structs/conclave_claim_tx.h"
+#include "../../structs/conclave_standard_tx.h"
+#include "../../hash256.h"
+#include <boost/property_tree/ptree.hpp>
+#include <cstdint>
+#include <string>
+#include <optional>
+
+namespace pt = boost::property_tree;
 namespace conclave
 {
     namespace chain
     {
-        class ConcalveBlock final
+        struct ConclaveBlock final
         {
+            // JSON keys
+            const static std::string JSONKEY_HEIGHT;
+            const static std::string JSONKEY_PREV_BLOCK_HASH;
+            const static std::string JSONKEY_LOWEST_PARENT_BITCOIN_BLOCK_HASH;
+            const static std::string JSONKEY_CONCLAVE_TX;
+            // Constructors
+            // Properties
+            uint64_t height;
+            uint64_t time;
+            uint32_t txTypeId;
+            uint32_t txVersion;
+            Hash256 hashPrevBlock;
+            Hash256 lowestParentBitcoinBlockHash;
+            std::optional<ConclaveClaimTx> concalveClaimTx;
+            std::optional<ConclaveStandardTx> conclaveStandardTx;
         };
     }
 }

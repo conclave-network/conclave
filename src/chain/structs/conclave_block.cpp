@@ -16,28 +16,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#define BOOST_TEST_MODULE Electrumx_Client_Test
+#include "conclave_block.h"
 
-#include <boost/test/included/unit_test.hpp>
-#include "../../../src/chain/electrumx/electrumx_client.h"
-#include "../../../src/util/json.h"
-
-namespace pt = boost::property_tree;
 namespace conclave
 {
     namespace chain
     {
-        namespace electrumx
-        {
-            BOOST_AUTO_TEST_CASE(ElectrumxClientTest)
-            {
-                ElectrumxClient electrumxClient("electrumx.kenrufe.com", 50001);
-                pt::ptree tree = electrumxClient.blockchainHeadersSubscribe();
-                std::cout << jsonToString(tree, true) << std::endl;
-                
-                
-                //BOOST_TEST(true);
-            }
-        };
-    };
-};
+    }
+}

@@ -26,6 +26,7 @@ namespace conclave
         // Collection Names
         //
         
+        const std::string ConclaveChain::COLLECTION_CHAIN_TIP = "ChainTip";
         const std::string ConclaveChain::COLLECTION_SPEND_TIPS = "SpendTips";
         const std::string ConclaveChain::COLLECTION_FUND_TIPS = "FundTips";
         
@@ -47,6 +48,7 @@ namespace conclave
         {
             BitcoinTx fundTx = entryTx.fundTx;
             ConclaveClaimTx claimTx = entryTx.claimTx;
+            
             // Check if the funding transaction has been confirmed or not
             if (!bitcoinChain.txIsConfirmed(fundTx.getHash256())) {
                 bitcoinChain.submitTx(fundTx);
@@ -54,6 +56,8 @@ namespace conclave
                 throw std::runtime_error(std::string("Output is not spendable: "));
             } else {
                 // Tx is confirmed and output is spendable
+                // TODO: Put claimTx into block
+                ConclaveBlock chainTip = getChainTip();
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                     ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
@@ -69,6 +73,13 @@ namespace conclave
         const Hash256 ConclaveChain::submitStandardTx(const ConclaveStandardTx& conclaveStandardTx)
         {
             return Hash256();
+        }
+        
+        const ConclaveBlock ConclaveChain::getChainTip()
+        {
+            std::optional<Hash256> chainTipHash = databaseClient.getSingletonItem(COLLECTION_CHAIN_TIP);
+            if (chainTipHash.has_value()) {
+            }
         }
     }
 }

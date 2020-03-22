@@ -19,6 +19,7 @@
 #pragma once
 
 #include "database/database_client.h"
+#include "structs/conclave_block.h"
 #include "bitcoin_chain.h"
 #include "../config/conclave_chain_config.h"
 #include "../hash256.h"
@@ -42,14 +43,18 @@ namespace conclave
         {
             public:
             // Collection Names
+            const static std::string COLLECTION_CHAIN_TIP;
             const static std::string COLLECTION_SPEND_TIPS;
             const static std::string COLLECTION_FUND_TIPS;
             // Constructors
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
+            // Public Functions
             const uint64_t getAddressBalance(const Address&);
             void submitEntryTx(const EntryTx&);
             const Hash256 submitStandardTx(const ConclaveStandardTx&);
+            const ConclaveBlock getChainTip();
             private:
+            // Properties
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
         };

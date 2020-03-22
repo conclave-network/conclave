@@ -24,7 +24,7 @@
 #include "../structs/outpoint.h"
 #include "../address.h"
 #include "../hash256.h"
-
+#include <cstdint>
 /***
  * Abstraction layer over the Bitcoin blockchain. All interaction with the bitcoin base chain
  * such as getting blocks, transactions, wallet balances, as well as submitting new transactions,
@@ -48,6 +48,8 @@ namespace conclave
             const Hash256 submitTx(const BitcoinTx&);
             const bool txIsConfirmed(const Hash256&);
             const bool outputIsSpendable(const Outpoint&);
+            const Hash256 getLatestBlockHash();
+            const uint64_t getLatestBlockHeight();
             private:
             ElectrumxClient electrumxClient;
         };
