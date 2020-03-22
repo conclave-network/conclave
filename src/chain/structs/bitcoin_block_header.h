@@ -36,6 +36,8 @@ namespace conclave
             const static std::string JSONKEY_TIME;
             const static std::string JSONKEY_BITS;
             const static std::string JSONKEY_NONCE;
+            // Factories
+            static BitcoinBlockHeader deserialize(const std::vector<BYTE>&, size_t&);
             // Constructors
             BitcoinBlockHeader(const uint32_t, const Hash256&, const Hash256&,
                                const uint32_t, const uint32_t, const uint32_t);

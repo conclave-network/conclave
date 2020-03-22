@@ -37,6 +37,22 @@ namespace conclave
         const std::string BitcoinBlockHeader::JSONKEY_NONCE = "nonce";
         
         //
+        // Factories
+        //
+        
+        BitcoinBlockHeader BitcoinBlockHeader::deserialize(const std::vector<BYTE>& data, size_t& pos)
+        {
+            return BitcoinBlockHeader(
+                deserializeIntegral<uint32_t>(data, pos), // version
+                Hash256::deserialize(data, pos),          // hashPrevBlock
+                Hash256::deserialize(data, pos),          // hashMerkleRoot
+                deserializeIntegral<uint32_t>(data, pos), // time
+                deserializeIntegral<uint32_t>(data, pos), // bits
+                deserializeIntegral<uint32_t>(data, pos)  // nonce
+            );
+        }
+        
+        //
         // Constructors
         //
         
