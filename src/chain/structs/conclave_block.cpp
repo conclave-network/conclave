@@ -65,7 +65,7 @@ namespace conclave
                                      const uint16_t txTypeId, const uint16_t txVersion, const Hash256& txHash)
             : pot(pot), height(height), epoch(epoch), hashPrevBlock(hashPrevBlock),
               lowestParentBitcoinBlockHash(lowestParentBitcoinBlockHash),
-              txTypeId(txTypeId), txVersion(txVersion), txHash(Hash)
+              txTypeId(txTypeId), txVersion(txVersion), txHash(txHash)
         {
         }
         
@@ -73,7 +73,115 @@ namespace conclave
         // Public Functions
         //
         
+        const Hash256 ConclaveBlock::getHash256() const
+        {
+            return Hash256::digest(serialize());
+        }
         
+        const std::vector<BYTE> ConclaveBlock::serialize() const
+        {
+            const std::vector<BYTE> potSerialized = serializeIntegral(pot);
+            const std::vector<BYTE> heightSerialized = serializeIntegral(height);
+            const std::vector<BYTE> epochSerialized = serializeU32(epoch);
+            const std::vector<BYTE> hashPrevBlockSerialized = hashPrevBlock.serialize();
+            const std::vector<BYTE> lowestParentBitcoinBlockHashSerialized = lowestParentBitcoinBlockHash.serialize();
+            const std::vector<BYTE> txTypeIdSerialized = serializeIntegral(txTypeId);
+            const std::vector<BYTE> txVersionSerialized = serializeIntegral(txVersion);
+            const std::vector<BYTE> txHashSerialized = txHash.serialize();
+            std::vector<BYTE> serialized(
+                potSerialized.size() + heightSerialized.size() + epochSerialized.size() +
+                hashPrevBlockSerialized.size() + lowestParentBitcoinBlockHashSerialized.size() +
+                txTypeIdSerialized.size() + txVersionSerialized.size() + txHashSerialized.size()
+            );
+            size_t pos = writeToByteVector(serialized, potSerialized);
+            pos += writeToByteVector(serialized, heightSerialized, pos);
+            pos += writeToByteVector(serialized, epochSerialized, pos);
+            pos += writeToByteVector(serialized, hashPrevBlockSerialized, pos);
+            pos += writeToByteVector(serialized, lowestParentBitcoinBlockHashSerialized, pos);
+            pos += writeToByteVector(serialized, txTypeIdSerialized, pos);
+            pos += writeToByteVector(serialized, txVersionSerialized, pos);
+            writeToByteVector(serialized, txHashSerialized, pos);
+            return serialized;
+        }
         
+        //
+        // Conversions
+        //
+        
+        ConclaveBlock::operator pt::ptree() const
+        {
+            pt::ptree tree;
+            tree.add<uint64_t>(JSONKEY_POT, pot);
+            tree.add<uint64_t>(JSONKEY_HEIGHT, height);
+            tree.add<uint32_t>(JSONKEY_EPOCH, epoch);
+            tree.add<std::string>(JSONKEY_HASH_PREV_BLOCK, hashPrevBlock);
+            tree.add<std::string>(JSONKEY_LOWEST_PARENT_BITCOIN_BLOCK_HASH, lowestParentBitcoinBlockHash);
+            tree.add<uint16_t>(JSONKEY_TX_TYPE_ID, txTypeId);
+            tree.add<uint16_t>(JSONKEY_TX_VERSION, txVersion);
+            tree.add<std::string>(JSONKEY_TX_HASH, txHash);
+            return tree;
+        }
+        
+        ConclaveBlock::operator std::string() const
+        {
+            return jsonToString(static_cast<pt::ptree>(*this));
+        }
+        
+        ConclaveBlock::operator std::vector<BYTE>() const
+        {
+            return serialize();
+        }
+        
+        //
+        // Operator Overloads
+        //
+        
+        ConclaveBlock& ConclaveBlock::operator=(const ConclaveBlock& other)
+        {
+            pot = other.pot;
+            height = other.height;
+            epoch = other.epoch;
+            hashPrevBlock = other.hashPrevBlock;
+            lowestParentBitcoinBlockHash = other.lowestParentBitcoinBlockHash;
+            txTypeId = other.txTypeId;
+            txVersion = other.txVersion;
+            txHash = other.txHash;
+            return *this;
+        }
+        
+        ConclaveBlock& ConclaveBlock::operator=(ConclaveBlock&& other)
+        {
+            pot = other.pot;
+            height = other.height;
+            epoch = other.epoch;
+            hashPrevBlock = std::move(other.hashPrevBlock);
+            lowestParentBitcoinBlockHash = std::move(other.lowestParentBitcoinBlockHash);
+            txTypeId = other.txTypeId;
+            txVersion = other.txVersion;
+            txHash = std::move(other.txHash);
+            return *this;
+        }
+        
+        bool ConclaveBlock::operator==(const ConclaveBlock& other) const
+        {
+            return (pot == other.pot) && (height == other.height) && (epoch == other.epoch) &&
+                   (hashPrevBlock == other.hashPrevBlock) &&
+                   (lowestParentBitcoinBlockHash == other.lowestParentBitcoinBlockHash) &&
+                   (txTypeId == other.txTypeId) && (txVersion == other.txVersion) && (txHash == other.txHash);
+        }
+        
+        bool ConclaveBlock::operator!=(const ConclaveBlock& other) const
+        {
+            return (pot != other.pot) || (height != other.height) || (epoch != other.epoch) ||
+                   (hashPrevBlock != other.hashPrevBlock) ||
+                   (lowestParentBitcoinBlockHash != other.lowestParentBitcoinBlockHash) ||
+                   (txTypeId != other.txTypeId) || (txVersion != other.txVersion) || (txHash != other.txHash);
+        }
+        
+        std::ostream& operator<<(std::ostream& os, const ConclaveBlock& conclaveBlock)
+        {
+            os << static_cast<std::string>(conclaveBlock);
+            return os;
+        }
     }
 }
