@@ -32,7 +32,7 @@ namespace conclave
         static Hash256 digest(const std::vector<BYTE>&);
         static Hash256 digest(const std::string&);
         static Hash256 digest(const char*);
-        static Hash256 deserialize(const std::vector<BYTE>&, const size_t = 0);
+        static Hash256 deserialize(const std::vector<BYTE>&, size_t&);
         // Constructors
         Hash256();
         Hash256(const std::array<BYTE, LARGE_HASH_SIZE_BYTES>&);

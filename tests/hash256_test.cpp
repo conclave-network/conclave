@@ -113,7 +113,9 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(Hash256DeserializeFactoryTest)
         {
-            BOOST_TEST((Hash256::deserialize(SERIALIZED_HASH) == DESERIALIZED_HASH));
+            size_t pos = 0;
+            BOOST_TEST((Hash256::deserialize(SERIALIZED_HASH, pos) == DESERIALIZED_HASH));
+            BOOST_TEST((pos == LARGE_HASH_SIZE_BYTES));
         }
         
         BOOST_AUTO_TEST_CASE(Hash256DefaultConstructorTest)
@@ -801,7 +803,7 @@ namespace conclave
             BOOST_TEST((hash2 == hash3));
             BOOST_TEST((hash3 == hash1));
         }
-    
+        
         BOOST_AUTO_TEST_CASE(Hash160XorOperatorTest)
         {
             BOOST_TEST(((ARBITRARY_HASH_1 ^ ARBITRARY_HASH_2) == ARBHASH1_XOR_ARBHASH2));

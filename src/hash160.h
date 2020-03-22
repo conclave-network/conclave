@@ -32,7 +32,7 @@ namespace conclave
         static Hash160 digest(const std::vector<BYTE>&);
         static Hash160 digest(const std::string&);
         static Hash160 digest(const char*);
-        static Hash160 deserialize(const std::vector<BYTE>&, const size_t = 0);
+        static Hash160 deserialize(const std::vector<BYTE>&, size_t&);
         // Constructors
         Hash160();
         Hash160(const std::array<BYTE, SMALL_HASH_SIZE_BYTES>&);

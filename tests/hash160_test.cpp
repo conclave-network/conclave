@@ -104,7 +104,9 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(Hash160DeserializeFactoryTest)
         {
-            BOOST_TEST((Hash160::deserialize(SERIALIZED_HASH) == DESERIALIZED_HASH));
+            size_t pos = 0;
+            BOOST_TEST((Hash160::deserialize(SERIALIZED_HASH, pos) == DESERIALIZED_HASH));
+            BOOST_TEST((pos == SMALL_HASH_SIZE_BYTES));
         }
         
         BOOST_AUTO_TEST_CASE(Hash160DefaultConstructorTest)

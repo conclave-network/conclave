@@ -44,10 +44,11 @@ namespace conclave
         return digest(std::string(cStr));
     }
     
-    Hash256 Hash256::deserialize(const std::vector<BYTE>& data, const size_t pos)
+    Hash256 Hash256::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
         std::array<BYTE, LARGE_HASH_SIZE_BYTES> arr;
         std::reverse_copy(data.begin() + pos, data.begin() + pos + LARGE_HASH_SIZE_BYTES, arr.begin());
+        pos += LARGE_HASH_SIZE_BYTES;
         return Hash256(arr);
     }
     
