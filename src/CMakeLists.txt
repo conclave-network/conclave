@@ -100,6 +100,8 @@ add_executable(
         chain/bitcoin_chain.cpp
         chain/electrumx/electrumx_client.cpp
         chain/database/database_client.cpp
+        chain/structs/conclave_block.cpp
+        chain/structs/bitcoin_block_header.cpp
 )
 
 target_link_libraries(
