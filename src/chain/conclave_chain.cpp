@@ -72,7 +72,17 @@ namespace conclave
             } else {
                 // Tx is confirmed and output is spendable
                 // TODO: Put claimTx into block
-                Hash256 chainTipHash = getChainTipHash();
+                ConclaveBlock oldTip = getChainTip();
+                ConclaveBlock newTip = ConclaveBlock(
+                    0,                                       // pot
+                    oldTip.height + 1,                          // height
+                    0,                                       // epoch
+                    oldTip.getHash256(),                        // hashPrevBlock
+                    bitcoinChain.getLatestBlockHash(),       // lowestParentBitcoinBlockHash
+                    0,                                       // txTypeId
+                    0,                                       // txVersion
+                    claimTx.getHash256()                     // txHash
+                );
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                     ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
@@ -82,6 +92,9 @@ namespace conclave
                     Outpoint outpoint(claimTx.getHash256(), i);
                     databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
                 }
+                databaseClient.putItem(claimTx);
+                databaseClient.putItem(newTip);
+                databaseClient.putSingletonItem(COLLECTION_CHAIN_TIP, newTip.getHash256());
             }
         }
         
@@ -103,7 +116,7 @@ namespace conclave
         
         const ConclaveBlock ConclaveChain::getChainTip()
         {
-            //return databaseClient.getItem(getChainTipHash());
+            std::optional<ConclaveBlock> chainTipBV = databaseClient.getItem(getChainTipHash());
         }
     }
 }
