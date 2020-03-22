@@ -138,6 +138,41 @@ namespace conclave
             BOOST_TEST((thingiesSerialized ==
                         std::vector<BYTE>{0x03, 0x02, 0x02, 0x03, 0x03, 0x03, 0x05, 0x05, 0x05, 0x05, 0x05}));
         }
+        
+        BOOST_AUTO_TEST_CASE(DeserializeIntegralTest)
+        {
+            std::vector<BYTE> data{
+                0xd8, 0xd4, 0xff, 0x43, 0xcc, 0x8b, 0xbb, 0x7e, 0x97, 0x09, 0x53
+            };
+            size_t pos = 0;
+            // [pos] = 0xd8
+            uint8_t u8 = deserializeIntegral<uint8_t>(data, pos);
+            BOOST_TEST((u8 == 216));
+            // [pos] = 0xd4
+            int8_t i8 = deserializeIntegral<uint8_t>(data, pos);
+            BOOST_TEST((i8 == -44));
+            // [pos] = 0xff
+            uint16_t u16 = deserializeIntegral<uint16_t>(data, pos);
+            BOOST_TEST((u16 == 17407));
+            // [pos] = 0xcc
+            int16_t i16 = deserializeIntegral<uint16_t>(data, pos);
+            BOOST_TEST((i16 == -29748));
+            // [pos] = 0xbb
+            uint32_t u32 = deserializeIntegral<uint32_t>(data, pos);
+            BOOST_TEST((u32 == 160923323));
+            pos -= 9;
+            // [pos] = 0xd4
+            int32_t i32 = deserializeIntegral<int32_t>(data, pos);
+            BOOST_TEST((i32 == -867958828));
+            pos -= 2;
+            // [pos] = 0x43
+            uint64_t u64 = deserializeIntegral<uint64_t>(data, pos);
+            BOOST_TEST((u64 == 5983480150506589251));
+            pos -= 10;
+            // [pos] = 0xd4
+            int64_t i64 = deserializeIntegral<int64_t>(data, pos);
+            BOOST_TEST((i64 == -7530375317815033900));
+        }
     
     BOOST_AUTO_TEST_SUITE_END()
 }

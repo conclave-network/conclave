@@ -167,4 +167,21 @@ namespace conclave
         }
         return ret;
     }
+    
+    /**
+     * Deserialize integral values
+     *
+     * @tparam T - integral type being deserialized
+     * @param data - data stream
+     * @param pos - position within data stream where first byte appears
+     * @return - Deserialized value
+     */
+    template<typename T>
+    inline const T deserializeIntegral(const std::vector<BYTE>& data, size_t& pos)
+    {
+        static_assert(std::is_integral<T>::value, "Integral type required");
+        T ret = *((T*) (&data[pos]));
+        pos += sizeof(T);
+        return ret;
+    }
 }
