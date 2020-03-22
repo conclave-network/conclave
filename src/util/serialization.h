@@ -82,6 +82,7 @@ namespace conclave
     
     /**
      * Serializes a `uint64_t` in machine-native format.
+     *
      * @param value - Value to serialize
      * @return - Serialized form of `value`
      */
@@ -89,6 +90,22 @@ namespace conclave
     {
         std::vector<BYTE> ret(UINT64_SIZE);
         std::memcpy(&ret[0], &value, UINT64_SIZE);
+        return ret;
+    }
+    
+    /**
+     * Serialize an integral
+     *
+     * @tparam T - Integral type being serialized
+     * @param value - The value being serialized
+     * @return - Byte vector of the serialization
+     */
+    template<typename T>
+    inline const std::vector<BYTE> serializeIntegral(const T value)
+    {
+        static_assert(std::is_integral<T>::value, "Integral type required");
+        std::vector<BYTE> ret(sizeof(T));
+        std::memcpy(&ret[0], &value, sizeof(T));
         return ret;
     }
     
