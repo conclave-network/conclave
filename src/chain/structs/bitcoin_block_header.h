@@ -27,7 +27,7 @@ namespace conclave
 {
     namespace chain
     {
-        struct BitcoinBlockHeader
+        struct BitcoinBlockHeader final
         {
             // JSON keys
             const static std::string JSONKEY_VERSION;
