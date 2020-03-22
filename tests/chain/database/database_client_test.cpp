@@ -111,6 +111,23 @@ namespace conclave
                     BOOST_TEST((mutableItem3 == ITEM_3));
                     BOOST_TEST((mutableItem4 == ITEM_4));
                 }
+                
+                BOOST_AUTO_TEST_CASE(DatabaseClientSingletonItemTest)
+                {
+                    // Test that a singleton item can be written, read, and updated
+                    fs::remove_all(DB_ROOT);
+                    DatabaseClient databaseClient(DB_ROOT);
+                    databaseClient.putSingletonItem(COLLECTION_NAME_1, ITEM_1);
+                    std::optional<std::vector<BYTE>> singletonItem1 =
+                        databaseClient.getSingletonItem(COLLECTION_NAME_1);
+                    std::optional<std::vector<BYTE>> singletonItem2 =
+                        databaseClient.getSingletonItem(COLLECTION_NAME_2);
+                    BOOST_TEST((singletonItem1 == ITEM_1));
+                    BOOST_TEST((singletonItem2 == std::nullopt));
+                    databaseClient.putSingletonItem(COLLECTION_NAME_1, ITEM_2);
+                    singletonItem1 = databaseClient.getSingletonItem(COLLECTION_NAME_1);
+                    BOOST_TEST((singletonItem1 == ITEM_2));
+                }
             
             BOOST_AUTO_TEST_SUITE_END()
         }

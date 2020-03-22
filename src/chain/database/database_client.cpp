@@ -44,6 +44,9 @@ namespace conclave
                 return env;
             }
             
+            const Hash256
+                DatabaseClient::SINGLETON_KEY("74223097b6a5346bf30adebc6e2f5f83392788c4eb56eb04a6f96aed1665580b");
+            
             DatabaseClient::DatabaseClient(const std::string& rootDirectory)
                 : env(std::move(initLmdb(rootDirectory)))
             {
@@ -122,6 +125,16 @@ namespace conclave
                 } else {
                     return std::nullopt;
                 }
+            }
+            
+            void DatabaseClient::putSingletonItem(const std::string& collectionName, const std::vector<BYTE>& value)
+            {
+                putMutableItem(collectionName, SINGLETON_KEY, value);
+            }
+            
+            std::optional<std::vector<BYTE>> DatabaseClient::getSingletonItem(const std::string& collectionName)
+            {
+                return getMutableItem(collectionName, SINGLETON_KEY);
             }
         }
     }

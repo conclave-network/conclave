@@ -42,7 +42,10 @@ namespace conclave
                 std::optional<std::vector<BYTE>> getItem(const Hash256&);
                 void putMutableItem(const std::string&, const Hash256&, const std::vector<BYTE>&);
                 std::optional<std::vector<BYTE>> getMutableItem(const std::string&, const Hash256&);
+                void putSingletonItem(const std::string&, const std::vector<BYTE>&);
+                std::optional<std::vector<BYTE>> getSingletonItem(const std::string&);
                 private:
+                const static Hash256 SINGLETON_KEY;
                 lmdb::env env;
             };
         }
