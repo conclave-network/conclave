@@ -70,6 +70,19 @@ namespace conclave
         
         BOOST_AUTO_TEST_SUITE(BitcoinBlockHeaderTestSuite)
             
+            BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderDeserializeFactoryTest)
+            {
+                size_t pos = 0;
+                BitcoinBlockHeader bitcoinBlockHeader = BitcoinBlockHeader::deserialize(BLOCK_1_SERIALIZED, pos);
+                BOOST_TEST((bitcoinBlockHeader.version == VERSION_1));
+                BOOST_TEST((bitcoinBlockHeader.hashPrevBlock == HASH_PREV_BLOCK_1));
+                BOOST_TEST((bitcoinBlockHeader.hashMerkleRoot == HASH_MERKLE_ROOT_1));
+                BOOST_TEST((bitcoinBlockHeader.time == TIME_1));
+                BOOST_TEST((bitcoinBlockHeader.bits == BITS_1));
+                BOOST_TEST((bitcoinBlockHeader.nonce == NONCE_1));
+                BOOST_TEST((pos == 4 + 32 + 32 + 4 + 4 + 4));
+            }
+            
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderConstructorsTest)
             {
                 BitcoinBlockHeader bitcoinBlockHeaderFromProps(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
@@ -113,22 +126,16 @@ namespace conclave
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderHash256Test)
             {
-                BitcoinBlockHeader bitcoinBlockHeader1(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
-                                                       TIME_1, BITS_1, NONCE_1);
-                BitcoinBlockHeader bitcoinBlockHeader2(VERSION_2, HASH_PREV_BLOCK_2, HASH_MERKLE_ROOT_2,
-                                                       TIME_2, BITS_2, NONCE_2);
-                BOOST_TEST((bitcoinBlockHeader1.getHash256() == BLOCK_1_HASH));
-                BOOST_TEST((bitcoinBlockHeader2.getHash256() == BLOCK_2_HASH));
+                BitcoinBlockHeader bitcoinBlockHeader(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                      TIME_1, BITS_1, NONCE_1);
+                BOOST_TEST((bitcoinBlockHeader.getHash256() == BLOCK_1_HASH));
             }
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderSerializeTest)
             {
-                BitcoinBlockHeader bitcoinBlockHeader1(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
-                                                       TIME_1, BITS_1, NONCE_1);
-                BitcoinBlockHeader bitcoinBlockHeader2(VERSION_2, HASH_PREV_BLOCK_2, HASH_MERKLE_ROOT_2,
-                                                       TIME_2, BITS_2, NONCE_2);
-                BOOST_TEST((bitcoinBlockHeader1.serialize() == BLOCK_1_SERIALIZED));
-                BOOST_TEST((bitcoinBlockHeader2.serialize() == BLOCK_2_SERIALIZED));
+                BitcoinBlockHeader bitcoinBlockHeader(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                      TIME_1, BITS_1, NONCE_1);
+                BOOST_TEST((bitcoinBlockHeader.serialize() == BLOCK_1_SERIALIZED));
             }
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderCastToPtreeTest)

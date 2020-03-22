@@ -42,14 +42,13 @@ namespace conclave
         
         BitcoinBlockHeader BitcoinBlockHeader::deserialize(const std::vector<BYTE>& data, size_t& pos)
         {
-            return BitcoinBlockHeader(
-                deserializeIntegral<uint32_t>(data, pos), // version
-                Hash256::deserialize(data, pos),          // hashPrevBlock
-                Hash256::deserialize(data, pos),          // hashMerkleRoot
-                deserializeIntegral<uint32_t>(data, pos), // time
-                deserializeIntegral<uint32_t>(data, pos), // bits
-                deserializeIntegral<uint32_t>(data, pos)  // nonce
-            );
+            uint32_t version = deserializeIntegral<uint32_t>(data, pos);
+            Hash256 hashPrevBlock = Hash256::deserialize(data, pos);
+            Hash256 hashMerkleRoot = Hash256::deserialize(data, pos);
+            uint32_t time = deserializeIntegral<uint32_t>(data, pos);
+            uint32_t bits = deserializeIntegral<uint32_t>(data, pos);
+            uint32_t nonce = deserializeIntegral<uint32_t>(data, pos);
+            return BitcoinBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce);
         }
         
         //
