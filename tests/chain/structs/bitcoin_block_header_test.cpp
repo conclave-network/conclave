@@ -20,7 +20,7 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include "../../../src/chain/structs/bitcoin_block_header.h"
-#include <boost/property_tree/json_parser.hpp>
+#include "../../../src/util/json.h"
 #include <cstdint>
 #include <vector>
 #include <string>
@@ -51,6 +51,7 @@ namespace conclave
             "    \"bits\": \"486604799\",\n"
             "    \"nonce\": \"2573394689\"\n"
             "}\n";
+        const static pt::ptree BITCOIN_BLOCK_HEADER_1_PTREE = parseJson(BITCOIN_BLOCK_HEADER_1_STR);
         const static Hash256 BLOCK_1_HASH("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048");
         const static Hash256 BLOCK_2_HASH("0000000000000000000859830058f91753af64468073d16d47fe4fce57d3f04e");
         const static std::vector<BYTE> BLOCK_1_SERIALIZED = HEX_TO_BYTE_VECTOR(
@@ -59,15 +60,6 @@ namespace conclave
         const static std::vector<BYTE> BLOCK_2_SERIALIZED = HEX_TO_BYTE_VECTOR(
             "00e0ff3f6b2e4b790477e30ad776629c9f733bea72379f1ffe180c00000000000000000004874359def91cba5"
             "9f60fffa8cb395395c14093c7c8e4a9d6de4932df6a0ae3f44e765e190111173f289e55");
-        
-        pt::ptree makeBitcoinBlockHeaderTree()
-        {
-            std::stringstream ss(BITCOIN_BLOCK_HEADER_1_STR);
-            pt::ptree tree;
-            pt::read_json(ss, tree);
-            return tree;
-        }
-        
         BOOST_AUTO_TEST_SUITE(BitcoinBlockHeaderTestSuite)
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderDeserializeFactoryTest)
@@ -94,7 +86,7 @@ namespace conclave
             {
                 BitcoinBlockHeader bitcoinBlockHeaderFromProps(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
                                                                TIME_1, BITS_1, NONCE_1);
-                BitcoinBlockHeader bitcoinBlockHeaderFromPtree(makeBitcoinBlockHeaderTree());
+                BitcoinBlockHeader bitcoinBlockHeaderFromPtree(BITCOIN_BLOCK_HEADER_1_PTREE);
                 BitcoinBlockHeader bitcoinBlockHeaderFromByteVector(BLOCK_1_SERIALIZED);
                 BOOST_TEST((bitcoinBlockHeaderFromProps.version == VERSION_1));
                 BOOST_TEST((bitcoinBlockHeaderFromProps.hashPrevBlock == HASH_PREV_BLOCK_1));
@@ -156,7 +148,7 @@ namespace conclave
             {
                 BitcoinBlockHeader bitcoinBlockHeader(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
                                                       TIME_1, BITS_1, NONCE_1);
-                BOOST_TEST((makeBitcoinBlockHeaderTree() == static_cast<pt::ptree>(bitcoinBlockHeader)));
+                BOOST_TEST((BITCOIN_BLOCK_HEADER_1_PTREE == static_cast<pt::ptree>(bitcoinBlockHeader)));
             }
             
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderCastToStringTest)
@@ -179,6 +171,90 @@ namespace conclave
                 BOOST_TEST((bitcoinBlockHeader1 == bitcoinBlockHeader2));
                 BOOST_TEST((bitcoinBlockHeader2 == bitcoinBlockHeader3));
                 BOOST_TEST((bitcoinBlockHeader3 == bitcoinBlockHeader1));
+            }
+            
+            BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderComparisonOperatorsTest)
+            {
+                BitcoinBlockHeader bitcoinBlockHeader1(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader2(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader3(VERSION_2, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader4(VERSION_1, HASH_PREV_BLOCK_2, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader5(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_2,
+                                                       TIME_1, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader6(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_2, BITS_1, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader7(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_2, NONCE_1);
+                BitcoinBlockHeader bitcoinBlockHeader8(VERSION_1, HASH_PREV_BLOCK_1, HASH_MERKLE_ROOT_1,
+                                                       TIME_1, BITS_1, NONCE_2);
+                BOOST_TEST((bitcoinBlockHeader1 == bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader1 == bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader1 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader2 == bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader2 == bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader2 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader3 == bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader3 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader4 == bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader4 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader5 == bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader5 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader6 == bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader6 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader7 == bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader7 != bitcoinBlockHeader8));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader1));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader2));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader3));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader4));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader5));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader6));
+                BOOST_TEST((bitcoinBlockHeader8 != bitcoinBlockHeader7));
+                BOOST_TEST((bitcoinBlockHeader8 == bitcoinBlockHeader8));
             }
         
         BOOST_AUTO_TEST_SUITE_END()
