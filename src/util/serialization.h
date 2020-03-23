@@ -189,16 +189,18 @@ namespace conclave
      */
     inline uint64_t deserializeVarInt(const std::vector<BYTE>& data, size_t& pos)
     {
-        uint8_t size = data[pos];
+        uint8_t size = data[pos++];
+        uint64_t ret;
         if (size <= 0xfc) {
-            return deserializeIntegral<uint8_t>(data, pos);
+            ret = size;
         } else if (size == 0xfd) {
-            return deserializeIntegral<uint16_t>(data, pos);
+            ret = deserializeIntegral<uint16_t>(data, pos);
         } else if (size == 0xfe) {
-            return deserializeIntegral<uint32_t>(data, pos);
+            ret = deserializeIntegral<uint32_t>(data, pos);
         } else {
-            return deserializeIntegral<uint64_t>(data, pos);
+            ret = deserializeIntegral<uint64_t>(data, pos);
         }
+        return ret;
     }
     
     /**
@@ -213,7 +215,7 @@ namespace conclave
     inline std::vector<T> deserializeVectorOfObjects(const std::vector<BYTE>& data, size_t& pos)
     {
         uint64_t nObjects = deserializeVarInt(data, pos);
-        std::vector<T> objects(0);
+        std::vector<T> objects;
         objects.reserve(nObjects);
         for (uint64_t i = 0; i < nObjects; i++) {
             objects.emplace_back(T(data, pos));
