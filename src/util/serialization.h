@@ -179,4 +179,45 @@ namespace conclave
         pos += sizeof(T);
         return ret;
     }
+    
+    /**
+     * Deserialize a varint
+     *
+     * @param data - Data stream
+     * @param pos - Position within data stream where first byte appears
+     * @return - Deserialized value
+     */
+    inline uint64_t deserializeVarInt(const std::vector<BYTE>& data, size_t& pos)
+    {
+        uint8_t size = data[pos];
+        if (size <= 0xfc) {
+            return deserializeIntegral<uint8_t>(data, pos);
+        } else if (size == 0xfd) {
+            return deserializeIntegral<uint16_t>(data, pos);
+        } else if (size == 0xfe) {
+            return deserializeIntegral<uint32_t>(data, pos);
+        } else {
+            return deserializeIntegral<uint64_t>(data, pos);
+        }
+    }
+    
+    /**
+     * Serialize a vector of objects prepended with a varint
+     *
+     * @tparam T - Type which must have appropriate deserializing constructor
+     * @param data - Data stream
+     * @param pos - Position within data stream where first byte appears
+     * @return
+     */
+    template<class T>
+    inline std::vector<T> deserializeVectorOfObjects(const std::vector<BYTE>& data, size_t& pos)
+    {
+        uint64_t nObjects = deserializeVarInt(data, pos);
+        std::vector<T> objects(0);
+        objects.reserve(nObjects);
+        for (uint64_t i = 0; i < nObjects; i++) {
+            objects.emplace_back(T(data, pos));
+        }
+        return objects;
+    }
 }

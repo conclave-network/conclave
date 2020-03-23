@@ -27,24 +27,52 @@ namespace conclave
 {
     BOOST_AUTO_TEST_SUITE(SerializationTestSuite)
         
-        BOOST_AUTO_TEST_CASE(SerializeU32Test)
+        BOOST_AUTO_TEST_CASE(SerializeIntegralTest)
         {
-            BOOST_TEST((serializeU32(static_cast<uint32_t>(0)) == std::vector<BYTE>{0x00, 0x00, 0x00, 0x00}));
-            BOOST_TEST((serializeU32(static_cast<uint32_t>(1)) == std::vector<BYTE>{0x01, 0x00, 0x00, 0x00}));
-            BOOST_TEST((serializeU32(static_cast<uint32_t>(0xffffffff)) == std::vector<BYTE>{0xff, 0xff, 0xff, 0xff}));
-            BOOST_TEST((serializeU32(static_cast<uint32_t>(0xfffffffe)) == std::vector<BYTE>{0xfe, 0xff, 0xff, 0xff}));
-        }
-        
-        BOOST_AUTO_TEST_CASE(SerializeU64Test)
-        {
-            BOOST_TEST((serializeU64(static_cast<uint64_t>(0)) ==
-                        std::vector<BYTE>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
-            BOOST_TEST((serializeU64(static_cast<uint64_t>(1)) ==
-                        std::vector<BYTE>{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
-            BOOST_TEST((serializeU64(static_cast<uint64_t>(0xffffffffffffffff)) ==
+            BOOST_TEST((serializeIntegral(static_cast<uint8_t>(0)) == std::vector<BYTE>{0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint8_t>(1)) == std::vector<BYTE>{0x01}));
+            BOOST_TEST((serializeIntegral(static_cast<uint8_t>(0xff)) == std::vector<BYTE>{0xff}));
+            BOOST_TEST((serializeIntegral(static_cast<uint8_t>(0xfe)) == std::vector<BYTE>{0xfe}));
+            BOOST_TEST((serializeIntegral(static_cast<int8_t>(0)) == std::vector<BYTE>{0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int8_t>(1)) == std::vector<BYTE>{0x01}));
+            BOOST_TEST((serializeIntegral(static_cast<int8_t>(-0x7f)) == std::vector<BYTE>{0x81}));
+            BOOST_TEST((serializeIntegral(static_cast<int8_t>(0x7f)) == std::vector<BYTE>{0x7f}));
+            BOOST_TEST((serializeIntegral(static_cast<uint16_t>(0)) == std::vector<BYTE>{0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint16_t>(1)) == std::vector<BYTE>{0x01, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint16_t>(0xffff)) == std::vector<BYTE>{0xff, 0xff}));
+            BOOST_TEST((serializeIntegral(static_cast<uint16_t>(0xfffe)) == std::vector<BYTE>{0xfe, 0xff}));
+            BOOST_TEST((serializeIntegral(static_cast<int16_t>(0)) == std::vector<BYTE>{0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int16_t>(1)) == std::vector<BYTE>{0x01, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int16_t>(-0x7fff)) == std::vector<BYTE>{0x01, 0x80}));
+            BOOST_TEST((serializeIntegral(static_cast<int16_t>(0x7fff)) == std::vector<BYTE>{0xff, 0x7f}));
+            BOOST_TEST((serializeIntegral(static_cast<uint32_t>(0)) == std::vector<BYTE>{0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint32_t>(1)) == std::vector<BYTE>{0x01, 0x00, 0x00, 0x00}));
+            BOOST_TEST(
+                (serializeIntegral(static_cast<uint32_t>(0xffffffff)) == std::vector<BYTE>{0xff, 0xff, 0xff, 0xff}));
+            BOOST_TEST(
+                (serializeIntegral(static_cast<uint32_t>(0xfffffffe)) == std::vector<BYTE>{0xfe, 0xff, 0xff, 0xff}));
+            BOOST_TEST((serializeIntegral(static_cast<int32_t>(0)) == std::vector<BYTE>{0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int32_t>(1)) == std::vector<BYTE>{0x01, 0x00, 0x00, 0x00}));
+            BOOST_TEST(
+                (serializeIntegral(static_cast<int32_t>(-0x7fffffff)) == std::vector<BYTE>{0x01, 0x00, 0x00, 0x80}));
+            BOOST_TEST(
+                (serializeIntegral(static_cast<int32_t>(0x7fffffff)) == std::vector<BYTE>{0xff, 0xff, 0xff, 0x7f}));
+            BOOST_TEST((serializeIntegral(static_cast<uint64_t>(0)) == std::vector<BYTE>{0x00, 0x00, 0x00, 0x00,
+                                                                                         0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint64_t>(1)) == std::vector<BYTE>{0x01, 0x00, 0x00, 0x00,
+                                                                                         0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<uint64_t>(0xffffffffffffffff)) ==
                         std::vector<BYTE>{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}));
-            BOOST_TEST((serializeU64(static_cast<uint64_t>(0xfffffffffffffffe)) ==
+            BOOST_TEST((serializeIntegral(static_cast<uint64_t>(0xfffffffffffffffe)) ==
                         std::vector<BYTE>{0xfe, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}));
+            BOOST_TEST((serializeIntegral(static_cast<int64_t>(0)) ==
+                        std::vector<BYTE>{0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int64_t>(1)) ==
+                        std::vector<BYTE>{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00}));
+            BOOST_TEST((serializeIntegral(static_cast<int64_t>(-0x7fffffffffffffff)) ==
+                        std::vector<BYTE>{0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80}));
+            BOOST_TEST((serializeIntegral(static_cast<int64_t>(0x7fffffffffffffff)) ==
+                        std::vector<BYTE>{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x7f}));
         }
         
         BOOST_AUTO_TEST_CASE(SerializeVarIntTest)
@@ -83,18 +111,22 @@ namespace conclave
             BOOST_TEST((serializeVarInt(static_cast<uint16_t>(0xffff)) == std::vector<BYTE>{0xfd, 0xff, 0xff}));
             BOOST_TEST((serializeVarInt(static_cast<uint32_t>(0xffff)) == std::vector<BYTE>{0xfd, 0xff, 0xff}));
             BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0xffff)) == std::vector<BYTE>{0xfd, 0xff, 0xff}));
-            BOOST_TEST((serializeVarInt(static_cast<uint32_t>(0x10000)) ==
-                        std::vector<BYTE>{0xfe, 0x00, 0x00, 0x01, 0x00}));
-            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0x10000)) ==
-                        std::vector<BYTE>{0xfe, 0x00, 0x00, 0x01, 0x00}));
-            BOOST_TEST((serializeVarInt(static_cast<uint32_t>(0xffffffff)) ==
-                        std::vector<BYTE>{0xfe, 0xff, 0xff, 0xff, 0xff}));
-            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0xffffffff)) ==
-                        std::vector<BYTE>{0xfe, 0xff, 0xff, 0xff, 0xff}));
-            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0x100000000)) ==
-                        std::vector<BYTE>{0xff, 0x00, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00}));
-            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0xffffffffffffffff)) ==
-                        std::vector<BYTE>{0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff}));
+            BOOST_TEST((serializeVarInt(static_cast<uint32_t>(0x10000)) == std::vector<BYTE>{0xfe, 0x00, 0x00, 0x01,
+                                                                                             0x00}));
+            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0x10000)) == std::vector<BYTE>{0xfe, 0x00, 0x00, 0x01,
+                                                                                             0x00}));
+            BOOST_TEST((serializeVarInt(static_cast<uint32_t>(0xffffffff)) == std::vector<BYTE>{0xfe, 0xff, 0xff,
+                                                                                                0xff, 0xff}));
+            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0xffffffff)) == std::vector<BYTE>{0xfe, 0xff, 0xff,
+                                                                                                0xff, 0xff}));
+            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0x100000000)) == std::vector<BYTE>{0xff, 0x00, 0x00,
+                                                                                                 0x00, 0x00, 0x01, 0x00,
+                                                                                                 0x00, 0x00}));
+            BOOST_TEST((serializeVarInt(static_cast<uint64_t>(0xffffffffffffffff)) == std::vector<BYTE>{0xff, 0xff,
+                                                                                                        0xff, 0xff,
+                                                                                                        0xff, 0xff,
+                                                                                                        0xff, 0xff,
+                                                                                                        0xff}));
         }
         
         BOOST_AUTO_TEST_CASE(SerializeOptionalTest)
