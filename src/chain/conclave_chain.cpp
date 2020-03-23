@@ -71,8 +71,22 @@ namespace conclave
                 throw std::runtime_error(std::string("Output is not spendable: "));
             } else {
                 // Tx is confirmed and output is spendable
-                // TODO: Put claimTx into block
+                
+                // Sweep 1: update predecessors to most recent fund tips
+                for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
+                    ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
+                    Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
+                    // Set predecessor to fundTip (or nullopt)
+                    conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+                }
+                
+                // Get claim Tx hash
+                const Hash256 claimTxHash = claimTx.getHash256();
+                
+                // Get existing chain tip
                 ConclaveBlock oldTip = getChainTip();
+                
+                // Make new chain tip
                 ConclaveBlock newTip = ConclaveBlock(
                     0,                                       // pot
                     oldTip.height + 1,                       // height
@@ -81,13 +95,12 @@ namespace conclave
                     bitcoinChain.getLatestBlockHash(),       // lowestParentBitcoinBlockHash
                     0,                                       // txTypeId
                     0,                                       // txVersion
-                    claimTx.getHash256()                     // txHash
+                    claimTxHash                              // txHash
                 );
+                
+                // Sweep 2: update fund tips with new outpoints
                 for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
-                    ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
-                    Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
-                    // Set predecessor to fundTip (or nullopt)
-                    conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+                    Hash256 walletHash = claimTx.conclaveOutputs[i].scriptPubKey.getHash256();
                     // Update fundTip
                     Outpoint outpoint(claimTx.getHash256(), i);
                     databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
