@@ -75,9 +75,9 @@ namespace conclave
                 ConclaveBlock oldTip = getChainTip();
                 ConclaveBlock newTip = ConclaveBlock(
                     0,                                       // pot
-                    oldTip.height + 1,                          // height
+                    oldTip.height + 1,                       // height
                     0,                                       // epoch
-                    oldTip.getHash256(),                        // hashPrevBlock
+                    oldTip.getHash256(),                     // hashPrevBlock
                     bitcoinChain.getLatestBlockHash(),       // lowestParentBitcoinBlockHash
                     0,                                       // txTypeId
                     0,                                       // txVersion
