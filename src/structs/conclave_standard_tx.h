@@ -38,19 +38,26 @@ namespace conclave
         const static std::string JSONKEY_CONCLAVE_OUTPUTS;
         const static std::string JSONKEY_BITCOIN_OUTPUTS;
         const static std::string JSONKEY_LOCKTIME;
+        // Factories
+        static ConclaveStandardTx deserialize(const std::vector<BYTE>&, size_t&);
+        static ConclaveStandardTx deserialize(const std::vector<BYTE>&);
         // Constructors
-        ConclaveStandardTx(const uint32_t,
-                           const std::vector<ConclaveInput>&,
-                           const std::vector<ConclaveOutput>&,
-                           const std::vector<BitcoinOutput>&,
-                           const uint32_t);
+        ConclaveStandardTx(const uint32_t, const std::vector<ConclaveInput>&, const std::vector<ConclaveOutput>&,
+                           const std::vector<BitcoinOutput>&, const uint32_t);
         ConclaveStandardTx(const pt::ptree&);
+        ConclaveStandardTx(const std::vector<BYTE>&);
+        ConclaveStandardTx(const ConclaveStandardTx&);
+        ConclaveStandardTx(ConclaveStandardTx&&);
         // Public functions
-        const std::vector<BYTE> serialize() const;
         const Hash256 getHash256() const;
-        // Operators
+        const std::vector<BYTE> serialize() const;
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
+        // Operator Overloads
+        ConclaveStandardTx& operator=(const ConclaveStandardTx&);
+        ConclaveStandardTx& operator=(ConclaveStandardTx&&);
         bool operator==(const ConclaveStandardTx&) const;
         bool operator!=(const ConclaveStandardTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveStandardTx&);
