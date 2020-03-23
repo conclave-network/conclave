@@ -44,7 +44,7 @@ namespace conclave
     {
         std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
         writeToByteVector(serialized, txId.serialize(), 0);
-        writeToByteVector(serialized, serializeU32(index), LARGE_HASH_SIZE_BYTES);
+        writeToByteVector(serialized, serializeIntegral(index), LARGE_HASH_SIZE_BYTES);
         return serialized;
     }
     

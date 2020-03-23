@@ -65,7 +65,7 @@ namespace conclave
     {
         const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(conclaveOutputs);
         const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
-        const std::vector<BYTE> minSigsSerialized = serializeU32(minSigs);
+        const std::vector<BYTE> minSigsSerialized = serializeIntegral(minSigs);
         const std::vector<BYTE> fundingOutpointSerialized = serializeOptionalObject(fundingOutpoint);
         std::vector<BYTE> serialized(outputsSerialized.size() + trusteesSerialized.size() +
                                      minSigsSerialized.size() + fundingOutpointSerialized.size());

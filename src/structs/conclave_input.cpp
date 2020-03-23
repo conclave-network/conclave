@@ -50,7 +50,7 @@ namespace conclave
     {
         const std::vector<BYTE> outpointSerialized = outpoint.serialize();
         const std::vector<BYTE> scriptSigSerialized = scriptSig.serialize();
-        const std::vector<BYTE> sequenceSerialized = serializeU32(sequence);
+        const std::vector<BYTE> sequenceSerialized = serializeIntegral(sequence);
         const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
         std::vector<BYTE> serialized(
             outpointSerialized.size() + scriptSigSerialized.size() +

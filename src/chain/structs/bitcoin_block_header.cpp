@@ -108,12 +108,12 @@ namespace conclave
         
         const std::vector<BYTE> BitcoinBlockHeader::serialize() const
         {
-            const std::vector<BYTE> versionSerialized = serializeU32(version);
+            const std::vector<BYTE> versionSerialized = serializeIntegral(version);
             const std::vector<BYTE> hashPrevBlockSerialized = hashPrevBlock.serialize();
             const std::vector<BYTE> hashMerkleRootSerialized = hashMerkleRoot.serialize();
-            const std::vector<BYTE> timeSerialized = serializeU32(time);
-            const std::vector<BYTE> bitsSerialized = serializeU32(bits);
-            const std::vector<BYTE> nonceSerialized = serializeU32(nonce);
+            const std::vector<BYTE> timeSerialized = serializeIntegral(time);
+            const std::vector<BYTE> bitsSerialized = serializeIntegral(bits);
+            const std::vector<BYTE> nonceSerialized = serializeIntegral(nonce);
             std::vector<BYTE> serialized(
                 versionSerialized.size() + hashPrevBlockSerialized.size() +
                 hashMerkleRootSerialized.size() + timeSerialized.size() +

@@ -46,7 +46,7 @@ namespace conclave
     const std::vector<BYTE> ConclaveOutput::serialize() const
     {
         const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
-        const std::vector<BYTE> valueSerialized = serializeU64(value);
+        const std::vector<BYTE> valueSerialized = serializeIntegral(value);
         const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
         std::vector<BYTE> serialized(
             scriptPubKeySerialized.size() + valueSerialized.size() + predecessorSerialized.size());

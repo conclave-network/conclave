@@ -38,7 +38,7 @@ namespace conclave
     
     const std::vector<BYTE> BitcoinOutput::serialize() const
     {
-        const std::vector<BYTE> valueSerialized = serializeU64(value);
+        const std::vector<BYTE> valueSerialized = serializeIntegral(value);
         const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
         std::vector<BYTE> serialized(valueSerialized.size() + scriptPubKeySerialized.size());
         size_t pos = writeToByteVector(serialized, valueSerialized);

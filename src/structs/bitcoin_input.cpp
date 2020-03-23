@@ -42,7 +42,7 @@ namespace conclave
     {
         const std::vector<BYTE> outpointSerialized = outpoint.serialize();
         const std::vector<BYTE> scriptSigSerialized = scriptSig.serialize();
-        const std::vector<BYTE> sequenceSerialized = serializeU32(sequence);
+        const std::vector<BYTE> sequenceSerialized = serializeIntegral(sequence);
         std::vector<BYTE> serialized(
             outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size());
         size_t pos = writeToByteVector(serialized, outpointSerialized);

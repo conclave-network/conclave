@@ -119,7 +119,7 @@ namespace conclave
         {
             const std::vector<BYTE> potSerialized = serializeIntegral(pot);
             const std::vector<BYTE> heightSerialized = serializeIntegral(height);
-            const std::vector<BYTE> epochSerialized = serializeU32(epoch);
+            const std::vector<BYTE> epochSerialized = serializeIntegral(epoch);
             const std::vector<BYTE> hashPrevBlockSerialized = hashPrevBlock.serialize();
             const std::vector<BYTE> lowestParentBitcoinBlockHashSerialized = lowestParentBitcoinBlockHash.serialize();
             const std::vector<BYTE> txTypeIdSerialized = serializeIntegral(txTypeId);

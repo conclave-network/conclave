@@ -46,10 +46,10 @@ namespace conclave
     
     const std::vector<BYTE> BitcoinTx::serialize() const
     {
-        const std::vector<BYTE> versionSerialized = serializeU32(version);
+        const std::vector<BYTE> versionSerialized = serializeIntegral(version);
         const std::vector<BYTE> inputsSerialized = serializeVectorOfObjects(inputs);
         const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
-        const std::vector<BYTE> lockTimeSerialized = serializeU32(lockTime);
+        const std::vector<BYTE> lockTimeSerialized = serializeIntegral(lockTime);
         std::vector<BYTE> serialized(
             versionSerialized.size() + inputsSerialized.size() +
             outputsSerialized.size() + lockTimeSerialized.size()
