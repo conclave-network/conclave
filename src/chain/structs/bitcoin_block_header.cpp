@@ -19,7 +19,6 @@
 #include "bitcoin_block_header.h"
 #include "../../util/json.h"
 #include "../../util/serialization.h"
-#include <cstdint>
 
 namespace conclave
 {
