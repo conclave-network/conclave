@@ -17,20 +17,42 @@
  */
 
 #include "outpoint.h"
+#include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace pt = boost::property_tree;
 namespace conclave
 {
+    //
+    // JSON keys
+    //
+    
     const std::string Outpoint::JSONKEY_TXID = "txId";
     const std::string Outpoint::JSONKEY_INDEX = "index";
     
-    Outpoint::Outpoint(const Hash256& txId, const uint32_t index)
-        : txId(txId), index(index)
+    //
+    // Factories
+    //
+    
+    Outpoint Outpoint::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
+        Hash256 txId = Hash256::deserialize(data, pos);
+        uint32_t index = deserializeIntegral<uint32_t>(data, pos);
+        return Outpoint(txId, index);
     }
     
-    Outpoint::Outpoint(const std::vector<BYTE>& bytes)
-        : Outpoint(Hash256::deserialize(bytes), *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
+    Outpoint Outpoint::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
+    
+    Outpoint::Outpoint(const Hash256& txId, const uint32_t index)
+        : txId(txId), index(index)
     {
     }
     
@@ -40,10 +62,43 @@ namespace conclave
     {
     }
     
+    Outpoint::Outpoint(const std::vector<BYTE>& data)
+        : Outpoint(deserialize(data))
+    {
+    }
+    
+    Outpoint::Outpoint(const Outpoint& other)
+        : Outpoint(other.txId, other.index)
+    {
+    }
+    
+    Outpoint::Outpoint(Outpoint&& other)
+        : Outpoint(std::move(other.txId), other.index)
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 Outpoint::getHash256() const
+    {
+        return Hash256::digest(serialize());
+    }
+    
     const std::vector<BYTE> Outpoint::serialize() const
     {
-        return static_cast<std::vector<BYTE>>(*this);
+        std::vector<BYTE> txIdSerialized = txId.serialize();
+        std::vector<BYTE> indexSerialized = serializeIntegral(index);
+        std::vector<BYTE> serialized(txIdSerialized.size() + indexSerialized.size());
+        size_t pos = writeToByteVector(serialized, txIdSerialized);
+        writeToByteVector(serialized, indexSerialized, pos);
+        return serialized;
     }
+    
+    //
+    // Conversions
+    //
     
     Outpoint::operator pt::ptree() const
     {
@@ -60,10 +115,25 @@ namespace conclave
     
     Outpoint::operator std::vector<BYTE>() const
     {
-        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
-        writeToByteVector(serialized, txId.serialize(), 0);
-        writeToByteVector(serialized, serializeIntegral(index), LARGE_HASH_SIZE_BYTES);
-        return serialized;
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    Outpoint& Outpoint::operator=(const Outpoint& other)
+    {
+        txId = other.txId;
+        index = other.index;
+        return *this;
+    }
+    
+    Outpoint& Outpoint::operator=(Outpoint&& other)
+    {
+        txId = std::move(other.txId);
+        index = other.index;
+        return *this;
     }
     
     bool Outpoint::operator==(const Outpoint& other) const

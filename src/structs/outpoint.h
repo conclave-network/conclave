@@ -1,6 +1,6 @@
 /*
  * CONCLAVE - Making Bitcoin Scale And Be Useful
- * Copyright (C) 2019-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>
+ * Copyright (C) 2020-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,9 +19,7 @@
 #pragma once
 
 #include "../conclave.h"
-#include "../util/json.h"
 #include "../hash256.h"
-#include "../util/serialization.h"
 #include <boost/property_tree/ptree.hpp>
 #include <cstdint>
 #include <string>
@@ -35,16 +33,25 @@ namespace conclave
         // JSON keys
         const static std::string JSONKEY_TXID;
         const static std::string JSONKEY_INDEX;
+        // Factories
+        static Outpoint deserialize(const std::vector<BYTE>&, size_t&);
+        static Outpoint deserialize(const std::vector<BYTE>&);
         // Constructors
         Outpoint(const Hash256&, const uint32_t);
-        Outpoint(const std::vector<BYTE>&);
         Outpoint(const pt::ptree&);
+        Outpoint(const std::vector<BYTE>&);
+        Outpoint(const Outpoint&);
+        Outpoint(Outpoint&&);
         // Public functions
+        const Hash256 getHash256() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
         operator std::vector<BYTE>() const;
+        // Operator Overloads
+        Outpoint& operator=(const Outpoint&);
+        Outpoint& operator=(Outpoint&&);
         bool operator==(const Outpoint&) const;
         bool operator!=(const Outpoint&) const;
         friend std::ostream& operator<<(std::ostream&, const Outpoint&);
