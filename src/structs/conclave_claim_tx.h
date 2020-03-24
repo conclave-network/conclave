@@ -39,17 +39,26 @@ namespace conclave
         const static std::string JSONKEY_TRUSTEES;
         const static std::string JSONKEY_MIN_SIGS;
         const static std::string JSONKEY_FUNDING_OUTPOINT;
+        // Factories
+        static ConclaveClaimTx deserialize(const std::vector<BYTE>&, size_t&);
+        static ConclaveClaimTx deserialize(const std::vector<BYTE>&);
         // Constructors
         ConclaveClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t);
-        ConclaveClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&, const uint32_t,
-                        const Outpoint&);
+        ConclaveClaimTx(const std::vector<ConclaveOutput>&, const std::vector<PublicKey>&,
+                        const uint32_t, const Outpoint&);
         ConclaveClaimTx(const pt::ptree&);
+        ConclaveClaimTx(const std::vector<BYTE>&);
+        ConclaveClaimTx(const ConclaveClaimTx&);
+        ConclaveClaimTx(ConclaveClaimTx&&);
         // Public functions
-        const std::vector<BYTE> serialize() const;
         const Hash256 getHash256() const;
-        // Operators
+        const std::vector<BYTE> serialize() const;
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        // Operator Overloads
+        ConclaveClaimTx& operator=(const ConclaveClaimTx&);
+        ConclaveClaimTx& operator=(ConclaveClaimTx&&);
         bool operator==(const ConclaveClaimTx&) const;
         bool operator!=(const ConclaveClaimTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveClaimTx&);

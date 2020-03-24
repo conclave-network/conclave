@@ -20,6 +20,7 @@
 
 #include <boost/test/included/unit_test.hpp>
 #include "../../src/structs/inpoint.h"
+#include "../../src/util/json.h"
 #include <boost/property_tree/json_parser.hpp>
 #include <sstream>
 

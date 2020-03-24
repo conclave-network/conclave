@@ -187,7 +187,7 @@ namespace conclave
      * @param pos - Position within data stream where first byte appears
      * @return - Deserialized value
      */
-    inline uint64_t deserializeVarInt(const std::vector<BYTE>& data, size_t& pos)
+    inline const uint64_t deserializeVarInt(const std::vector<BYTE>& data, size_t& pos)
     {
         uint8_t size = data[pos++];
         uint64_t ret;
@@ -204,6 +204,24 @@ namespace conclave
     }
     
     /**
+     * Deserialize an optional<T>, which is prefixed with a varint indicating the object's side
+     *
+     * @tparam T - Type of thing being deserialized - must have a constructor which takes a std::vector<BYTE> and size_t
+     * @param data - Data stream
+     * @param pos - Position within data stream where first byte appears
+     * @return - Optional which is either a nullopt or the deserialized object
+     */
+    template<class T>
+    inline const std::optional<T> deserializeOptionalObject(const std::vector<BYTE>& data, size_t& pos)
+    {
+        if (deserializeVarInt(data, pos) == 0) {
+            return std::nullopt;
+        } else {
+            return T(data, pos);
+        }
+    }
+    
+    /**
      * Serialize a vector of objects prepended with a varint
      *
      * @tparam T - Type which must have appropriate deserializing constructor
@@ -212,7 +230,7 @@ namespace conclave
      * @return
      */
     template<class T>
-    inline std::vector<T> deserializeVectorOfObjects(const std::vector<BYTE>& data, size_t& pos)
+    inline const std::vector<T> deserializeVectorOfObjects(const std::vector<BYTE>& data, size_t& pos)
     {
         uint64_t nObjects = deserializeVarInt(data, pos);
         std::vector<T> objects;

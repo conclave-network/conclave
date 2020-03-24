@@ -17,20 +17,42 @@
  */
 
 #include "inpoint.h"
+#include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace pt = boost::property_tree;
 namespace conclave
 {
+    //
+    // JSON keys
+    //
+    
     const std::string Inpoint::JSONKEY_TXID = "txId";
     const std::string Inpoint::JSONKEY_INDEX = "index";
     
-    Inpoint::Inpoint(const Hash256& txId, const uint32_t index)
-        : txId(txId), index(index)
+    //
+    // Factories
+    //
+    
+    Inpoint Inpoint::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
+        Hash256 txId = Hash256::deserialize(data, pos);
+        uint32_t index = deserializeIntegral<uint32_t>(data, pos);
+        return Inpoint(txId, index);
     }
     
-    Inpoint::Inpoint(const std::vector<BYTE>& bytes)
-        : Inpoint(Hash256::deserialize(bytes), *((uint32_t*) &bytes[LARGE_HASH_SIZE_BYTES]))
+    Inpoint Inpoint::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
+    
+    Inpoint::Inpoint(const Hash256& txId, const uint32_t index)
+        : txId(txId), index(index)
     {
     }
     
@@ -40,13 +62,43 @@ namespace conclave
     {
     }
     
+    Inpoint::Inpoint(const std::vector<BYTE>& data)
+        : Inpoint(deserialize(data))
+    {
+    }
+    
+    Inpoint::Inpoint(const Inpoint& other)
+        : Inpoint(other.txId, other.index)
+    {
+    }
+    
+    Inpoint::Inpoint(Inpoint&& other)
+        : Inpoint(std::move(other.txId), other.index)
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 Inpoint::getHash256() const
+    {
+        return Hash256::digest(serialize());
+    }
+    
     const std::vector<BYTE> Inpoint::serialize() const
     {
-        std::vector<BYTE> serialized(LARGE_HASH_SIZE_BYTES + UINT32_SIZE);
-        writeToByteVector(serialized, txId.serialize(), 0);
-        writeToByteVector(serialized, serializeIntegral(index), LARGE_HASH_SIZE_BYTES);
+        std::vector<BYTE> txIdSerialized = txId.serialize();
+        std::vector<BYTE> indexSerialized = serializeIntegral(index);
+        std::vector<BYTE> serialized(txIdSerialized.size() + indexSerialized.size());
+        size_t pos = writeToByteVector(serialized, txIdSerialized);
+        writeToByteVector(serialized, indexSerialized, pos);
         return serialized;
     }
+    
+    //
+    // Conversions
+    //
     
     Inpoint::operator pt::ptree() const
     {
@@ -61,6 +113,29 @@ namespace conclave
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
+    Inpoint::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    Inpoint& Inpoint::operator=(const Inpoint& other)
+    {
+        txId = other.txId;
+        index = other.index;
+        return *this;
+    }
+    
+    Inpoint& Inpoint::operator=(Inpoint&& other)
+    {
+        txId = std::move(other.txId);
+        index = other.index;
+        return *this;
+    }
+    
     bool Inpoint::operator==(const Inpoint& other) const
     {
         return (txId == other.txId) && (index == other.index);
@@ -71,9 +146,10 @@ namespace conclave
         return (txId != other.txId) || (index != other.index);
     }
     
-    std::ostream& operator<<(std::ostream& os, const Inpoint& inpoint)
+    std::ostream& operator<<(std::ostream& os, const Inpoint& outpoint)
     {
-        os << static_cast<std::string>(inpoint);
+        os << static_cast<std::string>(outpoint);
         return os;
     }
 }
+

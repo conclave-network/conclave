@@ -70,6 +70,10 @@ namespace conclave
     };
     const static std::vector<BYTE>
         THINGIES_SERIALIZED{0x03, 0x02, 0x02, 0x03, 0x03, 0x03, 0x05, 0x05, 0x05, 0x05, 0x05};
+    const static std::optional<Thingy> OPTIONAL_PRESENT = Thingy(3);
+    const static std::optional<Thingy> OPTIONAL_ABSENT = std::nullopt;
+    const static std::vector<BYTE> OPTIONAL_PRESENT_SERIALIZED = std::vector<BYTE>{0x03, 0x03, 0x03, 0x03};
+    const static std::vector<BYTE> OPTIONAL_ABSENT_SERIALIZED = std::vector<BYTE>{0x00};
     BOOST_AUTO_TEST_SUITE(SerializationTestSuite)
         
         BOOST_AUTO_TEST_CASE(SerializeIntegralTest)
@@ -172,19 +176,10 @@ namespace conclave
         
         BOOST_AUTO_TEST_CASE(SerializeOptionalTest)
         {
-            struct Foo
-            {
-                const std::vector<BYTE> serialize() const
-                {
-                    return std::vector<BYTE>{'f', 'o', 'o'};
-                }
-            };
-            std::optional<Foo> present = Foo();
-            std::optional<Foo> absent = std::nullopt;
-            std::vector<BYTE> presentSerialized = serializeOptionalObject(present);
-            std::vector<BYTE> absentSerialized = serializeOptionalObject(absent);
-            BOOST_TEST((presentSerialized == std::vector<BYTE>{0x03, 'f', 'o', 'o'}));
-            BOOST_TEST((absentSerialized == std::vector<BYTE>{0x00}));
+            std::vector<BYTE> optionalPresentSerialized = serializeOptionalObject(OPTIONAL_PRESENT);
+            std::vector<BYTE> optionalAbsentSerialized = serializeOptionalObject(OPTIONAL_ABSENT);
+            BOOST_TEST((optionalPresentSerialized == OPTIONAL_PRESENT_SERIALIZED));
+            BOOST_TEST((optionalAbsentSerialized == OPTIONAL_ABSENT_SERIALIZED));
         }
         
         BOOST_AUTO_TEST_CASE(SerializeVectorOfObjectsTest)

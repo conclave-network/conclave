@@ -18,13 +18,40 @@
 
 #include "conclave_claim_tx.h"
 #include "../util/json.h"
+#include "../util/serialization.h"
 
 namespace conclave
 {
+    //
+    // JSON keys
+    //
+    
     const std::string ConclaveClaimTx::JSONKEY_OUTPUTS = "outputs";
     const std::string ConclaveClaimTx::JSONKEY_TRUSTEES = "trustees";
     const std::string ConclaveClaimTx::JSONKEY_MIN_SIGS = "minSigs";
     const std::string ConclaveClaimTx::JSONKEY_FUNDING_OUTPOINT = "fundingOutpoint";
+    
+    //
+    // Factories
+    //
+    
+    ConclaveClaimTx ConclaveClaimTx::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const std::vector<ConclaveOutput> outputs = deserializeVectorOfObjects<ConclaveOutput>(data, pos);
+        const std::vector<PublicKey> trustees = deserializeVectorOfObjects<PublicKey>(data, pos);
+        const uint32_t minSigs = deserializeIntegral<uint32_t>(data, pos);
+        //const std::optional<Outpoint> fundingOutpoint = deserialize
+    }
+    
+    ConclaveClaimTx ConclaveClaimTx::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
     
     ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
                                      const std::vector<PublicKey>& trustees,
