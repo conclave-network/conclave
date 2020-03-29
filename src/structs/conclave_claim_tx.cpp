@@ -40,7 +40,12 @@ namespace conclave
         const std::vector<ConclaveOutput> outputs = deserializeVectorOfObjects<ConclaveOutput>(data, pos);
         const std::vector<PublicKey> trustees = deserializeVectorOfObjects<PublicKey>(data, pos);
         const uint32_t minSigs = deserializeIntegral<uint32_t>(data, pos);
-        //const std::optional<Outpoint> fundingOutpoint = deserialize
+        const std::optional<Outpoint> fundingOutpoint = deserializeOptionalObject<Outpoint>(data, pos);
+        if (fundingOutpoint.has_value()) {
+            return ConclaveClaimTx(outputs, trustees, minSigs, *fundingOutpoint);
+        } else {
+            return ConclaveClaimTx(outputs, trustees, minSigs);
+        }
     }
     
     ConclaveClaimTx ConclaveClaimTx::deserialize(const std::vector<BYTE>& data)
@@ -56,7 +61,7 @@ namespace conclave
     ConclaveClaimTx::ConclaveClaimTx(const std::vector<ConclaveOutput>& outputs,
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs)
-        : conclaveOutputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
+        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(std::nullopt)
     {
     }
     
@@ -64,33 +69,51 @@ namespace conclave
                                      const std::vector<PublicKey>& trustees,
                                      const uint32_t minSigs,
                                      const Outpoint& fundingOutpoint)
-        : conclaveOutputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
+        : outputs(outputs), trustees(trustees), minSigs(minSigs), fundingOutpoint(fundingOutpoint)
     {
     }
     
     ConclaveClaimTx::ConclaveClaimTx(const pt::ptree& tree)
-        : conclaveOutputs(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS)),
+        : outputs(tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_OUTPUTS)),
           trustees(tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES)),
           minSigs(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS)),
           fundingOutpoint(getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUNDING_OUTPOINT))
     {
     }
     
-    ConclaveClaimTx::operator pt::ptree() const
+    ConclaveClaimTx::ConclaveClaimTx(const std::vector<BYTE>& data)
+        : ConclaveClaimTx(deserialize(data))
     {
-        pt::ptree tree;
-        tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(conclaveOutputs));
-        tree.add_child(JSONKEY_TRUSTEES, vectorOfPrimitivesToArray(trustees));
-        tree.add<uint32_t>(JSONKEY_MIN_SIGS, minSigs);
-        if (fundingOutpoint.has_value()) {
-            tree.add_child(JSONKEY_FUNDING_OUTPOINT, static_cast<pt::ptree>(*fundingOutpoint));
-        }
-        return tree;
+    }
+    
+    ConclaveClaimTx::ConclaveClaimTx(const ConclaveClaimTx& other)
+        : outputs(other.outputs),
+          trustees(other.trustees),
+          minSigs(other.minSigs),
+          fundingOutpoint(other.fundingOutpoint)
+    {
+    }
+    
+    ConclaveClaimTx::ConclaveClaimTx(ConclaveClaimTx&& other)
+        : outputs(std::move(other.outputs)),
+          trustees(std::move(other.trustees)),
+          minSigs(other.minSigs),
+          fundingOutpoint(std::move(other.fundingOutpoint))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 ConclaveClaimTx::getHash256() const
+    {
+        return Hash256::digest(serialize());
     }
     
     const std::vector<BYTE> ConclaveClaimTx::serialize() const
     {
-        const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(conclaveOutputs);
+        const std::vector<BYTE> outputsSerialized = serializeVectorOfObjects(outputs);
         const std::vector<BYTE> trusteesSerialized = serializeVectorOfObjects(trustees);
         const std::vector<BYTE> minSigsSerialized = serializeIntegral(minSigs);
         const std::vector<BYTE> fundingOutpointSerialized = serializeOptionalObject(fundingOutpoint);
@@ -103,9 +126,20 @@ namespace conclave
         return serialized;
     }
     
-    const Hash256 ConclaveClaimTx::getHash256() const
+    //
+    // Conversions
+    //
+    
+    ConclaveClaimTx::operator pt::ptree() const
     {
-        return Hash256::digest(serialize());
+        pt::ptree tree;
+        tree.add_child(JSONKEY_OUTPUTS, vectorOfObjectsToArray(outputs));
+        tree.add_child(JSONKEY_TRUSTEES, vectorOfPrimitivesToArray(trustees));
+        tree.add<uint32_t>(JSONKEY_MIN_SIGS, minSigs);
+        if (fundingOutpoint.has_value()) {
+            tree.add_child(JSONKEY_FUNDING_OUTPOINT, static_cast<pt::ptree>(*fundingOutpoint));
+        }
+        return tree;
     }
     
     ConclaveClaimTx::operator std::string() const
@@ -113,15 +147,42 @@ namespace conclave
         return jsonToString(static_cast<pt::ptree>(*this));
     }
     
+    ConclaveClaimTx::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    ConclaveClaimTx& ConclaveClaimTx::operator=(const ConclaveClaimTx& other)
+    {
+        outputs = other.outputs;
+        trustees = other.trustees;
+        minSigs = other.minSigs;
+        fundingOutpoint = other.fundingOutpoint;
+        return *this;
+    }
+    
+    ConclaveClaimTx& ConclaveClaimTx::operator=(ConclaveClaimTx&& other)
+    {
+        outputs = std::move(other.outputs);
+        trustees = std::move(other.trustees);
+        minSigs = other.minSigs;
+        fundingOutpoint = std::move(other.fundingOutpoint);
+        return *this;
+    }
+    
     bool ConclaveClaimTx::operator==(const ConclaveClaimTx& other) const
     {
-        return (conclaveOutputs == other.conclaveOutputs) && (trustees == other.trustees)
+        return (outputs == other.outputs) && (trustees == other.trustees)
                && (minSigs == other.minSigs) && (fundingOutpoint == other.fundingOutpoint);
     }
     
     bool ConclaveClaimTx::operator!=(const ConclaveClaimTx& other) const
     {
-        return (conclaveOutputs != other.conclaveOutputs) || (trustees != other.trustees) ||
+        return (outputs != other.outputs) || (trustees != other.trustees) ||
                (minSigs != other.minSigs) || (fundingOutpoint != other.fundingOutpoint);
     }
     

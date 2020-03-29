@@ -50,12 +50,13 @@ namespace conclave
         ConclaveClaimTx(const std::vector<BYTE>&);
         ConclaveClaimTx(const ConclaveClaimTx&);
         ConclaveClaimTx(ConclaveClaimTx&&);
-        // Public functions
+        // Public Functions
         const Hash256 getHash256() const;
         const std::vector<BYTE> serialize() const;
         // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
         // Operator Overloads
         ConclaveClaimTx& operator=(const ConclaveClaimTx&);
         ConclaveClaimTx& operator=(ConclaveClaimTx&&);
@@ -63,7 +64,7 @@ namespace conclave
         bool operator!=(const ConclaveClaimTx&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveClaimTx&);
         // Properties
-        std::vector<ConclaveOutput> conclaveOutputs;
+        std::vector<ConclaveOutput> outputs;
         std::vector<PublicKey> trustees;
         uint32_t minSigs;
         std::optional<Outpoint> fundingOutpoint;
