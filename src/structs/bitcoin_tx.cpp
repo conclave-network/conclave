@@ -54,9 +54,10 @@ namespace conclave
             versionSerialized.size() + inputsSerialized.size() +
             outputsSerialized.size() + lockTimeSerialized.size()
         );
-        size_t pos = writeToByteVector(serialized, versionSerialized);
-        pos += writeToByteVector(serialized, inputsSerialized, pos);
-        pos += writeToByteVector(serialized, outputsSerialized, pos);
+        size_t pos = 0;
+        writeToByteVector(serialized, versionSerialized, pos);
+        writeToByteVector(serialized, inputsSerialized, pos);
+        writeToByteVector(serialized, outputsSerialized, pos);
         writeToByteVector(serialized, lockTimeSerialized, pos);
         return serialized;
     }

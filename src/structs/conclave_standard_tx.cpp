@@ -105,10 +105,11 @@ namespace conclave
         std::vector<BYTE> serialized(versionSerialized.size() + inputsSerialized.size() +
                                      conclaveOutputsSerialized.size() + bitcoinOutputsSerialized.size() +
                                      lockTimeSerialized.size());
-        size_t pos = writeToByteVector(serialized, versionSerialized);
-        pos += writeToByteVector(serialized, inputsSerialized, pos);
-        pos += writeToByteVector(serialized, conclaveOutputsSerialized, pos);
-        pos += writeToByteVector(serialized, bitcoinOutputsSerialized, pos);
+        size_t pos = 0;
+        writeToByteVector(serialized, versionSerialized, pos);
+        writeToByteVector(serialized, inputsSerialized, pos);
+        writeToByteVector(serialized, conclaveOutputsSerialized, pos);
+        writeToByteVector(serialized, bitcoinOutputsSerialized, pos);
         writeToByteVector(serialized, lockTimeSerialized, pos);
         return serialized;
     }

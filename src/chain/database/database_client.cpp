@@ -84,7 +84,7 @@ namespace conclave
                 lmdb::val k(keyBV.data(), keyBV.size());
                 lmdb::val v;
                 lmdb::txn rtxn = lmdb::txn::begin(env);
-                lmdb::dbi dbi = lmdb::dbi::open(rtxn);
+                lmdb::dbi dbi = lmdb::dbi::open(rtxn);;
                 if (!dbi.get(rtxn, k, v)) {
                     return std::nullopt;
                 }

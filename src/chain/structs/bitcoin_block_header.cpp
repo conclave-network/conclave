@@ -118,11 +118,12 @@ namespace conclave
                 hashMerkleRootSerialized.size() + timeSerialized.size() +
                 bitsSerialized.size() + nonceSerialized.size()
             );
-            size_t pos = writeToByteVector(serialized, versionSerialized);
-            pos += writeToByteVector(serialized, hashPrevBlockSerialized, pos);
-            pos += writeToByteVector(serialized, hashMerkleRootSerialized, pos);
-            pos += writeToByteVector(serialized, timeSerialized, pos);
-            pos += writeToByteVector(serialized, bitsSerialized, pos);
+            size_t pos = 0;
+            writeToByteVector(serialized, versionSerialized, pos);
+            writeToByteVector(serialized, hashPrevBlockSerialized, pos);
+            writeToByteVector(serialized, hashMerkleRootSerialized, pos);
+            writeToByteVector(serialized, timeSerialized, pos);
+            writeToByteVector(serialized, bitsSerialized, pos);
             writeToByteVector(serialized, nonceSerialized, pos);
             return serialized;
         }

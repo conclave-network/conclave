@@ -119,9 +119,10 @@ namespace conclave
         const std::vector<BYTE> fundingOutpointSerialized = serializeOptionalObject(fundingOutpoint);
         std::vector<BYTE> serialized(outputsSerialized.size() + trusteesSerialized.size() +
                                      minSigsSerialized.size() + fundingOutpointSerialized.size());
-        size_t pos = writeToByteVector(serialized, outputsSerialized);
-        pos += writeToByteVector(serialized, trusteesSerialized, pos);
-        pos += writeToByteVector(serialized, minSigsSerialized, pos);
+        size_t pos = 0;
+        writeToByteVector(serialized, outputsSerialized, pos);
+        writeToByteVector(serialized, trusteesSerialized, pos);
+        writeToByteVector(serialized, minSigsSerialized, pos);
         writeToByteVector(serialized, fundingOutpointSerialized, pos);
         return serialized;
     }

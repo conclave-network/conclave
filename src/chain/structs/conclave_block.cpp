@@ -130,13 +130,14 @@ namespace conclave
                 hashPrevBlockSerialized.size() + lowestParentBitcoinBlockHashSerialized.size() +
                 txTypeIdSerialized.size() + txVersionSerialized.size() + txHashSerialized.size()
             );
-            size_t pos = writeToByteVector(serialized, potSerialized);
-            pos += writeToByteVector(serialized, heightSerialized, pos);
-            pos += writeToByteVector(serialized, epochSerialized, pos);
-            pos += writeToByteVector(serialized, hashPrevBlockSerialized, pos);
-            pos += writeToByteVector(serialized, lowestParentBitcoinBlockHashSerialized, pos);
-            pos += writeToByteVector(serialized, txTypeIdSerialized, pos);
-            pos += writeToByteVector(serialized, txVersionSerialized, pos);
+            size_t pos = 0;
+            writeToByteVector(serialized, potSerialized, pos);
+            writeToByteVector(serialized, heightSerialized, pos);
+            writeToByteVector(serialized, epochSerialized, pos);
+            writeToByteVector(serialized, hashPrevBlockSerialized, pos);
+            writeToByteVector(serialized, lowestParentBitcoinBlockHashSerialized, pos);
+            writeToByteVector(serialized, txTypeIdSerialized, pos);
+            writeToByteVector(serialized, txVersionSerialized, pos);
             writeToByteVector(serialized, txHashSerialized, pos);
             return serialized;
         }

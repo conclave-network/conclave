@@ -45,8 +45,9 @@ namespace conclave
         const std::vector<BYTE> sequenceSerialized = serializeIntegral(sequence);
         std::vector<BYTE> serialized(
             outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size());
-        size_t pos = writeToByteVector(serialized, outpointSerialized);
-        pos += writeToByteVector(serialized, scriptSigSerialized, pos);
+        size_t pos = 0;
+        writeToByteVector(serialized, outpointSerialized, pos);
+        writeToByteVector(serialized, scriptSigSerialized, pos);
         writeToByteVector(serialized, sequenceSerialized, pos);
         return serialized;
     }

@@ -91,7 +91,8 @@ namespace conclave
         std::vector<BYTE> txIdSerialized = txId.serialize();
         std::vector<BYTE> indexSerialized = serializeIntegral(index);
         std::vector<BYTE> serialized(txIdSerialized.size() + indexSerialized.size());
-        size_t pos = writeToByteVector(serialized, txIdSerialized);
+        size_t pos = 0;
+        writeToByteVector(serialized, txIdSerialized, pos);
         writeToByteVector(serialized, indexSerialized, pos);
         return serialized;
     }

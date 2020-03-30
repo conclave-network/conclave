@@ -50,8 +50,9 @@ namespace conclave
         const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
         std::vector<BYTE> serialized(
             scriptPubKeySerialized.size() + valueSerialized.size() + predecessorSerialized.size());
-        size_t pos = writeToByteVector(serialized, scriptPubKeySerialized);
-        pos += writeToByteVector(serialized, valueSerialized, pos);
+        size_t pos = 0;
+        writeToByteVector(serialized, scriptPubKeySerialized, pos);
+        writeToByteVector(serialized, valueSerialized, pos);
         writeToByteVector(serialized, predecessorSerialized, pos);
         return serialized;
     }

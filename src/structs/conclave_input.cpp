@@ -55,10 +55,11 @@ namespace conclave
         std::vector<BYTE> serialized(
             outpointSerialized.size() + scriptSigSerialized.size() +
             sequenceSerialized.size() + predecessorSerialized.size());
-        size_t pos = writeToByteVector(serialized, outpointSerialized);
-        pos += writeToByteVector(serialized, scriptSigSerialized, pos);
-        pos += writeToByteVector(serialized, sequenceSerialized, pos);
-        writeToByteVector(serialized, predecessorSerialized);
+        size_t pos;
+        writeToByteVector(serialized, outpointSerialized, pos);
+        writeToByteVector(serialized, scriptSigSerialized, pos);
+        writeToByteVector(serialized, sequenceSerialized, pos);
+        writeToByteVector(serialized, predecessorSerialized, pos);
         return serialized;
     }
     

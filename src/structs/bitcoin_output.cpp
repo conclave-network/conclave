@@ -41,7 +41,8 @@ namespace conclave
         const std::vector<BYTE> valueSerialized = serializeIntegral(value);
         const std::vector<BYTE> scriptPubKeySerialized = scriptPubKey.serialize();
         std::vector<BYTE> serialized(valueSerialized.size() + scriptPubKeySerialized.size());
-        size_t pos = writeToByteVector(serialized, valueSerialized);
+        size_t pos = 0;
+        writeToByteVector(serialized, valueSerialized, pos);
         writeToByteVector(serialized, scriptPubKeySerialized, pos);
         return serialized;
     }

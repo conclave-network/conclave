@@ -71,17 +71,13 @@ namespace conclave
                 throw std::runtime_error(std::string("Output is not spendable: "));
             } else {
                 // Tx is confirmed and output is spendable
-                
                 // Sweep 1: update predecessors to most recent fund tips
-                for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
-                    ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
+                for (uint32_t i = 0; i < claimTx.outputs.size(); i++) {
+                    ConclaveOutput& conclaveOutput = claimTx.outputs[i];
                     Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
                     // Set predecessor to fundTip (or nullopt)
                     conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
                 }
-                
-                // Get claim Tx hash
-                const Hash256 claimTxHash = claimTx.getHash256();
                 
                 // Get existing chain tip
                 ConclaveBlock oldTip = getChainTip();
@@ -95,12 +91,12 @@ namespace conclave
                     bitcoinChain.getLatestBlockHash(),       // lowestParentBitcoinBlockHash
                     0,                                       // txTypeId
                     0,                                       // txVersion
-                    claimTxHash                              // txHash
+                    claimTx.getHash256()                     // txHash
                 );
                 
                 // Sweep 2: update fund tips with new outpoints
-                for (uint32_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
-                    Hash256 walletHash = claimTx.conclaveOutputs[i].scriptPubKey.getHash256();
+                for (uint32_t i = 0; i < claimTx.outputs.size(); i++) {
+                    Hash256 walletHash = claimTx.outputs[i].scriptPubKey.getHash256();
                     // Update fundTip
                     Outpoint outpoint(claimTx.getHash256(), i);
                     databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
@@ -123,13 +119,19 @@ namespace conclave
                 return *chainTipHash;
             } else {
                 // "Genesis" hash
-                return Hash256("C07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7EC07C7A7E");
+                return GENESIS_BLOCK.getHash256();
             }
         }
         
         const ConclaveBlock ConclaveChain::getChainTip()
         {
-            std::optional<ConclaveBlock> chainTipBV = databaseClient.getItem(getChainTipHash());
+            const Hash256 chainTipHash = getChainTipHash();
+            std::optional<ConclaveBlock> chainTipBV = databaseClient.getItem(chainTipHash);
+            if (chainTipBV.has_value()) {
+                return *chainTipBV;
+            } else {
+                return GENESIS_BLOCK;
+            }
         }
     }
 }
