@@ -39,7 +39,7 @@ namespace conclave
         const Outpoint outpoint = Outpoint::deserialize(data, pos);
         const Script scriptSig = Script::deserialize(data, pos);
         const uint32_t sequence = deserializeIntegral<uint32_t>(data, pos);
-        return BitcoinInput(outpoint, scriptSig, sequence);
+        return BitcoinInput(std::move(outpoint), std::move(scriptSig), sequence);
     }
     
     BitcoinInput BitcoinInput::deserialize(const std::vector<BYTE>& data)
