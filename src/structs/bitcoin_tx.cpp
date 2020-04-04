@@ -22,16 +22,47 @@
 
 namespace conclave
 {
+    //
+    // JSON keys
+    //
+    
     const std::string BitcoinTx::JSONKEY_VERSION = "version";
     const std::string BitcoinTx::JSONKEY_INPUTS = "inputs";
     const std::string BitcoinTx::JSONKEY_OUTPUTS = "outputs";
     const std::string BitcoinTx::JSONKEY_LOCKTIME = "lockTime";
     
-    BitcoinTx::BitcoinTx(const uint32_t version,
-                         const std::vector<BitcoinInput>& inputs,
-                         const std::vector<BitcoinOutput>& outputs,
-                         const uint32_t lockTime)
+    //
+    // Factories
+    //
+    
+    BitcoinTx BitcoinTx::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const uint32_t version = deserializeIntegral<uint32_t>(data, pos);
+        const std::vector<BitcoinInput> inputs = deserializeVectorOfObjects<BitcoinInput>(data, pos);
+        const std::vector<BitcoinOutput> outputs = deserializeVectorOfObjects<BitcoinOutput>(data, pos);
+        const uint32_t lockTime = deserializeIntegral<uint32_t>(data, pos);
+        return BitcoinTx(version, std::move(inputs), std::move(outputs), lockTime);
+    }
+    
+    BitcoinTx BitcoinTx::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
+    
+    BitcoinTx::BitcoinTx(const uint32_t version, const std::vector<BitcoinInput>& inputs,
+                         const std::vector<BitcoinOutput>& outputs, const uint32_t lockTime)
         : version(version), inputs(inputs), outputs(outputs), lockTime(lockTime)
+    {
+    }
+    
+    BitcoinTx::BitcoinTx(const uint32_t version, std::vector<BitcoinInput>&& inputs,
+                         std::vector<BitcoinOutput>&& outputs, const uint32_t lockTime)
+        : version(version), inputs(std::move(inputs)), outputs(std::move(outputs)), lockTime(lockTime)
     {
     }
     
@@ -42,6 +73,30 @@ namespace conclave
         tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_OUTPUTS),
         getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCKTIME))
     {
+    }
+    
+    BitcoinTx::BitcoinTx(const std::vector<BYTE>& data)
+        : BitcoinTx(deserialize(data))
+    {
+    }
+    
+    BitcoinTx::BitcoinTx(const BitcoinTx& other)
+        : BitcoinTx(other.version, other.inputs, other.outputs, other.lockTime)
+    {
+    }
+    
+    BitcoinTx::BitcoinTx(BitcoinTx&& other)
+        : BitcoinTx(other.version, std::move(other.inputs), std::move(other.outputs), other.lockTime)
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 BitcoinTx::getHash256() const
+    {
+        return Hash256::digest(serialize());
     }
     
     const std::vector<BYTE> BitcoinTx::serialize() const
@@ -62,10 +117,9 @@ namespace conclave
         return serialized;
     }
     
-    const Hash256 BitcoinTx::getHash256() const
-    {
-        return Hash256::digest(serialize());
-    }
+    //
+    // Conversions
+    //
     
     BitcoinTx::operator pt::ptree() const
     {
@@ -85,6 +139,28 @@ namespace conclave
     BitcoinTx::operator std::vector<BYTE>() const
     {
         return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    BitcoinTx& BitcoinTx::operator=(const BitcoinTx& other)
+    {
+        version = other.version;
+        inputs = other.inputs;
+        outputs = other.outputs;
+        lockTime = other.lockTime;
+        return *this;
+    }
+    
+    BitcoinTx& BitcoinTx::operator=(BitcoinTx&& other)
+    {
+        version = other.version;
+        inputs = std::move(other.inputs);
+        outputs = std::move(other.outputs);
+        lockTime = other.lockTime;
+        return *this;
     }
     
     bool BitcoinTx::operator==(const BitcoinTx& other) const

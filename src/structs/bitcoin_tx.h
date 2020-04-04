@@ -28,24 +28,31 @@ namespace conclave
 {
     struct BitcoinTx final
     {
-        // JSON keys
+        // JSON Keys
         const static std::string JSONKEY_VERSION;
         const static std::string JSONKEY_INPUTS;
         const static std::string JSONKEY_OUTPUTS;
         const static std::string JSONKEY_LOCKTIME;
+        // Factories
+        static BitcoinTx deserialize(const std::vector<BYTE>&, size_t&);
+        static BitcoinTx deserialize(const std::vector<BYTE>&);
         // Constructors
-        BitcoinTx(const uint32_t version,
-                  const std::vector<BitcoinInput>& inputs,
-                  const std::vector<BitcoinOutput>& outputs,
-                  const uint32_t lockTime);
+        BitcoinTx(const uint32_t, const std::vector<BitcoinInput>&, const std::vector<BitcoinOutput>&, const uint32_t);
+        BitcoinTx(const uint32_t, std::vector<BitcoinInput>&&, std::vector<BitcoinOutput>&&, const uint32_t);
         BitcoinTx(const pt::ptree&);
-        // Public functions
-        const std::vector<BYTE> serialize() const;
+        BitcoinTx(const std::vector<BYTE>&);
+        BitcoinTx(const BitcoinTx&);
+        BitcoinTx(BitcoinTx&&);
+        // Public Functions
         const Hash256 getHash256() const;
-        // Operators
+        const std::vector<BYTE> serialize() const;
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
-        explicit operator std::vector<BYTE>() const;
+        operator std::vector<BYTE>() const;
+        // Operator Overloads
+        BitcoinTx& operator=(const BitcoinTx&);
+        BitcoinTx& operator=(BitcoinTx&&);
         bool operator==(const BitcoinTx&) const;
         bool operator!=(const BitcoinTx&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinTx&);
