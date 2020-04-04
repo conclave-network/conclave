@@ -62,109 +62,113 @@ namespace conclave
         return tree;
     }
     
-    BOOST_AUTO_TEST_CASE(BitcoinInputConstructorsTest)
-    {
-        BitcoinInput bitcoinInputFromProps(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
-        BitcoinInput bitcoinInputFromPtree(makeBitcoinInputTree());
-        BOOST_TEST(bitcoinInputFromProps.outpoint == OUTPOINT_1);
-        BOOST_TEST(bitcoinInputFromProps.scriptSig == SCRIPTSIG_1);
-        BOOST_TEST(bitcoinInputFromProps.sequence == SEQUENCE_1);
-        BOOST_TEST(bitcoinInputFromPtree.outpoint == OUTPOINT_1);
-        BOOST_TEST(bitcoinInputFromPtree.scriptSig == SCRIPTSIG_1);
-        BOOST_TEST(bitcoinInputFromPtree.sequence == SEQUENCE_1);
-    }
+    BOOST_AUTO_TEST_SUITE(BitcoinInputTestSuite)
+        
+        BOOST_AUTO_TEST_CASE(BitcoinInputConstructorsTest)
+        {
+            BitcoinInput bitcoinInputFromProps(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
+            BitcoinInput bitcoinInputFromPtree(makeBitcoinInputTree());
+            BOOST_TEST(bitcoinInputFromProps.outpoint == OUTPOINT_1);
+            BOOST_TEST(bitcoinInputFromProps.scriptSig == SCRIPTSIG_1);
+            BOOST_TEST(bitcoinInputFromProps.sequence == SEQUENCE_1);
+            BOOST_TEST(bitcoinInputFromPtree.outpoint == OUTPOINT_1);
+            BOOST_TEST(bitcoinInputFromPtree.scriptSig == SCRIPTSIG_1);
+            BOOST_TEST(bitcoinInputFromPtree.sequence == SEQUENCE_1);
+        }
+        
+        BOOST_AUTO_TEST_CASE(BitcoinInputCastToPtreeTest)
+        {
+            BOOST_TEST(makeBitcoinInputTree() == (pt::ptree) BitcoinInput(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1));
+        }
+        
+        BOOST_AUTO_TEST_CASE(BitcoinInputCastToStringTest)
+        {
+            BOOST_TEST(BITCOIN_INPUT_STR == (std::string) BitcoinInput(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1));
+        }
+        
+        BOOST_AUTO_TEST_CASE(BitcoinInputOperatorsTest)
+        {
+            BitcoinInput bitcoinInput1(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
+            BitcoinInput bitcoinInput2(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_2);
+            BitcoinInput bitcoinInput3(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_1);
+            BitcoinInput bitcoinInput4(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_2);
+            BitcoinInput bitcoinInput5(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_1);
+            BitcoinInput bitcoinInput6(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_2);
+            BitcoinInput bitcoinInput7(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_1);
+            BitcoinInput bitcoinInput8(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_2);
+            BitcoinInput bitcoinInput9(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
+            BitcoinInput bitcoinInput10(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_2);
+            BitcoinInput bitcoinInput11(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_1);
+            BitcoinInput bitcoinInput12(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_2);
+            BitcoinInput bitcoinInput13(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_1);
+            BitcoinInput bitcoinInput14(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_2);
+            BitcoinInput bitcoinInput15(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_1);
+            BitcoinInput bitcoinInput16(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_2);
+            BOOST_TEST((bitcoinInput1 == bitcoinInput9));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput1 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput2 == bitcoinInput10));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput2 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput3 == bitcoinInput11));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput3 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput4 == bitcoinInput12));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput4 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput5 == bitcoinInput13));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput5 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput6 == bitcoinInput14));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput6 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput7 == bitcoinInput15));
+            BOOST_TEST((bitcoinInput7 != bitcoinInput16));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput9));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput10));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput11));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput12));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput13));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput14));
+            BOOST_TEST((bitcoinInput8 != bitcoinInput15));
+            BOOST_TEST((bitcoinInput8 == bitcoinInput16));
+        }
     
-    BOOST_AUTO_TEST_CASE(BitcoinInputCastToPtreeTest)
-    {
-        BOOST_TEST(makeBitcoinInputTree() == (pt::ptree) BitcoinInput(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1));
-    }
-    
-    BOOST_AUTO_TEST_CASE(BitcoinInputCastToStringTest)
-    {
-        BOOST_TEST(BITCOIN_INPUT_STR == (std::string) BitcoinInput(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1));
-    }
-    
-    BOOST_AUTO_TEST_CASE(BitcoinInputOperatorsTest)
-    {
-        BitcoinInput bitcoinInput1(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
-        BitcoinInput bitcoinInput2(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_2);
-        BitcoinInput bitcoinInput3(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_1);
-        BitcoinInput bitcoinInput4(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_2);
-        BitcoinInput bitcoinInput5(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_1);
-        BitcoinInput bitcoinInput6(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_2);
-        BitcoinInput bitcoinInput7(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_1);
-        BitcoinInput bitcoinInput8(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_2);
-        BitcoinInput bitcoinInput9(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_1);
-        BitcoinInput bitcoinInput10(OUTPOINT_1, SCRIPTSIG_1, SEQUENCE_2);
-        BitcoinInput bitcoinInput11(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_1);
-        BitcoinInput bitcoinInput12(OUTPOINT_1, SCRIPTSIG_2, SEQUENCE_2);
-        BitcoinInput bitcoinInput13(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_1);
-        BitcoinInput bitcoinInput14(OUTPOINT_2, SCRIPTSIG_1, SEQUENCE_2);
-        BitcoinInput bitcoinInput15(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_1);
-        BitcoinInput bitcoinInput16(OUTPOINT_2, SCRIPTSIG_2, SEQUENCE_2);
-        BOOST_TEST((bitcoinInput1 == bitcoinInput9));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput1 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput2 == bitcoinInput10));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput2 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput3 == bitcoinInput11));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput3 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput4 == bitcoinInput12));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput4 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput5 == bitcoinInput13));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput5 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput6 == bitcoinInput14));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput6 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput7 == bitcoinInput15));
-        BOOST_TEST((bitcoinInput7 != bitcoinInput16));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput9));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput10));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput11));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput12));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput13));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput14));
-        BOOST_TEST((bitcoinInput8 != bitcoinInput15));
-        BOOST_TEST((bitcoinInput8 == bitcoinInput16));
-    }
+    BOOST_AUTO_TEST_SUITE_END()
 }

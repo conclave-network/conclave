@@ -30,18 +30,30 @@ namespace conclave
 {
     struct BitcoinInput final
     {
-        // JSON keys
+        // JSON Keys
         const static std::string JSONKEY_OUTPOINT;
         const static std::string JSONKEY_SCRIPTSIG;
         const static std::string JSONKEY_SEQUENCE;
+        // Factories
+        static BitcoinInput deserialize(const std::vector<BYTE>&, size_t&);
+        static BitcoinInput deserialize(const std::vector<BYTE>&);
         // Constructors
         BitcoinInput(const Outpoint&, const Script&, const uint32_t);
+        BitcoinInput(Outpoint&&, Script&&, const uint32_t);
         BitcoinInput(const pt::ptree&);
-        // Public functions
+        BitcoinInput(const std::vector<BYTE>&);
+        BitcoinInput(const BitcoinInput&);
+        BitcoinInput(BitcoinInput&&);
+        // Public Functions
+        const Hash256 getHash256() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
+        // Operator Overloads
+        BitcoinInput& operator=(const BitcoinInput&);
+        BitcoinInput& operator=(BitcoinInput&&);
         bool operator==(const BitcoinInput&) const;
         bool operator!=(const BitcoinInput&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinInput&);

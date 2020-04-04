@@ -22,12 +22,43 @@
 
 namespace conclave
 {
+    //
+    // JSON Keys
+    //
+    
     const std::string BitcoinInput::JSONKEY_OUTPOINT = "outpoint";
     const std::string BitcoinInput::JSONKEY_SCRIPTSIG = "scriptSig";
     const std::string BitcoinInput::JSONKEY_SEQUENCE = "sequence";
     
+    //
+    // Factories
+    //
+    
+    BitcoinInput BitcoinInput::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const Outpoint outpoint = Outpoint::deserialize(data, pos);
+        const Script scriptSig = Script::deserialize(data, pos);
+        const uint32_t sequence = deserializeIntegral<uint32_t>(data, pos);
+        return BitcoinInput(outpoint, scriptSig, sequence);
+    }
+    
+    BitcoinInput BitcoinInput::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
+    
     BitcoinInput::BitcoinInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence)
         : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence)
+    {
+    }
+    
+    BitcoinInput::BitcoinInput(Outpoint&& outpoint, Script&& scriptSig, const uint32_t sequence)
+        : outpoint(std::move(outpoint)), scriptSig(std::move(scriptSig)), sequence(sequence)
     {
     }
     
@@ -36,6 +67,30 @@ namespace conclave
                        getObjectFromJson<Script>(tree, JSONKEY_SCRIPTSIG),
                        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_SEQUENCE))
     {
+    }
+    
+    BitcoinInput::BitcoinInput(const std::vector<BYTE>& data)
+        : BitcoinInput(deserialize(data))
+    {
+    }
+    
+    BitcoinInput::BitcoinInput(const BitcoinInput& other)
+        : BitcoinInput(other.outpoint, other.scriptSig, other.sequence)
+    {
+    }
+    
+    BitcoinInput::BitcoinInput(BitcoinInput&& other)
+        : BitcoinInput(std::move(other.outpoint), std::move(other.scriptSig), other.sequence)
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 BitcoinInput::getHash256() const
+    {
+        return Hash256::digest(serialize());
     }
     
     const std::vector<BYTE> BitcoinInput::serialize() const
@@ -52,6 +107,10 @@ namespace conclave
         return serialized;
     }
     
+    //
+    // Conversions
+    //
+    
     BitcoinInput::operator pt::ptree() const
     {
         pt::ptree tree;
@@ -64,6 +123,31 @@ namespace conclave
     BitcoinInput::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
+    }
+    
+    BitcoinInput::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    BitcoinInput& BitcoinInput::operator=(const BitcoinInput& other)
+    {
+        outpoint = other.outpoint;
+        scriptSig = other.scriptSig;
+        sequence = other.sequence;
+        return *this;
+    }
+    
+    BitcoinInput& BitcoinInput::operator=(BitcoinInput&& other)
+    {
+        outpoint = std::move(other.outpoint);
+        scriptSig = std::move(other.scriptSig);
+        sequence = other.sequence;
+        return *this;
     }
     
     bool BitcoinInput::operator==(const BitcoinInput& other) const
