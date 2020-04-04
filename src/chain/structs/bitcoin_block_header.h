@@ -30,7 +30,7 @@ namespace conclave
     {
         struct BitcoinBlockHeader final
         {
-            // JSON keys
+            // JSON Keys
             const static std::string JSONKEY_VERSION;
             const static std::string JSONKEY_HASH_PREV_BLOCK;
             const static std::string JSONKEY_HASH_MERKLE_ROOT;
