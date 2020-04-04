@@ -43,6 +43,8 @@ namespace conclave
             // Constructors
             BitcoinBlockHeader(const uint32_t, const Hash256&, const Hash256&,
                                const uint32_t, const uint32_t, const uint32_t);
+            BitcoinBlockHeader(const uint32_t, Hash256&&, Hash256&&,
+                               const uint32_t, const uint32_t, const uint32_t);
             BitcoinBlockHeader(const pt::ptree&);
             BitcoinBlockHeader(const std::vector<BYTE>&);
             BitcoinBlockHeader(const BitcoinBlockHeader&);
