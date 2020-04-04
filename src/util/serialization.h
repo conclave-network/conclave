@@ -234,7 +234,7 @@ namespace conclave
         std::vector<T> objects;
         objects.reserve(nObjects);
         for (uint64_t i = 0; i < nObjects; i++) {
-            objects.emplace_back(T(data, pos));
+            objects.emplace_back(T::deserialize(data, pos));
         }
         return objects;
     }

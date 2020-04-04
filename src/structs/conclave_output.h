@@ -30,19 +30,34 @@ namespace conclave
 {
     struct ConclaveOutput final
     {
-        // JSON keys
+        // JSON Keys
         const static std::string JSONKEY_SCRIPTPUBKEY;
         const static std::string JSONKEY_VALUE;
         const static std::string JSONKEY_PREDECESSOR;
+        // Factories
+        static ConclaveOutput deserialize(const std::vector<BYTE>&, size_t&);
+        static ConclaveOutput deserialize(const std::vector<BYTE>&);
         // Constructors
         ConclaveOutput(const Script&, const uint64_t);
+        ConclaveOutput(Script&&, const uint64_t);
         ConclaveOutput(const Script&, const uint64_t, const Outpoint&);
+        ConclaveOutput(Script&&, const uint64_t, Outpoint&&);
+        ConclaveOutput(const Script&, const uint64_t, const std::optional<Outpoint>&);
+        ConclaveOutput(Script&&, const uint64_t, std::optional<Outpoint>&&);
         ConclaveOutput(const pt::ptree&);
-        // Public functions
+        ConclaveOutput(const std::vector<BYTE>&);
+        ConclaveOutput(const ConclaveOutput&);
+        ConclaveOutput(ConclaveOutput&&);
+        // Public Functions
+        const Hash256 getHash256() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
+        // Operator Overloads
+        ConclaveOutput& operator=(const ConclaveOutput&);
+        ConclaveOutput& operator=(ConclaveOutput&&);
         bool operator==(const ConclaveOutput&) const;
         bool operator!=(const ConclaveOutput&) const;
         friend std::ostream& operator<<(std::ostream&, const ConclaveOutput&);
