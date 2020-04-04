@@ -162,11 +162,6 @@ namespace conclave
         return *this;
     }
     
-    ConclaveOutput::operator std::string() const
-    {
-        return jsonToString(static_cast<pt::ptree>(*this));
-    }
-    
     bool ConclaveOutput::operator==(const ConclaveOutput& other) const
     {
         return (scriptPubKey == other.scriptPubKey) && (value == other.value) && (predecessor == other.predecessor);
