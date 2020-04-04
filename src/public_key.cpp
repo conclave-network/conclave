@@ -17,6 +17,7 @@
  */
 
 #include "public_key.h"
+#include "util/serialization.h"
 #include <bitcoin/system/math/elliptic_curve.hpp>
 #include <algorithm>
 
@@ -36,6 +37,31 @@ namespace conclave
         std::copy(x.begin(), x.end(), &ecc[1]);
         decompress(ecu, ecc);
         return Hash256(&ecu[1 + EC_POINT_SIZE_BYTES]);
+    }
+    
+    //
+    // Factories
+    //
+    
+    PublicKey PublicKey::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const uint8_t leadingByte = deserializeIntegral<uint8_t>(data, pos);
+        if (leadingByte < 0x04) {
+            // Compressed
+            const Hash256 x = Hash256::deserialize(data, pos);
+            return PublicKey(std::move(x), leadingByte == 0x03);
+        } else {
+            // Uncompressed
+            const Hash256 x = Hash256::deserialize(data, pos);
+            const Hash256 y = Hash256::deserialize(data, pos);
+            return PublicKey(std::move(x), std::move(y));
+        }
+    }
+    
+    PublicKey PublicKey::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
     }
     
     //

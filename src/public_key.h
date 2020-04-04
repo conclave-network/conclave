@@ -29,6 +29,9 @@ namespace conclave
     class PublicKey
     {
         public:
+        // Factories
+        static PublicKey deserialize(const std::vector<BYTE>&, size_t&);
+        static PublicKey deserialize(const std::vector<BYTE>&);
         // Constructors
         PublicKey(const Hash256&, const Hash256&);
         PublicKey(Hash256&&, Hash256&&);
