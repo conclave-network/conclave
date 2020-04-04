@@ -22,11 +22,41 @@
 
 namespace conclave
 {
+    //
+    // JSON Keys
+    //
+    
     const std::string BitcoinOutput::JSONKEY_VALUE = "value";
     const std::string BitcoinOutput::JSONKEY_SCRIPTPUBKEY = "scriptPubKey";
     
+    //
+    // Factories
+    //
+    
+    BitcoinOutput BitcoinOutput::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const uint64_t value = deserializeIntegral<uint64_t>(data, pos);
+        const Script scriptPubKey = Script::deserialize(data, pos);
+        return BitcoinOutput(value, std::move(scriptPubKey));
+    }
+    
+    BitcoinOutput BitcoinOutput::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
+    
     BitcoinOutput::BitcoinOutput(const uint64_t value, const Script& scriptPubKey)
         : value(value), scriptPubKey(scriptPubKey)
+    {
+    }
+    
+    BitcoinOutput::BitcoinOutput(const uint64_t value, Script&& scriptPubKey)
+        : value(value), scriptPubKey(std::move(scriptPubKey))
     {
     }
     
@@ -34,6 +64,30 @@ namespace conclave
         : BitcoinOutput(getPrimitiveFromJson<uint64_t>(tree, JSONKEY_VALUE),
                         getObjectFromJson<Script>(tree, JSONKEY_SCRIPTPUBKEY))
     {
+    }
+    
+    BitcoinOutput::BitcoinOutput(const std::vector<BYTE>& data)
+        : BitcoinOutput(deserialize(data))
+    {
+    }
+    
+    BitcoinOutput::BitcoinOutput(const BitcoinOutput& other)
+        : BitcoinOutput(other.value, other.scriptPubKey)
+    {
+    }
+    
+    BitcoinOutput::BitcoinOutput(BitcoinOutput&& other)
+        : BitcoinOutput(other.value, std::move(other.scriptPubKey))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 BitcoinOutput::getHash256() const
+    {
+        return Hash256::digest(serialize());
     }
     
     const std::vector<BYTE> BitcoinOutput::serialize() const
@@ -47,6 +101,10 @@ namespace conclave
         return serialized;
     }
     
+    //
+    // Conversions
+    //
+    
     BitcoinOutput::operator pt::ptree() const
     {
         pt::ptree tree;
@@ -58,6 +116,29 @@ namespace conclave
     BitcoinOutput::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
+    }
+    
+    BitcoinOutput::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    BitcoinOutput& BitcoinOutput::operator=(const BitcoinOutput& other)
+    {
+        value = other.value;
+        scriptPubKey = other.scriptPubKey;
+        return *this;
+    }
+    
+    BitcoinOutput& BitcoinOutput::operator=(BitcoinOutput&& other)
+    {
+        value = other.value;
+        scriptPubKey = std::move(other.scriptPubKey);
+        return *this;
     }
     
     bool BitcoinOutput::operator==(const BitcoinOutput& other) const

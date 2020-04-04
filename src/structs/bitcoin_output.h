@@ -31,14 +31,26 @@ namespace conclave
         // JSON keys
         const static std::string JSONKEY_VALUE;
         const static std::string JSONKEY_SCRIPTPUBKEY;
+        // Factories
+        static BitcoinOutput deserialize(const std::vector<BYTE>&, size_t&);
+        static BitcoinOutput deserialize(const std::vector<BYTE>&);
         // Constructors
         BitcoinOutput(const uint64_t, const Script&);
+        BitcoinOutput(const uint64_t, Script&&);
         BitcoinOutput(const pt::ptree&);
+        BitcoinOutput(const std::vector<BYTE>&);
+        BitcoinOutput(const BitcoinOutput&);
+        BitcoinOutput(BitcoinOutput&&);
         // Public functions
+        const Hash256 getHash256() const;
         const std::vector<BYTE> serialize() const;
-        // Operators
+        // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
+        // Operator Overloads
+        BitcoinOutput& operator=(const BitcoinOutput&);
+        BitcoinOutput& operator=(BitcoinOutput&&);
         bool operator==(const BitcoinOutput&) const;
         bool operator!=(const BitcoinOutput&) const;
         friend std::ostream& operator<<(std::ostream&, const BitcoinOutput&);
