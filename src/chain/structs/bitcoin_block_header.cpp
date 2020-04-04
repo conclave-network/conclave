@@ -25,7 +25,7 @@ namespace conclave
     namespace chain
     {
         //
-        // JSON keys
+        // JSON Keys
         //
         
         const std::string BitcoinBlockHeader::JSONKEY_VERSION = "version";
