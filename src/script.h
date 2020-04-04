@@ -39,6 +39,8 @@ namespace conclave
     {
         public:
         // Factories
+        static Script deserialize(const std::vector<BYTE>&, size_t&);
+        static Script deserialize(const std::vector<BYTE>&);
         static Script p2hScript(const Address&);
         static Script p2pkhScript(const Address&);
         static Script p2shScript(const Address&);
@@ -57,21 +59,21 @@ namespace conclave
         Script(const Script&);
         Script(Script&&);
         // Public Functions
-        const std::string toHexString() const;
         const Hash160 getHash160() const;
         const Hash256 getHash256() const;
         const Hash256 getSingleSHA256() const;
         const std::vector<BYTE> serialize() const;
+        const std::string toHexString() const;
         // Conversions
-        explicit operator std::vector<std::string>() const;
-        explicit operator std::vector<BYTE>() const;
-        explicit operator std::string() const;
         explicit operator pt::ptree() const;
+        explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
+        operator std::vector<std::string>() const;
         // Operator Overloads
         Script& operator=(const Script&);
         Script& operator=(Script&&);
-        bool operator==(const Script& other) const;
-        bool operator!=(const Script& other) const;
+        bool operator==(const Script&) const;
+        bool operator!=(const Script&) const;
         friend std::ostream& operator<<(std::ostream&, const Script&);
         private:
         // Private Constructors

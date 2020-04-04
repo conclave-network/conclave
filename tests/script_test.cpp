@@ -94,9 +94,16 @@ namespace conclave
         HEX_TO_BYTE_VECTOR("1976a91439a95df3c155a9c017c2099723a0a70ef85721b088ac");
     const static std::vector<BYTE> P2SH_SCRIPT_SERIALIZED =
         HEX_TO_BYTE_VECTOR("17a91439a95df3c155a9c017c2099723a0a70ef85721b087");
+    const static std::vector<BYTE> P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_BYTE =
+        HEX_TO_BYTE_VECTOR("ff1976a91439a95df3c155a9c017c2099723a0a70ef85721b088ac");
+    const static std::vector<BYTE> P2PKH_SCRIPT_SERIALIZED_EXTRA_TRAILING_BYTE =
+        HEX_TO_BYTE_VECTOR("1976a91439a95df3c155a9c017c2099723a0a70ef85721b088acff");
+    const static std::vector<BYTE> P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_TRAILING_BYTES =
+        HEX_TO_BYTE_VECTOR("ff1976a91439a95df3c155a9c017c2099723a0a70ef85721b088acff");
+    const static Script P2PKH_SCRIPT(P2PKH_SCRIPT_SE_VEC);
     BOOST_AUTO_TEST_SUITE(ScriptTestSuite)
         
-        BOOST_AUTO_TEST_CASE(ScriptFactoriesTest)
+        BOOST_AUTO_TEST_CASE(ScriptStandardScriptFactoriesTest)
         {
             // P2PKH Address
             BOOST_TEST(
@@ -128,6 +135,27 @@ namespace conclave
                 Script::p2wshScript(Script("return")) ==
                 Script("zero [d4b2548065db6cc797926a3db7de3664ad3f48acaa0e7174a9a6f490716807ea]")
             );
+        }
+        
+        BOOST_AUTO_TEST_CASE(ScriptDeserializeFactoryTest)
+        {
+            size_t pos = 0;
+            const Script noExtraBytes = Script::deserialize(P2PKH_SCRIPT_SERIALIZED, pos);
+            BOOST_TEST((P2PKH_SCRIPT_SERIALIZED.size() == pos));
+            BOOST_TEST((noExtraBytes == P2PKH_SCRIPT));
+            pos = 1;
+            const Script extraLeadingByte = Script::deserialize(P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_BYTE, pos);
+            BOOST_TEST((P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_BYTE.size() == pos));
+            BOOST_TEST((extraLeadingByte == P2PKH_SCRIPT));
+            pos = 0;
+            const Script extraTrailingByte = Script::deserialize(P2PKH_SCRIPT_SERIALIZED_EXTRA_TRAILING_BYTE, pos);
+            BOOST_TEST((P2PKH_SCRIPT_SERIALIZED_EXTRA_TRAILING_BYTE.size() - 1 == pos));
+            BOOST_TEST((extraTrailingByte == P2PKH_SCRIPT));
+            pos = 1;
+            const Script extraLeadingTrailingBytes =
+                Script::deserialize(P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_TRAILING_BYTES, pos);
+            BOOST_TEST((P2PKH_SCRIPT_SERIALIZED_EXTRA_LEADING_TRAILING_BYTES.size() - 1 == pos));
+            BOOST_TEST((extraLeadingTrailingBytes == P2PKH_SCRIPT));
         }
         
         BOOST_AUTO_TEST_CASE(ScriptConstructorsTest)

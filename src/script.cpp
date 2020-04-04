@@ -19,6 +19,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include "util/hex.h"
 #include "util/json.h"
+#include "util/serialization.h"
 #include "script.h"
 
 namespace conclave
@@ -76,6 +77,20 @@ namespace conclave
     //
     // Factories
     //
+    
+    Script Script::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        size_t len = deserializeVarInt(data, pos);
+        Script ret = Script(std::vector<BYTE>(data.begin() + pos, data.begin() + pos + len));
+        pos += len;
+        return ret;
+    }
+    
+    Script Script::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
     
     /***
      * Convenience factory which checks what kind of address was passed and
@@ -195,6 +210,11 @@ namespace conclave
     {
     }
     
+    Script::Script(const std::vector<machine::operation>& operations)
+        : script(chain::script(operations))
+    {
+    }
+    
     Script::Script(const Script& other)
         : script(other.script)
     {
@@ -205,19 +225,9 @@ namespace conclave
     {
     }
     
-    Script::Script(const std::vector<machine::operation>& operations)
-        : script(chain::script(operations))
-    {
-    }
-    
     //
     // Public Functions
     //
-    
-    const std::string Script::toHexString() const
-    {
-        return byteVectorToHexString(script.to_data(false));
-    }
     
     const Hash160 Script::getHash160() const
     {
@@ -239,9 +249,24 @@ namespace conclave
         return script.to_data(true);
     }
     
+    const std::string Script::toHexString() const
+    {
+        return byteVectorToHexString(script.to_data(false));
+    }
+    
     //
     // Conversions
     //
+    
+    Script::operator pt::ptree() const
+    {
+        return vectorOfPrimitivesToArray<std::string>(static_cast<std::vector<std::string>>(*this));
+    }
+    
+    Script::operator std::string() const
+    {
+        return script.to_string(0);
+    }
     
     Script::operator std::vector<BYTE>() const
     {
@@ -251,16 +276,6 @@ namespace conclave
     Script::operator std::vector<std::string>() const
     {
         return machineOpVectorToStringVector(script.operations());
-    }
-    
-    Script::operator std::string() const
-    {
-        return script.to_string(0);
-    }
-    
-    Script::operator pt::ptree() const
-    {
-        return vectorOfPrimitivesToArray<std::string>(static_cast<std::vector<std::string>>(*this));
     }
     
     //
