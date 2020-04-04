@@ -71,7 +71,7 @@ namespace conclave
         BitcoinBlockHeader::BitcoinBlockHeader(const uint32_t version, Hash256&& hashPrevBlock,
                                                Hash256&& hashMerkleRoot, const uint32_t time,
                                                const uint32_t bits, const uint32_t nonce)
-            : version(version), hashPrevBlock(sttd::move(hashPrevBlock)), hashMerkleRoot(std::move(hashMerkleRoot)),
+            : version(version), hashPrevBlock(std::move(hashPrevBlock)), hashMerkleRoot(std::move(hashMerkleRoot)),
               time(time), bits(bits), nonce(nonce)
         {
         }
