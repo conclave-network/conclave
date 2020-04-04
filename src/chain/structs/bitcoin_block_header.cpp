@@ -41,13 +41,13 @@ namespace conclave
         
         BitcoinBlockHeader BitcoinBlockHeader::deserialize(const std::vector<BYTE>& data, size_t& pos)
         {
-            uint32_t version = deserializeIntegral<uint32_t>(data, pos);
-            Hash256 hashPrevBlock = Hash256::deserialize(data, pos);
-            Hash256 hashMerkleRoot = Hash256::deserialize(data, pos);
-            uint32_t time = deserializeIntegral<uint32_t>(data, pos);
-            uint32_t bits = deserializeIntegral<uint32_t>(data, pos);
-            uint32_t nonce = deserializeIntegral<uint32_t>(data, pos);
-            return BitcoinBlockHeader(version, hashPrevBlock, hashMerkleRoot, time, bits, nonce);
+            const uint32_t version = deserializeIntegral<uint32_t>(data, pos);
+            const Hash256 hashPrevBlock = Hash256::deserialize(data, pos);
+            const Hash256 hashMerkleRoot = Hash256::deserialize(data, pos);
+            const uint32_t time = deserializeIntegral<uint32_t>(data, pos);
+            const uint32_t bits = deserializeIntegral<uint32_t>(data, pos);
+            const uint32_t nonce = deserializeIntegral<uint32_t>(data, pos);
+            return BitcoinBlockHeader(version, std::move(hashPrevBlock), std::move(hashMerkleRoot), time, bits, nonce);
         }
         
         BitcoinBlockHeader BitcoinBlockHeader::deserialize(const std::vector<BYTE>& data)
@@ -64,6 +64,14 @@ namespace conclave
                                                const Hash256& hashMerkleRoot, const uint32_t time,
                                                const uint32_t bits, const uint32_t nonce)
             : version(version), hashPrevBlock(hashPrevBlock), hashMerkleRoot(hashMerkleRoot),
+              time(time), bits(bits), nonce(nonce)
+        {
+        }
+        
+        BitcoinBlockHeader::BitcoinBlockHeader(const uint32_t version, Hash256&& hashPrevBlock,
+                                               Hash256&& hashMerkleRoot, const uint32_t time,
+                                               const uint32_t bits, const uint32_t nonce)
+            : version(version), hashPrevBlock(sttd::move(hashPrevBlock)), hashMerkleRoot(std::move(hashMerkleRoot)),
               time(time), bits(bits), nonce(nonce)
         {
         }
