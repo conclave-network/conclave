@@ -56,7 +56,7 @@ namespace conclave
             return true; //TODO
         }
         
-        const bool BitcoinChain::outputIsSpendable(const Outpoint& outpoint)
+        const bool BitcoinChain::outputIsConclaveOwned(const Outpoint& outpoint)
         {
             return true; //TODO
         }

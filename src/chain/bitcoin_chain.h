@@ -47,7 +47,7 @@ namespace conclave
             const uint64_t getAddressBalance(const Address&);
             const Hash256 submitTx(const BitcoinTx&);
             const bool txIsConfirmed(const Hash256&);
-            const bool outputIsSpendable(const Outpoint&);
+            const bool outputIsConclaveOwned(const Outpoint& outpoint);
             const Hash256 getLatestBlockHash();
             const uint64_t getLatestBlockHeight();
             private:

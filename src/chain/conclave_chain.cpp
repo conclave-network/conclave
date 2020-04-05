@@ -70,7 +70,7 @@ namespace conclave
             // Check if the funding transaction has been confirmed or not
             if (!bitcoinChain.txIsConfirmed(fundTx.getHash256())) {
                 bitcoinChain.submitTx(fundTx);
-            } else if (!bitcoinChain.outputIsSpendable(*claimTx.fundingOutpoint)) {
+            } else if (!bitcoinChain.outputIsConclaveOwned(*claimTx.fundingOutpoint)) {
                 throw std::runtime_error(std::string("Output is not spendable: "));
             } else {
                 // Tx is confirmed and output is spendable
