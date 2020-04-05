@@ -150,7 +150,7 @@ namespace conclave
                 if (!tx.has_value()) {
                     throw std::runtime_error("Can not find transaction: " + static_cast<std::string>(fundTip->txId));
                 }
-                if (tx->outputs.size() < fundTip->index + 1) {
+                if (tx->outputs.size() <= fundTip->index) {
                     throw std::runtime_error("Output index out of bounds" + static_cast<std::string>(*fundTip));
                 }
                 ConclaveOutput output = tx->outputs[fundTip->index];
