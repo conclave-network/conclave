@@ -94,6 +94,21 @@ namespace conclave
     {
     }
     
+    ConclaveOutput::ConclaveOutput(const std::vector<BYTE>& data)
+        : ConclaveOutput(deserialize(data))
+    {
+    }
+    
+    ConclaveOutput::ConclaveOutput(const ConclaveOutput& other)
+        : ConclaveOutput(other.scriptPubKey, other.value, other.predecessor)
+    {
+    }
+    
+    ConclaveOutput::ConclaveOutput(ConclaveOutput&& other)
+        : ConclaveOutput(std::move(other.scriptPubKey), other.value, std::move(other.predecessor))
+    {
+    }
+    
     //
     // Public Functions
     //
