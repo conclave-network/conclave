@@ -29,6 +29,19 @@ namespace conclave
     {
         uint8_t size;
         
+        static Thingy deserialize(const std::vector<BYTE>& data, size_t& pos)
+        {
+            uint8_t size = data[pos];
+            pos += size;
+            return Thingy(size);
+        }
+        
+        static Thingy deserialize(const std::vector<BYTE>& data)
+        {
+            size_t pos = 0;
+            return deserialize(data, pos);
+        }
+        
         Thingy(uint8_t size)
             : size(size)
         {
