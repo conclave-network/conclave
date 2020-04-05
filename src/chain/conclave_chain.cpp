@@ -142,7 +142,20 @@ namespace conclave
             std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
             uint64_t fundTotal = 0;
             while (fundTip.has_value()) {
-                // TODO
+                /**
+                 * Potential for an infinite loop here if there is a graph cycle.
+                 * TODO: Do something about it
+                 */
+                std::optional<ConclaveClaimTx> tx = databaseClient.getItem(fundTip->txId);
+                if (!tx.has_value()) {
+                    throw std::runtime_error("Can not find transaction: " + static_cast<std::string>(fundTip->txId));
+                }
+                if (tx->outputs.size() < fundTip->index + 1) {
+                    throw std::runtime_error("Output index out of bounds" + static_cast<std::string>(*fundTip));
+                }
+                ConclaveOutput output = tx->outputs[fundTip->index];
+                fundTotal += output.value;
+                fundTip = output.predecessor;
             }
             return fundTotal;
         }
@@ -152,7 +165,7 @@ namespace conclave
             std::optional<Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
             uint64_t spendTotal = 0;
             while (spendTip.has_value()) {
-                // TODO
+                break; // TODO
             }
             return spendTotal;
         }
