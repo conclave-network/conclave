@@ -215,7 +215,7 @@ namespace conclave
         if (deserializeVarInt(data, pos) == 0) {
             return std::nullopt;
         } else {
-            return T(data, pos);
+            return T::deserialize(data, pos);
         }
     }
     
