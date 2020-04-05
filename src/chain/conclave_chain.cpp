@@ -56,9 +56,9 @@ namespace conclave
         
         const uint64_t ConclaveChain::getAddressBalance(const Address& address)
         {
-            Hash256 walletHash = Script::p2hScript(address).getHash256();
-            uint64_t fundTotal = computeFundTotal(walletHash);
-            uint64_t spendTotal = computeSpendTotal(walletHash);
+            const Hash256 walletHash = Script::p2hScript(address).getHash256();
+            const uint64_t fundTotal = countFundTotal(walletHash);
+            const uint64_t spendTotal = countSpendTotal(walletHash);
             return fundTotal - spendTotal;
         }
         
@@ -137,14 +137,24 @@ namespace conclave
             }
         }
         
-        const uint64_t ConclaveChain::computeFundTotal(const Hash256& walletHash)
+        const uint64_t ConclaveChain::countFundTotal(const Hash256& walletHash)
         {
-            return 100; // temp
+            std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+            uint64_t fundTotal = 0;
+            while (fundTip.has_value()) {
+                // TODO
+            }
+            return fundTotal;
         }
         
-        const uint64_t ConclaveChain::computeSpendTotal(const Hash256& walletHash)
+        const uint64_t ConclaveChain::countSpendTotal(const Hash256& walletHash)
         {
-            return 50; // temp
+            std::optional<Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
+            uint64_t spendTotal = 0;
+            while (spendTip.has_value()) {
+                // TODO
+            }
+            return spendTotal;
         }
     }
 }
