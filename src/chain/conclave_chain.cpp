@@ -56,7 +56,10 @@ namespace conclave
         
         const uint64_t ConclaveChain::getAddressBalance(const Address& address)
         {
-            return 4112;
+            Hash256 walletHash = Script::p2hScript(address).getHash256();
+            uint64_t fundTotal = computeFundTotal(walletHash);
+            uint64_t spendTotal = computeSpendTotal(walletHash);
+            return fundTotal - spendTotal;
         }
         
         void ConclaveChain::submitEntryTx(const EntryTx& entryTx)
@@ -132,6 +135,16 @@ namespace conclave
             } else {
                 return GENESIS_BLOCK;
             }
+        }
+        
+        const uint64_t ConclaveChain::computeFundTotal(const Hash256& walletHash)
+        {
+            return 100; // temp
+        }
+        
+        const uint64_t ConclaveChain::computeSpendTotal(const Hash256& walletHash)
+        {
+            return 50; // temp
         }
     }
 }

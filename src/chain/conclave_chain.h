@@ -57,6 +57,9 @@ namespace conclave
             const Hash256 getChainTipHash();
             const ConclaveBlock getChainTip();
             private:
+            // Private Functions
+            const uint64_t computeFundTotal(const Hash256&);
+            const uint64_t computeSpendTotal(const Hash256&);
             // Properties
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
