@@ -31,12 +31,7 @@ namespace conclave
         {
             BOOST_AUTO_TEST_CASE(ElectrumxClientTest)
             {
-                ElectrumxClient electrumxClient("electrumx.kenrufe.com", 50001);
-                pt::ptree tree = electrumxClient.blockchainHeadersSubscribe();
-                std::cout << jsonToString(tree, true) << std::endl;
-                
-                
-                //BOOST_TEST(true);
+                BOOST_TEST(true);
             }
         };
     };

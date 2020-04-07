@@ -93,21 +93,21 @@ namespace conclave
         
         const uint64_t ConclaveChain::countFundTotal(const Hash256& walletHash)
         {
-            std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+            std::optional <Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
             uint64_t fundTotal = 0;
             while (fundTip.has_value()) {
                 /**
                  * Potential for an infinite loop here if there is a graph cycle.
                  * TODO: Do something about it
                  */
-                std::optional<ConclaveTx> tx = databaseClient.getItem(fundTip->txId);
+                std::optional <ConclaveTx> tx = databaseClient.getItem(fundTip->txId);
                 if (!tx.has_value()) {
                     throw std::runtime_error("Can not find transaction: " + static_cast<std::string>(fundTip->txId));
                 }
                 if (tx->conclaveOutputs.size() <= fundTip->index) {
                     throw std::runtime_error("Output index out of bounds" + static_cast<std::string>(*fundTip));
                 }
-                ConclaveOutput output = tx->outputs[fundTip->index];
+                ConclaveOutput output = tx->conclaveOutputs[fundTip->index];
                 fundTotal += output.value;
                 fundTip = output.predecessor;
             }

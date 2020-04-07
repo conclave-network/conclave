@@ -158,7 +158,7 @@ add_executable(
         ../src/structs/outpoint.cpp
         ../src/structs/bitcoin_input.cpp
         structs/bitcoin_input_test.cpp
-        structs/conclave_tx_test.cpp)
+)
 
 add_executable(
         bitcoin_output_test
@@ -214,6 +214,8 @@ add_executable(
         ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
+        ../src/structs/inpoint.cpp
+        ../src/structs/outpoint.cpp
         ../src/structs/conclave_input.cpp
         ../src/structs/bitcoin_output.cpp
         ../src/structs/conclave_output.cpp
@@ -228,6 +230,7 @@ add_executable(
         ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
+        ../src/structs/inpoint.cpp
         ../src/structs/outpoint.cpp
         ../src/structs/bitcoin_input.cpp
         ../src/structs/bitcoin_output.cpp

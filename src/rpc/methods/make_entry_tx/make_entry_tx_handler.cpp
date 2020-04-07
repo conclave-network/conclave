@@ -21,7 +21,7 @@
 #include "structs/sources.h"
 #include "structs/destinations.h"
 #include "../../../structs/bitcoin_tx.h"
-#include "../../../structs/conclave_claim_tx.h"
+#include "../../../structs/conclave_tx.h"
 #include "../../../conclave_node.h"
 #include <vector>
 #include <iostream>
@@ -118,8 +118,7 @@ namespace conclave
                     const std::vector<Destination> conclaveDestinations = destinations.conclaveDestinations;
                     const uint64_t fundValue = totalValue(conclaveDestinations);
                     // Make claim Tx (Conclave)
-                    //ConclaveTx claimTx(makeConclaveOutputs(conclaveDestinations), TRUSTEES, MIN_SIGS);
-                    //ConclaveTx claimTx(0, 0, MIN_SIGS,)
+                    ConclaveTx claimTx(MIN_SIGS, TRUSTEES, makeConclaveOutputs(conclaveDestinations));
                     // Make fund Tx (Bitcoin)
                     std::vector<BitcoinInput> bitcoinInputs = makeBitcoinInputs(sources);
                     std::vector<BitcoinOutput> bitcoinOutputs =
