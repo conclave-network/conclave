@@ -16,8 +16,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#include "submit_entry_tx_request.h"
-#include "submit_entry_tx_response.h"
+#include "submit_conclave_tx_request.h"
+#include "submit_conclave_tx_response.h"
 #include "../../../conclave_node.h"
 
 namespace conclave
@@ -26,15 +26,15 @@ namespace conclave
     {
         namespace methods
         {
-            namespace submit_entry_tx
+            namespace submit_conclave_tx
             {
-                SubmitEntryTxResponse* submitEntryTxHandler(
-                    const SubmitEntryTxRequest& submitEntryTxRequest,
+                SubmitConclaveTxResponse* submitConclaveTxHandler(
+                    const SubmitConclaveTxRequest& submitConclaveTxRequest,
                     ConclaveNode& conclaveNode)
                 {
-                    const EntryTx entryTx = submitEntryTxRequest.getEntryTx();
-                    conclaveNode.getConclaveChain().submitEntryTx(entryTx);
-                    return new SubmitEntryTxResponse();
+                    const ConclaveTx conclaveTx = submitConclaveTxRequest.getConclaveTx();
+                    const Hash256 txId = conclaveNode.getConclaveChain().submitTx(conclaveTx);
+                    return new SubmitConclaveTxResponse(txId);
                 }
             }
         }

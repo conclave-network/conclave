@@ -31,14 +31,16 @@ namespace conclave
             NodeInfo,
             GetAddressBalance,
             MakeEntryTx,
-            SubmitEntryTx
+            SubmitBitcoinTx,
+            SubmitConclaveTx,
         };
         // Order matters!
         static const std::string RPC_METHOD_NAMES[] = {
             "NodeInfo",
             "GetAddressBalance",
             "MakeEntryTx",
-            "SubmitEntryTx"
+            "SubmitBitcoinTx",
+            "SubmitConclaveTx"
         };
         static const size_t NUM_RPC_METHODS = sizeof(RPC_METHOD_NAMES) / sizeof(std::string);
         

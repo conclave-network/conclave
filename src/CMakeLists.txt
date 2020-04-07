@@ -94,14 +94,15 @@ add_executable(
         rpc/methods/make_entry_tx/make_entry_tx_handler.cpp
         rpc/methods/make_entry_tx/structs/sources.cpp
         rpc/methods/make_entry_tx/structs/destinations.cpp
-        rpc/methods/submit_entry_tx/submit_entry_tx_handler.cpp
+        rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_handler.cpp
+        rpc/methods/submit_conclave_tx/submit_conclave_tx_handler.cpp
         chain/conclave_chain.cpp
         chain/bitcoin_chain.cpp
         chain/electrumx/electrumx_client.cpp
         chain/database/database_client.cpp
         chain/structs/conclave_block.cpp
         chain/structs/bitcoin_block_header.cpp
-)
+        rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_handler.cpp rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_request.h rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_response.h rpc/methods/submit_conclave_tx/submit_conclave_tx_handler.cpp rpc/methods/submit_conclave_tx/submit_conclave_tx_request.h rpc/methods/submit_conclave_tx/submit_conclave_tx_response.h)
 
 target_link_libraries(
         conclaved

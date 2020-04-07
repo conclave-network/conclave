@@ -18,30 +18,24 @@
 
 #pragma once
 
-#include "submit_entry_tx_response.h"
-#include "../request.h"
-#include "../../../structs/entry_tx.h"
+#include "../response.h"
+#include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
 namespace conclave
 {
-    class ConclaveNode;
     namespace rpc
     {
         namespace methods
         {
-            namespace submit_entry_tx
+            namespace submit_bitcoin_tx
             {
-                class SubmitEntryTxRequest;
-                
-                SubmitEntryTxResponse* submitEntryTxHandler(const SubmitEntryTxRequest&, ConclaveNode&);
-                
-                class SubmitEntryTxRequest : public Request
+                class SubmitBitcoinTxResponse : public Response
                 {
                     public:
-                    SubmitEntryTxRequest(const pt::ptree& params)
-                        : entryTx(params.get_child("EntryTx"))
+                    SubmitBitcoinTxResponse(const Hash256& txId)
+                        : txId(txId)
                     {
                     }
                     
@@ -55,19 +49,16 @@ namespace conclave
                         return rpcMethodToString(rpcMethod);
                     }
                     
-                    Response* handle(ConclaveNode& conclaveNode) const override
-                    {
-                        return submitEntryTxHandler(*this, conclaveNode);
-                    }
-                    
-                    const EntryTx& getEntryTx() const
-                    {
-                        return entryTx;
-                    }
-                    
                     private:
-                    const static RpcMethod rpcMethod = RpcMethod::SubmitEntryTx;
-                    const EntryTx entryTx;
+                    void serialize()
+                    {
+                        pt::ptree tree;
+                        tree.put("TxId", txId);
+                        serializedJson = jsonToString(tree);
+                    }
+                    
+                    const static RpcMethod rpcMethod = RpcMethod::SubmitBitcoinTx;
+                    const Hash256 txId;
                 };
             }
         }

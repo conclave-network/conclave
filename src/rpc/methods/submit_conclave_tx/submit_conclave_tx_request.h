@@ -18,23 +18,30 @@
 
 #pragma once
 
-#include "../response.h"
-#include "../../../util/json.h"
+#include "submit_conclave_tx_response.h"
+#include "../request.h"
+#include "../../../structs/conclave_tx.h"
 #include <boost/property_tree/ptree.hpp>
 
 namespace pt = boost::property_tree;
 namespace conclave
 {
+    class ConclaveNode;
     namespace rpc
     {
         namespace methods
         {
-            namespace submit_entry_tx
+            namespace submit_conclave_tx
             {
-                class SubmitEntryTxResponse : public Response
+                class SubmitConclaveTxRequest;
+                
+                SubmitConclaveTxResponse* submitConclaveTxHandler(const SubmitConclaveTxRequest&, ConclaveNode&);
+                
+                class SubmitConclaveTxRequest : public Request
                 {
                     public:
-                    SubmitEntryTxResponse()
+                    SubmitConclaveTxRequest(const pt::ptree& params)
+                        : conclaveTx(params.get_child("ConclaveTx"))
                     {
                     }
                     
@@ -48,14 +55,19 @@ namespace conclave
                         return rpcMethodToString(rpcMethod);
                     }
                     
-                    private:
-                    void serialize()
+                    Response* handle(ConclaveNode& conclaveNode) const override
                     {
-                        pt::ptree tree;
-                        serializedJson = jsonToString(tree);
+                        return submitConclaveTxHandler(*this, conclaveNode);
                     }
                     
-                    const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;
+                    const ConclaveTx& getConclaveTx() const
+                    {
+                        return conclaveTx;
+                    }
+                    
+                    private:
+                    const static RpcMethod rpcMethod = RpcMethod::SubmitConclaveTx;
+                    const ConclaveTx conclaveTx;
                 };
             }
         }

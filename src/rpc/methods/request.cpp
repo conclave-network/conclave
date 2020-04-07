@@ -20,7 +20,8 @@
 #include "node_info/node_info_request.h"
 #include "get_address_balance/get_address_balance_request.h"
 #include "make_entry_tx/make_entry_tx_request.h"
-#include "submit_entry_tx/submit_entry_tx_request.h"
+#include "submit_bitcoin_tx/submit_bitcoin_tx_request.h"
+#include "submit_conclave_tx/submit_conclave_tx_request.h"
 
 namespace conclave
 {
@@ -29,7 +30,8 @@ namespace conclave
         using namespace methods::node_info;
         using namespace methods::get_address_balance;
         using namespace methods::make_entry_tx;
-        using namespace methods::submit_entry_tx;
+        using namespace methods::submit_bitcoin_tx;
+        using namespace methods::submit_conclave_tx;
         
         Request* Request::deserializeJson(const std::string& json)
         {
@@ -49,8 +51,10 @@ namespace conclave
                     return new GetAddressBalanceRequest(params);
                 case RpcMethod::MakeEntryTx:
                     return new MakeEntryTxRequest(params);
-                case RpcMethod::SubmitEntryTx:
-                    return new SubmitEntryTxRequest(params);
+                case RpcMethod::SubmitBitcoinTx:
+                    return new SubmitBitcoinTxRequest(params);
+                case RpcMethod::SubmitConclaveTx:
+                    return new SubmitConclaveTxRequest(params);
                 default:
                     throw std::logic_error("No implementation found for RPC method: " + method);
             }
