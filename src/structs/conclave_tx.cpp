@@ -111,7 +111,7 @@ namespace conclave
                      getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCK_TIME),
                      getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
                      getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUND_POINT),
-                     tryGetVectorOfPrimitives<PublicKey>(tree, JSON_TRUSTEES),
+                     tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
                      tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_CONCLAVE_INPUTS),
                      tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
                      tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS))
