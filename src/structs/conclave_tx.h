@@ -49,6 +49,9 @@ namespace conclave
         static ConclaveTx deserialize(const std::vector<BYTE>&, size_t&);
         static ConclaveTx deserialize(const std::vector<BYTE>&);
         // Constructors
+        ConclaveTx(const uint32_t, const std::vector<PublicKey>&, const std::vector<ConclaveOutput>&);
+        ConclaveTx(const uint32_t, const std::vector<PublicKey>&, const std::vector<BitcoinOutput>&,
+                   const std::vector<ConclaveOutput>&);
         ConclaveTx(const uint32_t, const Outpoint&, const std::vector<PublicKey>&,
                    const std::vector<BitcoinOutput>&, const std::vector<ConclaveOutput>&);
         ConclaveTx(const uint32_t, const uint32_t, const std::vector<ConclaveInput>&, const std::vector<BitcoinOutput>&,

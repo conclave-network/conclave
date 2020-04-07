@@ -22,19 +22,71 @@
 
 namespace conclave
 {
+    //
+    // JSON Keys
+    //
+    
     const std::string ConclaveInput::JSONKEY_OUTPOINT = "outpoint";
     const std::string ConclaveInput::JSONKEY_SCRIPTSIG = "scriptSig";
     const std::string ConclaveInput::JSONKEY_SEQUENCE = "sequence";
     const std::string ConclaveInput::JSONKEY_PREDECESSOR = "predecessor";
+    
+    //
+    // Factories
+    //
+    
+    ConclaveInput ConclaveInput::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        const Outpoint outpoint = Outpoint::deserialize(data, pos);
+        const Script scriptSig = Script::deserialize(data, pos);
+        const uint32_t sequence = deserializeIntegral<uint32_t>(data, pos);
+        const std::optional<Inpoint> predecessor = deserializeOptionalObject<Inpoint>(data, pos);
+        return ConclaveInput(std::move(outpoint), std::move(scriptSig), sequence, std::move(predecessor));
+    }
+    
+    ConclaveInput ConclaveInput::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
+    // Constructors
+    //
     
     ConclaveInput::ConclaveInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence)
         : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence), predecessor(std::nullopt)
     {
     }
     
+    ConclaveInput::ConclaveInput(Outpoint&& outpoint, Script&& scriptSig, const uint32_t sequence)
+        : outpoint(std::move(outpoint)), scriptSig(std::move(scriptSig)), sequence(sequence), predecessor(std::nullopt)
+    {
+    }
+    
     ConclaveInput::ConclaveInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence,
                                  const Inpoint& predecessor)
         : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence), predecessor(predecessor)
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(Outpoint&& outpoint, Script&& scriptSig, const uint32_t sequence,
+                                 Inpoint&& predecessor)
+        : outpoint(std::move(outpoint)), scriptSig(std::move(scriptSig)), sequence(sequence),
+          predecessor(std::move(predecessor))
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(const Outpoint& outpoint, const Script& scriptSig, const uint32_t sequence,
+                                 const std::optional<Inpoint>& predecessor)
+        : outpoint(outpoint), scriptSig(scriptSig), sequence(sequence), predecessor(predecessor)
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(Outpoint&& outpoint, Script&& scriptSig, const uint32_t sequence,
+                                 std::optional<Inpoint>&& predecessor)
+        : outpoint(std::move(outpoint)), scriptSig(std::move(scriptSig)),
+          sequence(sequence), predecessor(std::move(predecessor))
     {
     }
     
@@ -46,6 +98,31 @@ namespace conclave
     {
     }
     
+    ConclaveInput::ConclaveInput(const std::vector<BYTE>& data)
+        : ConclaveInput(deserialize(data))
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(const ConclaveInput& other)
+        : ConclaveInput(other.outpoint, other.scriptSig, other.sequence, other.predecessor)
+    {
+    }
+    
+    ConclaveInput::ConclaveInput(ConclaveInput&& other)
+        : ConclaveInput(std::move(other.outpoint), std::move(other.scriptSig), other.sequence,
+                        std::move(other.predecessor))
+    {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const Hash256 ConclaveInput::getHash256() const
+    {
+        return Hash256::digest(serialize());
+    }
+    
     const std::vector<BYTE> ConclaveInput::serialize() const
     {
         const std::vector<BYTE> outpointSerialized = outpoint.serialize();
@@ -53,8 +130,8 @@ namespace conclave
         const std::vector<BYTE> sequenceSerialized = serializeIntegral(sequence);
         const std::vector<BYTE> predecessorSerialized = serializeOptionalObject(predecessor);
         std::vector<BYTE> serialized(
-            outpointSerialized.size() + scriptSigSerialized.size() +
-            sequenceSerialized.size() + predecessorSerialized.size());
+            outpointSerialized.size() + scriptSigSerialized.size() + sequenceSerialized.size() +
+            predecessorSerialized.size());
         size_t pos;
         writeToByteVector(serialized, outpointSerialized, pos);
         writeToByteVector(serialized, scriptSigSerialized, pos);
@@ -62,6 +139,10 @@ namespace conclave
         writeToByteVector(serialized, predecessorSerialized, pos);
         return serialized;
     }
+    
+    //
+    // Conversions
+    //
     
     ConclaveInput::operator pt::ptree() const
     {
@@ -78,6 +159,33 @@ namespace conclave
     ConclaveInput::operator std::string() const
     {
         return jsonToString(static_cast<pt::ptree>(*this));
+    }
+    
+    ConclaveInput::operator std::vector<BYTE>() const
+    {
+        return serialize();
+    }
+    
+    //
+    // Operator Overloads
+    //
+    
+    ConclaveInput& ConclaveInput::operator=(const ConclaveInput& other)
+    {
+        outpoint = other.outpoint;
+        scriptSig = other.scriptSig;
+        sequence = other.sequence;
+        predecessor = other.predecessor;
+        return *this;
+    }
+    
+    ConclaveInput& ConclaveInput::operator=(ConclaveInput&& other)
+    {
+        outpoint = std::move(other.outpoint);
+        scriptSig = std::move(other.scriptSig);
+        sequence = other.sequence;
+        predecessor = std::move(other.predecessor);
+        return *this;
     }
     
     bool ConclaveInput::operator==(const ConclaveInput& other) const

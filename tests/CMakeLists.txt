@@ -646,11 +646,6 @@ add_test(
 )
 
 add_test(
-        NAME conclave_standard_tx_test
-        COMMAND $<TARGET_FILE:conclave_standard_tx_test> --report_format=HRF --logger=HRF,all
-)
-
-add_test(
         NAME bitcoin_chain_test
         COMMAND $<TARGET_FILE:bitcoin_chain_test> --report_format=HRF --logger=HRF,all
 )

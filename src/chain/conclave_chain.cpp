@@ -57,16 +57,14 @@ namespace conclave
         const uint64_t ConclaveChain::getAddressBalance(const Address& address)
         {
             const Hash256 walletHash = Script::p2hScript(address).getHash256();
-            const uint64_t fundTotal = countFundTotal(walletHash);
-            const uint64_t spendTotal = countSpendTotal(walletHash);
-            return fundTotal - spendTotal;
+            return countFundTotal(walletHash) - countSpendTotal(walletHash);
         }
         
         void ConclaveChain::submitEntryTx(const EntryTx& entryTx)
         {
         }
         
-        const Hash256 ConclaveChain::submitStandardTx(const ConclaveStandardTx& conclaveStandardTx)
+        const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
         {
             return Hash256();
         }
@@ -102,11 +100,11 @@ namespace conclave
                  * Potential for an infinite loop here if there is a graph cycle.
                  * TODO: Do something about it
                  */
-                std::optional<ConclaveClaimTx> tx = databaseClient.getItem(fundTip->txId);
+                std::optional<ConclaveTx> tx = databaseClient.getItem(fundTip->txId);
                 if (!tx.has_value()) {
                     throw std::runtime_error("Can not find transaction: " + static_cast<std::string>(fundTip->txId));
                 }
-                if (tx->outputs.size() <= fundTip->index) {
+                if (tx->conclaveOutputs.size() <= fundTip->index) {
                     throw std::runtime_error("Output index out of bounds" + static_cast<std::string>(*fundTip));
                 }
                 ConclaveOutput output = tx->outputs[fundTip->index];

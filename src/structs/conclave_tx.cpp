@@ -64,10 +64,25 @@ namespace conclave
     // Constructors
     //
     
+    ConclaveTx::ConclaveTx(const uint32_t minSigs, const std::vector<PublicKey>& trustees,
+                           const std::vector<ConclaveOutput>& conclaveOutputs)
+        : version(0), lockTime(0), minSigs(minSigs), fundPoint(std::nullopt), trustees(trustees),
+          conclaveInputs({}), bitcoinOutputs({}), conclaveOutputs(conclaveOutputs)
+    {
+    }
+    
+    ConclaveTx::ConclaveTx(const uint32_t minSigs, const std::vector<PublicKey>& trustees,
+                           const std::vector<BitcoinOutput>& bitcoinOutputs,
+                           const std::vector<ConclaveOutput>& conclaveOutputs)
+        : version(0), lockTime(0), minSigs(minSigs), fundPoint(std::nullopt), trustees(trustees),
+          conclaveInputs({}), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
+    {
+    }
+    
     ConclaveTx::ConclaveTx(const uint32_t minSigs, const Outpoint& fundPoint,
                            const std::vector<PublicKey>& trustees, const std::vector<BitcoinOutput>& bitcoinOutputs,
                            const std::vector<ConclaveOutput>& conclaveOutputs)
-        : minSigs(minSigs), version(0), lockTime(0), fundPoint(fundPoint), trustees(trustees),
+        : version(0), lockTime(0), minSigs(minSigs), fundPoint(fundPoint), trustees(trustees),
           conclaveInputs({}), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
     {
     }
@@ -76,7 +91,7 @@ namespace conclave
                            const std::vector<ConclaveInput>& conclaveInputs,
                            const std::vector<BitcoinOutput>& bitcoinOutputs,
                            const std::vector<ConclaveOutput>& conclaveOutputs)
-        : minSigs(0), version(version), lockTime(lockTime), fundPoint(std::nullopt), trustees({}),
+        : version(version), lockTime(lockTime), minSigs(0), fundPoint(std::nullopt), trustees({}),
           conclaveInputs(conclaveInputs), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
     {
     }
@@ -109,13 +124,13 @@ namespace conclave
     }
     
     ConclaveTx::ConclaveTx(const ConclaveTx& other)
-        : ConclaveTx(other.minSigs, other.version, other.lockTime, other.fundPoint, other.trustees,
+        : ConclaveTx(other.version, other.lockTime, other.minSigs, other.fundPoint, other.trustees,
                      other.conclaveInputs, other.bitcoinOutputs, other.conclaveOutputs)
     {
     }
     
     ConclaveTx::ConclaveTx(ConclaveTx&& other)
-        : ConclaveTx(other.minSigs, other.version, other.lockTime, std::move(other.fundPoint),
+        : ConclaveTx(other.version, other.lockTime, other.minSigs, std::move(other.fundPoint),
                      std::move(other.trustees), std::move(other.conclaveInputs),
                      std::move(other.bitcoinOutputs), std::move(other.conclaveOutputs))
     {
@@ -232,7 +247,7 @@ namespace conclave
                (conclaveOutputs != other.conclaveOutputs);
     }
     
-    std::ostream& ConclaveTx::operator<<(std::ostream& os, const ConclaveTx& conclaveTx)
+    std::ostream& operator<<(std::ostream& os, const ConclaveTx& conclaveTx)
     {
         os << static_cast<std::string>(conclaveTx);
         return os;

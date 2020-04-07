@@ -39,11 +39,7 @@ namespace conclave
         const Script scriptPubKey = Script::deserialize(data, pos);
         const uint64_t value = deserializeIntegral<uint64_t>(data, pos);
         const std::optional<Outpoint> predecessor = deserializeOptionalObject<Outpoint>(data, pos);
-        if (predecessor.has_value()) {
-            return ConclaveOutput(scriptPubKey, value, std::move(*predecessor));
-        } else {
-            return ConclaveOutput(scriptPubKey, value);
-        }
+        return ConclaveOutput(std::move(scriptPubKey), value, std::move(predecessor));
     }
     
     ConclaveOutput ConclaveOutput::deserialize(const std::vector<BYTE>& data)
