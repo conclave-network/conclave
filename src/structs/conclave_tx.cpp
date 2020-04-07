@@ -45,12 +45,12 @@ namespace conclave
         const uint32_t lockTime = deserializeIntegral<uint32_t>(data, pos);
         const uint32_t minSigs = deserializeIntegral<uint32_t>(data, pos);
         const std::vector<PublicKey> trustees = deserializeVectorOfObjects<PublicKey>(data, pos);
-        const std::optional<Outpoint> fundOutpoint = deserializeOptionalObject<Outpoint>(data, pos);
+        const std::optional<Outpoint> fundPoint = deserializeOptionalObject<Outpoint>(data, pos);
         const std::vector<ConclaveInput> conclaveInputs = deserializeVectorOfObjects<ConclaveInput>(data, pos);
         const std::vector<BitcoinOutput> bitcoinOutputs = deserializeVectorOfObjects<BitcoinOutput>(data, pos);
         const std::vector<ConclaveOutput> conclaveOutputs = deserializeVectorOfObjects<ConclaveOutput>(data, pos);
-        return ConclaveTx(version, lockTime, minSigs, std::move(trustees), std::move(fundOutpoint),
-                          std::move(conclaveInputs), std::move(bitcoinOutputs), std::move(conclaveOutputs));
+        return ConclaveTx(version, lockTime, minSigs, fundPoint, trustees, conclaveInputs, bitcoinOutputs,
+                          conclaveOutputs);
     }
     
     ConclaveTx ConclaveTx::deserialize(const std::vector<BYTE>& data)
@@ -64,26 +64,42 @@ namespace conclave
     // Constructors
     //
     
+    ConclaveTx::ConclaveTx(const uint32_t minSigs, const Outpoint& fundPoint,
+                           const std::vector<PublicKey>& trustees, const std::vector<BitcoinOutput>& bitcoinOutputs,
+                           const std::vector<ConclaveOutput>& conclaveOutputs)
+        : minSigs(minSigs), version(0), lockTime(0), fundPoint(fundPoint), trustees(trustees),
+          conclaveInputs({}), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
+    {
+    }
+    
+    ConclaveTx::ConclaveTx(const uint32_t version, const uint32_t lockTime,
+                           const std::vector<ConclaveInput>& conclaveInputs,
+                           const std::vector<BitcoinOutput>& bitcoinOutputs,
+                           const std::vector<ConclaveOutput>& conclaveOutputs)
+        : minSigs(0), version(version), lockTime(lockTime), fundPoint(std::nullopt), trustees({}),
+          conclaveInputs(conclaveInputs), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
+    {
+    }
+    
     ConclaveTx::ConclaveTx(const uint32_t version, const uint32_t lockTime, const uint32_t minSigs,
                            const std::optional<Outpoint>& fundPoint, const std::vector<PublicKey>& trustees,
                            const std::vector<ConclaveInput>& conclaveInputs,
                            const std::vector<BitcoinOutput>& bitcoinOutputs,
                            const std::vector<ConclaveOutput>& conclaveOutputs)
-        : minSigs(minSigs), version(version), lockTime(lockTime), fundPoint(fundPoint), trustees(trustees),
+        : version(version), lockTime(lockTime), minSigs(minSigs), fundPoint(fundPoint), trustees(trustees),
           conclaveInputs(conclaveInputs), bitcoinOutputs(bitcoinOutputs), conclaveOutputs(conclaveOutputs)
     {
     }
     
     ConclaveTx::ConclaveTx(const pt::ptree& tree)
-        : ConclaveTx(
-        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_VERSION),
-        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCK_TIME),
-        getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
-        getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUND_POINT),
-        tryGetVectorOfObjects<PublicKey>(tree, JSONKEY_TRUSTEES),
-        tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_CONCLAVE_INPUTS),
-        tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
-        tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS))
+        : ConclaveTx(getPrimitiveFromJson<uint32_t>(tree, JSONKEY_VERSION),
+                     getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCK_TIME),
+                     getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
+                     getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUND_POINT),
+                     tryGetVectorOfObjects<PublicKey>(tree, JSONKEY_TRUSTEES),
+                     tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_CONCLAVE_INPUTS),
+                     tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
+                     tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS))
     {
     }
     
@@ -93,14 +109,14 @@ namespace conclave
     }
     
     ConclaveTx::ConclaveTx(const ConclaveTx& other)
-        : ConclaveTx(other.version, other.lockTime, other.minSigs, other.fundPoint, other.trustees,
+        : ConclaveTx(other.minSigs, other.version, other.lockTime, other.fundPoint, other.trustees,
                      other.conclaveInputs, other.bitcoinOutputs, other.conclaveOutputs)
     {
     }
     
     ConclaveTx::ConclaveTx(ConclaveTx&& other)
-        : ConclaveTx(other.version, other.lockTime, other.minSigs,
-                     std::move(other.fundPoint), std::move(other.trustees), std::move(other.conclaveInputs),
+        : ConclaveTx(other.minSigs, other.version, other.lockTime, std::move(other.fundPoint),
+                     std::move(other.trustees), std::move(other.conclaveInputs),
                      std::move(other.bitcoinOutputs), std::move(other.conclaveOutputs))
     {
     }

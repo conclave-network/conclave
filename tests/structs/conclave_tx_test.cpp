@@ -19,13 +19,13 @@
 #define BOOST_TEST_MODULE Conclave_Tx_Test
 
 #include <boost/test/included/unit_test.hpp>
-#include "../../src/structs/conclave_standard_tx.h"
+#include "../../src/structs/conclave_tx.h"
 #include <cstdint>
 
 namespace conclave
 {
-    BOOST_AUTO_TEST_CASE(ConclaveStandardTxConstructorsTest)
+    BOOST_AUTO_TEST_CASE(ConclaveTxConstructorsTest)
     {
-        BOOST_TEST(true);
+        BOOST_TEST(true); // Dummy test because no tests will fail
     }
 }

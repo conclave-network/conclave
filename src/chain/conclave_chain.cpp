@@ -64,50 +64,6 @@ namespace conclave
         
         void ConclaveChain::submitEntryTx(const EntryTx& entryTx)
         {
-            BitcoinTx fundTx = entryTx.fundTx;
-            ConclaveClaimTx claimTx = entryTx.claimTx;
-            
-            // Check if the funding transaction has been confirmed or not
-            if (!bitcoinChain.txIsConfirmed(fundTx.getHash256())) {
-                bitcoinChain.submitTx(fundTx);
-            } else if (!bitcoinChain.outputIsConclaveOwned(*claimTx.fundingOutpoint)) {
-                throw std::runtime_error(std::string("Output is not spendable: "));
-            } else {
-                // Tx is confirmed and output is spendable
-                // Sweep 1: update predecessors to most recent fund tips
-                for (uint32_t i = 0; i < claimTx.outputs.size(); i++) {
-                    ConclaveOutput& conclaveOutput = claimTx.outputs[i];
-                    Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
-                    // Set predecessor to fundTip (or nullopt)
-                    conclaveOutput.predecessor = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
-                }
-                
-                // Get existing chain tip
-                ConclaveBlock oldTip = getChainTip();
-                
-                // Make new chain tip
-                ConclaveBlock newTip = ConclaveBlock(
-                    0,                                       // pot
-                    oldTip.height + 1,                       // height
-                    0,                                       // epoch
-                    oldTip.getHash256(),                     // hashPrevBlock
-                    bitcoinChain.getLatestBlockHash(),       // lowestParentBitcoinBlockHash
-                    0,                                       // txTypeId
-                    0,                                       // txVersion
-                    claimTx.getHash256()                     // txHash
-                );
-                
-                // Sweep 2: update fund tips with new outpoints
-                for (uint32_t i = 0; i < claimTx.outputs.size(); i++) {
-                    Hash256 walletHash = claimTx.outputs[i].scriptPubKey.getHash256();
-                    // Update fundTip
-                    Outpoint outpoint(claimTx.getHash256(), i);
-                    databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, outpoint);
-                }
-                databaseClient.putItem(claimTx);
-                databaseClient.putItem(newTip);
-                databaseClient.putSingletonItem(COLLECTION_CHAIN_TIP, newTip.getHash256());
-            }
         }
         
         const Hash256 ConclaveChain::submitStandardTx(const ConclaveStandardTx& conclaveStandardTx)

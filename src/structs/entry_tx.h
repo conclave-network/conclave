@@ -19,7 +19,7 @@
 #pragma once
 
 #include "bitcoin_tx.h"
-#include "conclave_claim_tx.h"
+#include "conclave_tx.h"
 
 namespace conclave
 {
@@ -29,7 +29,7 @@ namespace conclave
         const static std::string JSONKEY_FUND_TX;
         const static std::string JSONKEY_CLAIM_TX;
         // Constructors
-        EntryTx(const BitcoinTx&, const ConclaveClaimTx&);
+        EntryTx(const BitcoinTx&, const ConclaveTx&);
         EntryTx(const pt::ptree&);
         // Operators
         explicit operator pt::ptree() const;
@@ -39,6 +39,6 @@ namespace conclave
         friend std::ostream& operator<<(std::ostream&, const EntryTx&);
         // Properties
         BitcoinTx fundTx;
-        ConclaveClaimTx claimTx;
+        ConclaveTx claimTx;
     };
 }

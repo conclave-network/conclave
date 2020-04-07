@@ -24,7 +24,7 @@
 #include "../config/conclave_chain_config.h"
 #include "../hash256.h"
 #include "../address.h"
-#include "../structs/conclave_standard_tx.h"
+#include "../structs/conclave_tx.h"
 #include "../structs/entry_tx.h"
 
 /***
@@ -53,7 +53,7 @@ namespace conclave
             // Public Functions
             const uint64_t getAddressBalance(const Address&);
             void submitEntryTx(const EntryTx&);
-            const Hash256 submitStandardTx(const ConclaveStandardTx&);
+            const Hash256 submitTx(const ConclaveTx&);
             const Hash256 getChainTipHash();
             const ConclaveBlock getChainTip();
             private:

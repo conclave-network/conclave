@@ -118,7 +118,8 @@ namespace conclave
                     const std::vector<Destination> conclaveDestinations = destinations.conclaveDestinations;
                     const uint64_t fundValue = totalValue(conclaveDestinations);
                     // Make claim Tx (Conclave)
-                    ConclaveClaimTx claimTx(makeConclaveOutputs(conclaveDestinations), TRUSTEES, MIN_SIGS);
+                    //ConclaveTx claimTx(makeConclaveOutputs(conclaveDestinations), TRUSTEES, MIN_SIGS);
+                    ConclaveTx claimTx(0, 0, MIN_SIGS,)
                     // Make fund Tx (Bitcoin)
                     std::vector<BitcoinInput> bitcoinInputs = makeBitcoinInputs(sources);
                     std::vector<BitcoinOutput> bitcoinOutputs =

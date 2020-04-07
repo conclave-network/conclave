@@ -158,7 +158,7 @@ add_executable(
         ../src/structs/outpoint.cpp
         ../src/structs/bitcoin_input.cpp
         structs/bitcoin_input_test.cpp
-)
+        structs/conclave_tx_test.cpp)
 
 add_executable(
         bitcoin_output_test
@@ -208,16 +208,17 @@ add_executable(
 )
 
 add_executable(
-        claim_tx_test
+        conclave_tx_test
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
-        ../src/structs/outpoint.cpp
+        ../src/structs/conclave_input.cpp
+        ../src/structs/bitcoin_output.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/conclave_claim_tx.cpp
-        structs/conclave_claim_tx_test.cpp
+        ../src/structs/conclave_tx.cpp
+        structs/conclave_tx_test.cpp
 )
 
 add_executable(
@@ -230,26 +231,12 @@ add_executable(
         ../src/structs/outpoint.cpp
         ../src/structs/bitcoin_input.cpp
         ../src/structs/bitcoin_output.cpp
-        ../src/structs/conclave_output.cpp
-        ../src/structs/conclave_claim_tx.cpp
-        ../src/structs/bitcoin_tx.cpp
-        structs/conclave_claim_tx_test.cpp
-)
-
-add_executable(
-        conclave_standard_tx_test
-        ../src/hash160.cpp
-        ../src/hash256.cpp
-        ../src/public_key.cpp
-        ../src/address.cpp
-        ../src/script.cpp
-        ../src/structs/outpoint.cpp
-        ../src/structs/inpoint.cpp
         ../src/structs/conclave_input.cpp
         ../src/structs/conclave_output.cpp
-        ../src/structs/bitcoin_output.cpp
-        ../src/structs/conclave_standard_tx.cpp
-        structs/conclave_standard_tx_test.cpp
+        ../src/structs/bitcoin_tx.cpp
+        ../src/structs/conclave_tx.cpp
+        ../src/structs/entry_tx.cpp
+        structs/entry_tx_test.cpp
 )
 
 add_executable(
@@ -467,26 +454,16 @@ target_link_libraries(
 )
 
 target_link_libraries(
-        claim_tx_test
+        conclave_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
         ${CMAKE_DL_LIBS}
         PkgConfig::LIBBITCOIN_SYSTEM
 )
-
 
 target_link_libraries(
         entry_tx_test
-        LINK_PUBLIC ${Boost_LIBRARIES}
-        OpenSSL::Crypto
-        OpenSSL::SSL
-        ${CMAKE_DL_LIBS}
-        PkgConfig::LIBBITCOIN_SYSTEM
-)
-
-target_link_libraries(
-        conclave_standard_tx_test
         LINK_PUBLIC ${Boost_LIBRARIES}
         OpenSSL::Crypto
         OpenSSL::SSL
@@ -659,8 +636,8 @@ add_test(
 )
 
 add_test(
-        NAME claim_tx_test
-        COMMAND $<TARGET_FILE:claim_tx_test> --report_format=HRF --logger=HRF,all
+        NAME conclave_tx_test
+        COMMAND $<TARGET_FILE:conclave_tx_test> --report_format=HRF --logger=HRF,all
 )
 
 add_test(

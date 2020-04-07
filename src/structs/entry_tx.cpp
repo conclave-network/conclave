@@ -23,14 +23,14 @@ namespace conclave
     const std::string EntryTx::JSONKEY_FUND_TX = "FundTx";
     const std::string EntryTx::JSONKEY_CLAIM_TX = "ClaimTx";
     
-    EntryTx::EntryTx(const BitcoinTx& fundTx, const ConclaveClaimTx& claimTx)
+    EntryTx::EntryTx(const BitcoinTx& fundTx, const ConclaveTx& claimTx)
         : fundTx(fundTx), claimTx(claimTx)
     {
     }
     
     EntryTx::EntryTx(const pt::ptree& tree)
         : EntryTx(getObjectFromJson<BitcoinTx>(tree, JSONKEY_FUND_TX),
-                  getObjectFromJson<ConclaveClaimTx>(tree, JSONKEY_CLAIM_TX))
+                  getObjectFromJson<ConclaveTx>(tree, JSONKEY_CLAIM_TX))
     {
     }
     
