@@ -55,7 +55,7 @@ namespace conclave
                     {
                         pt::ptree tree;
                         tree.add_child("EntryTx", static_cast<pt::ptree>(entryTx));
-                        serializedJson = jsonToString(tree);
+                        serializedJson = ptreeToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::MakeEntryTx;

@@ -69,8 +69,8 @@ namespace conclave
     BitcoinTx::BitcoinTx(const pt::ptree& tree)
         : BitcoinTx(
         getPrimitiveFromJson<uint32_t>(tree, JSONKEY_VERSION),
-        tryGetVectorOfObjects<BitcoinInput>(tree, JSONKEY_INPUTS),
-        tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_OUTPUTS),
+        getVectorOfObjectsFromJson<BitcoinInput>(tree, JSONKEY_INPUTS),
+        getVectorOfObjectsFromJson<BitcoinOutput>(tree, JSONKEY_OUTPUTS),
         getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCKTIME))
     {
     }
@@ -133,7 +133,7 @@ namespace conclave
     
     BitcoinTx::operator std::string() const
     {
-        return jsonToString(static_cast<pt::ptree>(*this));
+        return ptreeToString(static_cast<pt::ptree>(*this));
     }
     
     BitcoinTx::operator std::vector<BYTE>() const

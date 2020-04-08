@@ -39,16 +39,30 @@ namespace conclave
     
     const pt::ptree getResultOrThrowError(const pt::ptree& response)
     {
-        const boost::optional<const pt::ptree&> result = response.get_child_optional("result");
-        if (result.has_value()) {
-            return result.get();
-        } else {
-            const boost::optional<const pt::ptree&> error = response.get_child_optional("error");
-            std::string errMsg =
-                error.has_value() ?
-                error.get().get<std::string>("message", JSON_RPC_DEFAULT_ERROR_MESSAGE)
-                                  : JSON_RPC_DEFAULT_ERROR_MESSAGE;
-            throw std::runtime_error(errMsg);
-        }
+        /**
+         * TODO - remove this god-awful code when we get a new and better JSON library
+         */
+        try {
+            const std::optional<std::string> resultStr = getOptionalPrimitiveFromJson<std::string>(response, "result");
+            if (resultStr.has_value()) {
+                if (resultStr->length() > 0) {
+                    pt::ptree res;
+                    res.add("result", *resultStr);
+                    return res;
+                }
+            }
+        } catch (...) {}
+        try {
+            const boost::optional<const pt::ptree&> resultPtree = response.get_child_optional("result");
+            if (resultPtree.has_value()) {
+                return *resultPtree;
+            }
+        } catch (...) {}
+        const boost::optional<const pt::ptree&> error = response.get_child_optional("error");
+        std::string errMsg =
+            error.has_value() ?
+            error.get().get<std::string>("message", JSON_RPC_DEFAULT_ERROR_MESSAGE)
+                              : JSON_RPC_DEFAULT_ERROR_MESSAGE;
+        throw std::runtime_error(errMsg);
     }
 }

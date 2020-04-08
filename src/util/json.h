@@ -30,7 +30,7 @@
 
 namespace pt = boost::property_tree;
 
-inline const std::string jsonToString(const pt::ptree& tree, const bool pretty = true)
+inline const std::string ptreeToString(const pt::ptree& tree, const bool pretty = true)
 {
     std::ostringstream oss;
     write_json(oss, tree, pretty);
@@ -38,7 +38,7 @@ inline const std::string jsonToString(const pt::ptree& tree, const bool pretty =
     return str;
 }
 
-inline const pt::ptree parseJson(const std::string& str)
+inline const pt::ptree stringToPtree(const std::string& str)
 {
     pt::ptree root;
     std::istringstream iss(str);
@@ -85,17 +85,20 @@ inline const std::optional<T> getOptionalObjectFromJson(const pt::ptree& tree, c
 }
 
 template<typename T>
-inline const std::vector<T> tryGetVectorOfPrimitives(const pt::ptree& tree, const std::string childName)
+inline const std::vector<T> getVectorOfPrimitivesFromJson(const pt::ptree& tree, const std::string childName)
 {
     std::vector<T> vec;
-    for (auto& item : tree.get_child(childName)) {
-        vec.push_back(T(item.second.get_value<std::string>()));
+    boost::optional childNode = tree.get_child_optional(childName);
+    if (childNode.has_value()) {
+        for (auto& item : *childNode) {
+            vec.push_back(T(item.second.get_value<std::string>()));
+        }
     }
     return vec;
 }
 
 template<typename T>
-inline const std::vector<T> tryGetVectorOfObjects(const pt::ptree& tree, const std::string childName)
+inline const std::vector<T> getVectorOfObjectsFromJson(const pt::ptree& tree, const std::string childName)
 {
     std::vector<T> vec;
     boost::optional childNode = tree.get_child_optional(childName);

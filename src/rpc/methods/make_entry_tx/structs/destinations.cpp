@@ -37,8 +37,8 @@ namespace conclave
                 }
                 
                 Destinations::Destinations(const pt::ptree& tree)
-                    : Destinations(tryGetVectorOfObjects<Destination>(tree, JSONKEY_BITCOIN),
-                                   tryGetVectorOfObjects<Destination>(tree, JSONKEY_CONCLAVE))
+                    : Destinations(getVectorOfObjectsFromJson<Destination>(tree, JSONKEY_BITCOIN),
+                                   getVectorOfObjectsFromJson<Destination>(tree, JSONKEY_CONCLAVE))
                 {
                 }
                 
@@ -52,7 +52,7 @@ namespace conclave
                 
                 Destinations::operator std::string() const
                 {
-                    return jsonToString(static_cast<pt::ptree>(*this));
+                    return ptreeToString(static_cast<pt::ptree>(*this));
                 }
                 
                 bool Destinations::operator==(const Destinations& other) const

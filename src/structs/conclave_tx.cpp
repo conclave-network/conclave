@@ -111,10 +111,10 @@ namespace conclave
                      getPrimitiveFromJson<uint32_t>(tree, JSONKEY_LOCK_TIME),
                      getPrimitiveFromJson<uint32_t>(tree, JSONKEY_MIN_SIGS),
                      getOptionalObjectFromJson<Outpoint>(tree, JSONKEY_FUND_POINT),
-                     tryGetVectorOfPrimitives<PublicKey>(tree, JSONKEY_TRUSTEES),
-                     tryGetVectorOfObjects<ConclaveInput>(tree, JSONKEY_CONCLAVE_INPUTS),
-                     tryGetVectorOfObjects<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
-                     tryGetVectorOfObjects<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS))
+                     getVectorOfPrimitivesFromJson<PublicKey>(tree, JSONKEY_TRUSTEES),
+                     getVectorOfObjectsFromJson<ConclaveInput>(tree, JSONKEY_CONCLAVE_INPUTS),
+                     getVectorOfObjectsFromJson<BitcoinOutput>(tree, JSONKEY_BITCOIN_OUTPUTS),
+                     getVectorOfObjectsFromJson<ConclaveOutput>(tree, JSONKEY_CONCLAVE_OUTPUTS))
     {
     }
     
@@ -222,7 +222,7 @@ namespace conclave
     
     ConclaveTx::operator std::string() const
     {
-        return jsonToString(static_cast<pt::ptree>(*this));
+        return ptreeToString(static_cast<pt::ptree>(*this));
     }
     
     ConclaveTx::operator std::vector<BYTE>() const

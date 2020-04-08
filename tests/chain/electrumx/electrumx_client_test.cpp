@@ -32,6 +32,13 @@ namespace conclave
             BOOST_AUTO_TEST_CASE(ElectrumxClientTest)
             {
                 BOOST_TEST(true);
+                ElectrumxClient electrumxClient("electrum.networkingfanatic.com", 50001);
+                pt::ptree tree1 = electrumxClient.blockchainTransactionGet
+                                                     ("e25b9e9ed143fa3a876b195cf9559432edf03d06948c92dbbc4c5d8ccae02de1",
+                                                      false);
+                std::cout << ptreeToString(tree1) << std::endl;
+                pt::ptree tree2 = electrumxClient.blockchainHeadersSubscribe();
+                std::cout << ptreeToString(tree2) << std::endl;
             }
         };
     };

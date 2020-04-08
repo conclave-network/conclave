@@ -55,7 +55,7 @@ namespace conclave
                         pt::ptree tree;
                         tree.put("DisplayName", displayName);
                         tree.put("PublicKey", publicKey);
-                        serializedJson = jsonToString(tree);
+                        serializedJson = ptreeToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::NodeInfo;

@@ -31,14 +31,21 @@ using namespace bc::system::machine;
 namespace conclave
 {
     const static std::string ADDRESS_HASH_HEX = "39a95df3c155a9c017c2099723a0a70ef85721b0";
+    const static std::string SCRIPT_HASH_HEX = "8c1d08ebd246b71d3f2ca80086738e6b40957119e1e9040d4475649ccdeb5885";
+    const static std::vector<BYTE> ADDRESS_HASH_BYTES = hexStringToByteVector(ADDRESS_HASH_HEX);
+    const static std::vector<BYTE> SCRIPT_HASH_BYTES = hexStringToByteVector(SCRIPT_HASH_HEX);
     const static std::string EMPTY_SCRIPT_HEX = "";
     const static std::string RETURN_SCRIPT_HEX = "6a";
     const static std::string P2PKH_SCRIPT_HEX = "76a91439a95df3c155a9c017c2099723a0a70ef85721b088ac";
     const static std::string P2SH_SCRIPT_HEX = "a91439a95df3c155a9c017c2099723a0a70ef85721b087";
+    const static std::string P2WPKH_SCRIPT_HEX = "001439a95df3c155a9c017c2099723a0a70ef85721b0";
+    const static std::string P2WSH_SCRIPT_HEX = "00208c1d08ebd246b71d3f2ca80086738e6b40957119e1e9040d4475649ccdeb5885";
     const static std::vector<BYTE> EMPTY_SCRIPT_BYTES = hexStringToByteVector(EMPTY_SCRIPT_HEX);
     const static std::vector<BYTE> RETURN_SCRIPT_BYTES = hexStringToByteVector(RETURN_SCRIPT_HEX);
     const static std::vector<BYTE> P2PKH_SCRIPT_BYTES = hexStringToByteVector(P2PKH_SCRIPT_HEX);
     const static std::vector<BYTE> P2SH_SCRIPT_BYTES = hexStringToByteVector(P2SH_SCRIPT_HEX);
+    const static std::vector<BYTE> P2WPKH_SCRIPT_BYTES = hexStringToByteVector(P2WPKH_SCRIPT_HEX);
+    const static std::vector<BYTE> P2WSH_SCRIPT_BYTES = hexStringToByteVector(P2WSH_SCRIPT_HEX);
     const static std::vector<ScriptElement> EMPTY_SCRIPT_SE_VEC = {};
     const static std::vector<ScriptElement> RETURN_SCRIPT_SE_VEC = {ScriptOp::return_};
     const static std::vector<ScriptElement> P2PKH_SCRIPT_SE_VEC = {
@@ -52,6 +59,14 @@ namespace conclave
         ScriptOp::hash160,
         HEX_TO_BYTE_VECTOR(ADDRESS_HASH_HEX),
         ScriptOp::equal
+    };
+    const static std::vector<ScriptElement> P2WPKH_SCRIPT_SE_VEC = {
+        ScriptOp::push_size_0,
+        HEX_TO_BYTE_VECTOR(ADDRESS_HASH_HEX)
+    };
+    const static std::vector<ScriptElement> P2WSH_SCRIPT_SE_VEC = {
+        ScriptOp::push_size_0,
+        HEX_TO_BYTE_VECTOR(SCRIPT_HASH_HEX)
     };
     const static std::vector<std::string> EMPTY_SCRIPT_STR_VEC = {};
     const static std::vector<std::string> RETURN_SCRIPT_STR_VEC = {"return"};
@@ -191,6 +206,18 @@ namespace conclave
         BOOST_AUTO_TEST_CASE(ScriptToHexStringTest)
         {
             BOOST_TEST((Script(P2PKH_SCRIPT_BYTES).toHexString() == P2PKH_SCRIPT_HEX));
+        }
+        
+        BOOST_AUTO_TEST_CASE(ScriptIsP2wshTest)
+        {
+            BOOST_TEST((!Script(P2WPKH_SCRIPT_BYTES).isP2wsh()));
+            BOOST_TEST((Script(P2WSH_SCRIPT_BYTES).isP2wsh()));
+        }
+        
+        BOOST_AUTO_TEST_CASE(ScriptGetP2wshHashTest)
+        {
+            BOOST_TEST((Script(P2WPKH_SCRIPT_BYTES).getP2wshHash() == std::nullopt));
+            BOOST_TEST((Script(P2WSH_SCRIPT_BYTES).getP2wshHash() == Hash256(SCRIPT_HASH_BYTES)));
         }
         
         BOOST_AUTO_TEST_CASE(ScriptGetHash160Test)

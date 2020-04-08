@@ -59,7 +59,7 @@ namespace conclave
             "    \"txVersion\": \"10924\",\n"
             "    \"txHash\": \"7b1a23b60a934a3775b5f451693c6c8c8b676569f4ab59566ad4b35d4a2afc6a\"\n"
             "}\n";
-        const static pt::ptree CONCLAVE_BLOCK_1_PTREE = parseJson(CONCLAVE_BLOCK_1_STR);
+        const static pt::ptree CONCLAVE_BLOCK_1_PTREE = stringToPtree(CONCLAVE_BLOCK_1_STR);
         const static Hash256 CONCLAVE_BLOCK_1_HASH("92b1f32a27f16833c657966aa799296392e7f4076466f6ec69bba87c4afb74bc");
         const static Hash256 CONCLAVE_BLOCK_2_HASH("7918d34963a93b792486a68a15a7d74819f70c1eeb7c20414ce106e60dad75e5");
         const static std::vector<BYTE> CONCLAVE_BLOCK_1_SERIALIZED = HEX_TO_BYTE_VECTOR(

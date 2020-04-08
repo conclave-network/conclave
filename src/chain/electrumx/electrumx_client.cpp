@@ -74,6 +74,20 @@ namespace conclave
             }
             
             /***
+             * blockchain.transaction.broadcast
+             * https://electrumx.readthedocs.io/en/latest/protocol-methods.html#blockchain-transaction-broadcast
+             */
+            const pt::ptree ElectrumxClient::blockchainTransactionGet(const std::string& txHash, const bool verbose)
+            {
+                pt::ptree params;
+                params.add("tx_hash", txHash);
+                //params.add("verbose", verbose);
+                pt::ptree request = buildRequest("blockchain.transaction.get");
+                request.add_child("params", params);
+                return doRequest(request);
+            }
+            
+            /***
              * blockchain.headers.subscribe
              * https://electrumx.readthedocs.io/en/latest/protocol-methods.html#blockchain-headers-subscribe
              */
@@ -86,7 +100,8 @@ namespace conclave
             
             const pt::ptree ElectrumxClient::doRequest(const pt::ptree& request)
             {
-                std::string requestString = jsonToString(request, false);
+                std::string requestString = ptreeToString(request, false);
+                std::cout << requestString << std::endl;
                 streamSocket.sendBytes(requestString.c_str(), requestString.length(), 0);
                 receiveBufferMutex.lock();
                 int br = streamSocket.receiveBytes(receiveBuffer, RECEIVE_BUFFER_SIZE, 0);
@@ -95,7 +110,7 @@ namespace conclave
                     throw std::runtime_error("Error receiving response from ElectrumX client");
                 }
                 receiveBuffer[br] = '\0';
-                const pt::ptree response = parseJson((char*) receiveBuffer);
+                const pt::ptree response = stringToPtree((char*) receiveBuffer);
                 receiveBufferMutex.unlock();
                 return getResultOrThrowError(response);
             }

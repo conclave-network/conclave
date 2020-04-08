@@ -162,7 +162,7 @@ namespace conclave
         
         ConclaveBlock::operator std::string() const
         {
-            return jsonToString(static_cast<pt::ptree>(*this));
+            return ptreeToString(static_cast<pt::ptree>(*this));
         }
         
         ConclaveBlock::operator std::vector<BYTE>() const

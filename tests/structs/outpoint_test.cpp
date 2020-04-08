@@ -51,10 +51,10 @@ namespace conclave
         "    \"txId\": \"f477c2b95a641f733129c7d2da0474ea5e4fcf69bbac73195c52a8c12dfa0c37\",\n"
         "    \"index\": \"1\"\n"
         "}\n";
-    const static pt::ptree OUTPOINT_1_PTREE = parseJson(OUTPOINT_1_STR);
-    const static pt::ptree OUTPOINT_2_PTREE = parseJson(OUTPOINT_2_STR);
-    const static pt::ptree OUTPOINT_3_PTREE = parseJson(OUTPOINT_3_STR);
-    const static pt::ptree OUTPOINT_4_PTREE = parseJson(OUTPOINT_4_STR);
+    const static pt::ptree OUTPOINT_1_PTREE = stringToPtree(OUTPOINT_1_STR);
+    const static pt::ptree OUTPOINT_2_PTREE = stringToPtree(OUTPOINT_2_STR);
+    const static pt::ptree OUTPOINT_3_PTREE = stringToPtree(OUTPOINT_3_STR);
+    const static pt::ptree OUTPOINT_4_PTREE = stringToPtree(OUTPOINT_4_STR);
     const static std::vector<BYTE> OUTPOINT_1_SERIALIZED =
         HEX_TO_BYTE_VECTOR("17bcb44f41abb055e153b7f395fd31e88f98c1ed8e249256198fb1e00b75cebdfeffffff");
     const static std::vector<BYTE> OUTPOINT_2_SERIALIZED =

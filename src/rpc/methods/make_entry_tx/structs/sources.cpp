@@ -34,7 +34,7 @@ namespace conclave
                 }
                 
                 Sources::Sources(const pt::ptree& tree)
-                    : Sources(tryGetVectorOfObjects<Outpoint>(tree, JSONKEY_OUTPOINTS))
+                    : Sources(getVectorOfObjectsFromJson<Outpoint>(tree, JSONKEY_OUTPOINTS))
                 {
                 }
                 
@@ -47,7 +47,7 @@ namespace conclave
                 
                 Sources::operator std::string() const
                 {
-                    return jsonToString(static_cast<pt::ptree>(*this));
+                    return ptreeToString(static_cast<pt::ptree>(*this));
                 }
                 
                 bool Sources::operator==(const Sources& other) const

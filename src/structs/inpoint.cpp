@@ -111,7 +111,7 @@ namespace conclave
     
     Inpoint::operator std::string() const
     {
-        return jsonToString(static_cast<pt::ptree>(*this));
+        return ptreeToString(static_cast<pt::ptree>(*this));
     }
     
     Inpoint::operator std::vector<BYTE>() const

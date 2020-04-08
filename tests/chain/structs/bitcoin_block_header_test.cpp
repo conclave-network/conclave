@@ -51,9 +51,11 @@ namespace conclave
             "    \"bits\": \"486604799\",\n"
             "    \"nonce\": \"2573394689\"\n"
             "}\n";
-        const static pt::ptree BITCOIN_BLOCK_HEADER_1_PTREE = parseJson(BITCOIN_BLOCK_HEADER_1_STR);
-        const static Hash256 BITCOIN_BLOCK_HEADER_1_HASH("00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048");
-        const static Hash256 BITCOIN_BLOCK_HEADER_2_HASH("0000000000000000000859830058f91753af64468073d16d47fe4fce57d3f04e");
+        const static pt::ptree BITCOIN_BLOCK_HEADER_1_PTREE = stringToPtree(BITCOIN_BLOCK_HEADER_1_STR);
+        const static Hash256 BITCOIN_BLOCK_HEADER_1_HASH(
+            "00000000839a8e6886ab5951d76f411475428afc90947ee320161bbf18eb6048");
+        const static Hash256 BITCOIN_BLOCK_HEADER_2_HASH(
+            "0000000000000000000859830058f91753af64468073d16d47fe4fce57d3f04e");
         const static std::vector<BYTE> BITCOIN_BLOCK_HEADER_1_SERIALIZED = HEX_TO_BYTE_VECTOR(
             "010000006fe28c0ab6f1b372c1a6a246ae63f74f931e8365e15a089c68d6190000000000982051fd1e4ba744b"
             "bbe680e1fee14677ba1a3c3540bf7b1cdb606e857233e0e61bc6649ffff001d01e36299");
@@ -65,8 +67,10 @@ namespace conclave
             BOOST_AUTO_TEST_CASE(BitcoinBlockHeaderDeserializeFactoryTest)
             {
                 size_t pos = 0;
-                BitcoinBlockHeader bitcoinBlockHeader1 = BitcoinBlockHeader::deserialize(BITCOIN_BLOCK_HEADER_1_SERIALIZED, pos);
-                BitcoinBlockHeader bitcoinBlockHeader2 = BitcoinBlockHeader::deserialize(BITCOIN_BLOCK_HEADER_2_SERIALIZED);
+                BitcoinBlockHeader bitcoinBlockHeader1 = BitcoinBlockHeader::deserialize(
+                    BITCOIN_BLOCK_HEADER_1_SERIALIZED, pos);
+                BitcoinBlockHeader bitcoinBlockHeader2 = BitcoinBlockHeader::deserialize(
+                    BITCOIN_BLOCK_HEADER_2_SERIALIZED);
                 BOOST_TEST((bitcoinBlockHeader1.version == VERSION_1));
                 BOOST_TEST((bitcoinBlockHeader1.hashPrevBlock == HASH_PREV_BLOCK_1));
                 BOOST_TEST((bitcoinBlockHeader1.hashMerkleRoot == HASH_MERKLE_ROOT_1));

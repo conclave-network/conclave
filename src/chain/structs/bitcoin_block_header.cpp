@@ -154,7 +154,7 @@ namespace conclave
         
         BitcoinBlockHeader::operator std::string() const
         {
-            return jsonToString(static_cast<pt::ptree>(*this));
+            return ptreeToString(static_cast<pt::ptree>(*this));
         }
         
         BitcoinBlockHeader::operator std::vector<BYTE>() const

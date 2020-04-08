@@ -254,6 +254,24 @@ namespace conclave
         return byteVectorToHexString(script.to_data(false));
     }
     
+    const bool Script::isP2wsh() const
+    {
+        return (
+            (script.size() == 2) &&
+            (script[0].code() == opcode::push_size_0) &&
+            (script[1].data().size() == 32)
+        );
+    }
+    
+    const std::optional<Hash256> Script::getP2wshHash() const
+    {
+        if (isP2wsh()) {
+            return Hash256(script[1].data());
+        } else {
+            return std::nullopt;
+        }
+    }
+    
     //
     // Conversions
     //

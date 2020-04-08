@@ -35,7 +35,7 @@ namespace conclave
         
         Request* Request::deserializeJson(const std::string& json)
         {
-            return deserializeJson(parseJson(json));
+            return deserializeJson(stringToPtree(json));
         }
         
         Request* Request::deserializeJson(const pt::ptree& root)

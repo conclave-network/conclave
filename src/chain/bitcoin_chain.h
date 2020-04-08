@@ -45,6 +45,7 @@ namespace conclave
             public:
             explicit BitcoinChain(const BitcoinChainConfig&);
             const uint64_t getAddressBalance(const Address&);
+            const BitcoinTx getTx(const Hash256&);
             const Hash256 submitTx(const BitcoinTx&);
             const bool txIsConfirmed(const Hash256&);
             const bool outputIsConclaveOwned(const Outpoint& outpoint);

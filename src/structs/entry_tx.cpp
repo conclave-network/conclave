@@ -44,7 +44,7 @@ namespace conclave
     
     EntryTx::operator std::string() const
     {
-        return jsonToString(static_cast<pt::ptree>(*this));
+        return ptreeToString(static_cast<pt::ptree>(*this));
     }
     
     bool EntryTx::operator==(const EntryTx& other) const

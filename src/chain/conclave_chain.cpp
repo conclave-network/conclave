@@ -141,13 +141,13 @@ namespace conclave
         
         const Hash256 ConclaveChain::processClaimTx(const ConclaveTx& claimTx)
         {
-            std::cout << "processClaimTx" << std::endl;
-            std::cout << claimTx << std::endl;
+            const Outpoint fundPoint = *claimTx.fundPoint;
             const Script claimScript = claimTx.getClaimScript();
-            std::cout << claimScript << std::endl;
-            std::cout << claimTx.getHash256(true) << std::endl;
-            std::cout << claimTx.getHash256(false) << std::endl;
-            std::cout << claimScript.getHash256() << std::endl;
+            const Hash256 claimScriptHash = claimScript.getHash256();
+            const BitcoinTx fundTx = bitcoinChain.getTx(fundPoint.txId);
+            const BitcoinOutput fundOutput = fundTx.outputs[fundPoint.index];
+            std::cout << fundOutput << std::endl;
+            std::cout << claimScriptHash << std::endl;
             return claimTx.getHash256(false);
         }
         

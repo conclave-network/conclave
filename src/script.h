@@ -27,6 +27,7 @@
 #include <bitcoin/system.hpp>
 #include <vector>
 #include <string>
+#include <optional>
 
 namespace bc_chain = bc::system::chain;
 namespace pt = boost::property_tree;
@@ -64,6 +65,8 @@ namespace conclave
         const Hash256 getSingleSHA256() const;
         const std::vector<BYTE> serialize() const;
         const std::string toHexString() const;
+        const bool isP2wsh() const;
+        const std::optional<Hash256> getP2wshHash() const;
         // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
