@@ -43,12 +43,13 @@ namespace conclave
         {
             pt::ptree tree = electrumxClient
                 .blockchainTransactionBroadcast(BYTE_VECTOR_TO_HEX(bitcoinTx.serialize()));
-            Hash256 returnedTxid = Hash256(tree.data());
-            // Make sure returned Txid is same as our calculated Txid
-            if (returnedTxid != bitcoinTx.getHash256()) {
-                throw std::runtime_error("ElectrumX server returned different Txid");
+            Hash256 txId = Hash256(tree.data());
+            std::cout << "returned " << txId << std::endl;
+            // Make sure returned TxId is same as our calculated TxId
+            if (txId != bitcoinTx.getHash256()) {
+                throw std::runtime_error("ElectrumX server returned different TxId");
             }
-            return returnedTxid;
+            return txId;
         }
         
         const bool BitcoinChain::txIsConfirmed(const Hash256& txid)

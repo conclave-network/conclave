@@ -140,13 +140,14 @@ namespace conclave
     // Public Functions
     //
     
-    const Hash256 ConclaveTx::getHash256() const
+    const Hash256 ConclaveTx::getHash256(const bool preFund) const
     {
-        return Hash256::digest(serialize());
+        return Hash256::digest(serialize(preFund));
     }
     
-    const std::vector<BYTE> ConclaveTx::serialize() const
+    const std::vector<BYTE> ConclaveTx::serialize(const bool preFund) const
     {
+        const std::optional<Outpoint> fundPoint = preFund ? std::nullopt : this->fundPoint;
         const std::vector<BYTE> versionSerialized = serializeIntegral<uint32_t>(version);
         const std::vector<BYTE> lockTimeSerialized = serializeIntegral<uint32_t>(lockTime);
         const std::vector<BYTE> minSigsSerialized = serializeIntegral<uint32_t>(minSigs);
@@ -171,6 +172,26 @@ namespace conclave
         return serialized;
     }
     
+    const bool ConclaveTx::isClaimTx() const
+    {
+        return (trustees.size() > 0) && (minSigs <= trustees.size());
+    }
+    
+    const Script ConclaveTx::getClaimScript() const
+    {
+        const uint32_t nTrustees = trustees.size();
+        std::vector<ScriptElement> scriptElements{
+            getHash256(true), ScriptOp::drop, nTrustees
+        };
+        scriptElements.reserve(3 + nTrustees + 2);
+        for (const PublicKey& trustee: trustees) {
+            scriptElements.emplace_back(trustee);
+        }
+        scriptElements.emplace_back(minSigs);
+        scriptElements.emplace_back(ScriptOp::checkmultisig);
+        return Script(scriptElements);
+    }
+    
     //
     // Conversions
     //
@@ -184,10 +205,18 @@ namespace conclave
         if (fundPoint.has_value()) {
             tree.add_child(JSONKEY_FUND_POINT, static_cast<pt::ptree>(*fundPoint));
         }
-        tree.add_child(JSONKEY_TRUSTEES, vectorOfObjectsToArray(trustees));
-        tree.add_child(JSONKEY_CONCLAVE_INPUTS, vectorOfObjectsToArray(conclaveInputs));
-        tree.add_child(JSONKEY_BITCOIN_OUTPUTS, vectorOfObjectsToArray(bitcoinOutputs));
-        tree.add_child(JSONKEY_CONCLAVE_OUTPUTS, vectorOfObjectsToArray(conclaveOutputs));
+        if (trustees.size() > 0) {
+            tree.add_child(JSONKEY_TRUSTEES, vectorOfObjectsToArray(trustees));
+        }
+        if (conclaveInputs.size() > 0) {
+            tree.add_child(JSONKEY_CONCLAVE_INPUTS, vectorOfObjectsToArray(conclaveInputs));
+        }
+        if (bitcoinOutputs.size() > 0) {
+            tree.add_child(JSONKEY_BITCOIN_OUTPUTS, vectorOfObjectsToArray(bitcoinOutputs));
+        }
+        if (conclaveOutputs.size() > 0) {
+            tree.add_child(JSONKEY_CONCLAVE_OUTPUTS, vectorOfObjectsToArray(conclaveOutputs));
+        }
         return tree;
     }
     
@@ -198,7 +227,7 @@ namespace conclave
     
     ConclaveTx::operator std::vector<BYTE>() const
     {
-        return serialize();
+        return serialize(false);
     }
     
     //

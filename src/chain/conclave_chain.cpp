@@ -64,9 +64,19 @@ namespace conclave
         {
         }
         
-        const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
+        const Hash256 ConclaveChain::submitTx(const ConclaveTx& tx)
         {
-            return Hash256();
+            const Hash256 txId = tx.getHash256(false);
+            
+            // Check if tx is already on the blockchain
+            if (txIsOnBlockchain(txId)) {
+                return txId;
+            }
+            if (tx.isClaimTx()) {
+                return processClaimTx(tx);
+            } else {
+                return processTx(tx);
+            }
         }
         
         const Hash256 ConclaveChain::getChainTipHash()
@@ -93,14 +103,14 @@ namespace conclave
         
         const uint64_t ConclaveChain::countFundTotal(const Hash256& walletHash)
         {
-            std::optional <Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+            std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
             uint64_t fundTotal = 0;
             while (fundTip.has_value()) {
                 /**
                  * Potential for an infinite loop here if there is a graph cycle.
                  * TODO: Do something about it
                  */
-                std::optional <ConclaveTx> tx = databaseClient.getItem(fundTip->txId);
+                std::optional<ConclaveTx> tx = databaseClient.getItem(fundTip->txId);
                 if (!tx.has_value()) {
                     throw std::runtime_error("Can not find transaction: " + static_cast<std::string>(fundTip->txId));
                 }
@@ -122,6 +132,29 @@ namespace conclave
                 break; // TODO
             }
             return spendTotal;
+        }
+        
+        const bool ConclaveChain::txIsOnBlockchain(const Hash256& txId)
+        {
+            return false;
+        }
+        
+        const Hash256 ConclaveChain::processClaimTx(const ConclaveTx& claimTx)
+        {
+            std::cout << "processClaimTx" << std::endl;
+            std::cout << claimTx << std::endl;
+            const Script claimScript = claimTx.getClaimScript();
+            std::cout << claimScript << std::endl;
+            std::cout << claimTx.getHash256(true) << std::endl;
+            std::cout << claimTx.getHash256(false) << std::endl;
+            std::cout << claimScript.getHash256() << std::endl;
+            return claimTx.getHash256(false);
+        }
+        
+        const Hash256 ConclaveChain::processTx(const ConclaveTx& tx)
+        {
+            std::cout << "processTx" << std::endl;
+            return tx.getHash256(false);
         }
     }
 }

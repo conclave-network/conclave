@@ -98,8 +98,11 @@ template<typename T>
 inline const std::vector<T> tryGetVectorOfObjects(const pt::ptree& tree, const std::string childName)
 {
     std::vector<T> vec;
-    for (auto& item : tree.get_child(childName)) {
-        vec.push_back(T(item.second));
+    boost::optional childNode = tree.get_child_optional(childName);
+    if (childNode.has_value()) {
+        for (auto& item : *childNode) {
+            vec.push_back(T(item.second));
+        }
     }
     return vec;
 }

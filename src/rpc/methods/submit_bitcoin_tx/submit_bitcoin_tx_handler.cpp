@@ -19,6 +19,7 @@
 #include "submit_bitcoin_tx_request.h"
 #include "submit_bitcoin_tx_response.h"
 #include "../../../conclave_node.h"
+#include "../../../hash256.h"
 
 namespace conclave
 {

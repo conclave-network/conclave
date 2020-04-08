@@ -60,6 +60,9 @@ namespace conclave
             // Private Functions
             const uint64_t countFundTotal(const Hash256& walletHash);
             const uint64_t countSpendTotal(const Hash256& walletHash);
+            const bool txIsOnBlockchain(const Hash256&);
+            const Hash256 processClaimTx(const ConclaveTx&);
+            const Hash256 processTx(const ConclaveTx&);
             // Properties
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
