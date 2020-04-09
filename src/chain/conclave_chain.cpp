@@ -60,10 +60,10 @@ namespace conclave
             return countFundTotal(walletHash) - countSpendTotal(walletHash);
         }
         
-        const std::vector<ConclaveOutput> ConclaveChain::getUtxos(const Address& address)
+        const std::vector<ConclaveRichOutput> ConclaveChain::getUtxos(const Address& address)
         {
             const Hash256 walletHash = Script::p2hScript(address).getHash256();
-            std::vector<ConclaveOutput> utxos;
+            std::vector<ConclaveRichOutput> utxos;
             std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
             while (fundTip.has_value()) {
                 std::optional<ConclaveTx> conclaveTx = databaseClient.getItem(fundTip->txId);
@@ -74,7 +74,8 @@ namespace conclave
                 ConclaveOutput& conclaveOutput = conclaveTx->conclaveOutputs[fundTip->index];
                 CONCLAVE_ASSERT(conclaveOutput.scriptPubKey.getHash256() == walletHash,
                                 "wallet hash does not match hash of scriptPubKey");
-                utxos.emplace_back(conclaveOutput);
+                utxos.emplace_back(ConclaveRichOutput(
+                    *fundTip, ConclaveOutput(conclaveOutput.scriptPubKey, conclaveOutput.value)));
                 fundTip = conclaveOutput.predecessor;
             }
             return utxos;

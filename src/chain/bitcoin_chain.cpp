@@ -39,9 +39,9 @@ namespace conclave
             return getPrimitiveFromJson<uint64_t>(tree, "confirmed");
         }
         
-        const std::vector<BitcoinOutput> BitcoinChain::getUtxos(const Address& address)
+        const std::vector<BitcoinRichOutput> BitcoinChain::getUtxos(const Address& address)
         {
-            return {};
+            return {};//TODO
         }
         
         const BitcoinTx BitcoinChain::getTx(const Hash256& txId)

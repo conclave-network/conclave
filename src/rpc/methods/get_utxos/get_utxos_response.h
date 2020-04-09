@@ -19,8 +19,8 @@
 #pragma once
 
 #include "../response.h"
-#include "../../../structs/bitcoin_output.h"
-#include "../../../structs/conclave_output.h"
+#include "../../../structs/bitcoin_rich_output.h"
+#include "../../../structs/conclave_rich_output.h"
 #include "../../../util/json.h"
 #include <boost/property_tree/ptree.hpp>
 
@@ -36,13 +36,13 @@ namespace conclave
                 class GetUtxosResponse : public Response
                 {
                     public:
-                    GetUtxosResponse(const std::vector<BitcoinOutput>& bitcoinOutputs)
-                        : bitcoinOutputs(bitcoinOutputs), conclaveOutputs({})
+                    GetUtxosResponse(const std::vector<BitcoinRichOutput>& bitcoinRichOutputs)
+                        : bitcoinRichOutputs(bitcoinRichOutputs), conclaveRichOutputs({})
                     {
                     }
                     
-                    GetUtxosResponse(const std::vector<ConclaveOutput>& conclaveOutputs)
-                        : bitcoinOutputs({}), conclaveOutputs(conclaveOutputs)
+                    GetUtxosResponse(const std::vector<ConclaveRichOutput>& conclaveRichOutputs)
+                        : bitcoinRichOutputs({}), conclaveRichOutputs(conclaveRichOutputs)
                     {
                     }
                     
@@ -60,18 +60,20 @@ namespace conclave
                     void serialize()
                     {
                         pt::ptree tree;
-                        if (bitcoinOutputs.size() > 0) {
-                            tree.add_child("BitcoinOutputs", vectorOfObjectsToArray(bitcoinOutputs));
+                        if (bitcoinRichOutputs.size() > 0) {
+                            tree.add_child("BitcoinRichOutputs",
+                                           vectorOfObjectsToArray(bitcoinRichOutputs));
                         }
-                        if (conclaveOutputs.size() > 0) {
-                            tree.add_child("ConclaveOutputs", vectorOfObjectsToArray(conclaveOutputs));
+                        if (conclaveRichOutputs.size() > 0) {
+                            tree.add_child("ConclaveRichOutputs",
+                                           vectorOfObjectsToArray(conclaveRichOutputs));
                         }
                         serializedJson = ptreeToString(tree);
                     }
                     
                     const static RpcMethod rpcMethod = RpcMethod::GetUtxos;
-                    const std::vector<BitcoinOutput> bitcoinOutputs;
-                    const std::vector<ConclaveOutput> conclaveOutputs;
+                    const std::vector<BitcoinRichOutput> bitcoinRichOutputs;
+                    const std::vector<ConclaveRichOutput> conclaveRichOutputs;
                 };
             }
         }

@@ -23,7 +23,7 @@
 #include "bitcoin_chain.h"
 #include "../config/conclave_chain_config.h"
 #include "../structs/conclave_tx.h"
-#include "../structs/conclave_output.h"
+#include "../structs/conclave_rich_output.h"
 #include "../address.h"
 #include "../hash256.h"
 #include <cstdint>
@@ -52,7 +52,7 @@ namespace conclave
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             // Public Functions
             const uint64_t getAddressBalance(const Address&);
-            const std::vector<ConclaveOutput> getUtxos(const Address&);
+            const std::vector<ConclaveRichOutput> getUtxos(const Address&);
             const Hash256 submitTx(const ConclaveTx&);
             const Hash256 getChainTipHash();
             const ConclaveBlock getChainTip();
