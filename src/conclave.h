@@ -23,6 +23,7 @@
 #include <vector>
 #include <algorithm>
 #include <ostream>
+#include <stdexcept>
 
 typedef unsigned char BYTE;
 #define BYTE_ARRAY_TO_VECTOR(byteArray) std::vector<BYTE>(byteArray.begin(), byteArray.end())
@@ -65,3 +66,4 @@ std::ostream& operator<<(std::ostream& os, const std::array<BYTE, size>& ba)
     return os;
 }
 
+#define CONCLAVE_ASSERT(cond, message) if (!(cond)) throw std::runtime_error(message)
