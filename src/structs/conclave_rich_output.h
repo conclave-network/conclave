@@ -17,16 +17,45 @@
  */
 
 #pragma once
+
+#include <boost/property_tree/ptree.hpp>
+#include "conclave_output.h"
+#include "outpoint.h"
+#include <vector>
+#include <string>
+
 namespace conclave
 {
     struct ConclaveRichOutput final
     {
         // JSON Keys
+        const static std::string JSONKEY_OUTPOINT;
+        const static std::string JSONKEY_CONCLAVE_OUTPUT;
         // Factories
+        static ConclaveRichOutput deserialize(const std::vector<BYTE>&, size_t&);
+        static ConclaveRichOutput deserialize(const std::vector<BYTE>&);
         // Constructors
+        ConclaveRichOutput(const Outpoint&, const ConclaveOutput&);
+        ConclaveRichOutput(Outpoint&&, ConclaveOutput&&);
+        ConclaveRichOutput(const pt::ptree&);
+        ConclaveRichOutput(const std::vector<BYTE>&);
+        ConclaveRichOutput(const ConclaveRichOutput&);
+        ConclaveRichOutput(ConclaveRichOutput&&) noexcept;
         // Public Functions
+        const Hash256 getHash256() const;
+        const std::vector<BYTE> serialize() const;
         // Conversions
+        explicit operator pt::ptree() const;
+        explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
         // Operator Overloads
+        ConclaveRichOutput& operator=(const ConclaveRichOutput&);
+        ConclaveRichOutput& operator=(ConclaveRichOutput&&);
+        bool operator==(const ConclaveRichOutput&) const;
+        bool operator!=(const ConclaveRichOutput&) const;
+        friend std::ostream& operator<<(std::ostream&, const ConclaveRichOutput&);
         // Properties
+        Outpoint outpoint;
+        ConclaveOutput conclaveOutput;
     };
 }

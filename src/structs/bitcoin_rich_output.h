@@ -17,16 +17,45 @@
  */
 
 #pragma once
+
+#include <boost/property_tree/ptree.hpp>
+#include "bitcoin_output.h"
+#include "outpoint.h"
+#include <vector>
+#include <string>
+
 namespace conclave
 {
     struct BitcoinRichOutput final
     {
         // JSON Keys
+        const static std::string JSONKEY_OUTPOINT;
+        const static std::string JSONKEY_BITCOIN_OUTPUT;
         // Factories
+        static BitcoinRichOutput deserialize(const std::vector<BYTE>&, size_t&);
+        static BitcoinRichOutput deserialize(const std::vector<BYTE>&);
         // Constructors
+        BitcoinRichOutput(const Outpoint&, const BitcoinOutput&);
+        BitcoinRichOutput(Outpoint&&, BitcoinOutput&&);
+        BitcoinRichOutput(const pt::ptree&);
+        BitcoinRichOutput(const std::vector<BYTE>&);
+        BitcoinRichOutput(const BitcoinRichOutput&);
+        BitcoinRichOutput(BitcoinRichOutput&&) noexcept;
         // Public Functions
+        const Hash256 getHash256() const;
+        const std::vector<BYTE> serialize() const;
         // Conversions
+        explicit operator pt::ptree() const;
+        explicit operator std::string() const;
+        operator std::vector<BYTE>() const;
         // Operator Overloads
+        BitcoinRichOutput& operator=(const BitcoinRichOutput&);
+        BitcoinRichOutput& operator=(BitcoinRichOutput&&);
+        bool operator==(const BitcoinRichOutput&) const;
+        bool operator!=(const BitcoinRichOutput&) const;
+        friend std::ostream& operator<<(std::ostream&, const BitcoinRichOutput&);
         // Properties
+        Outpoint outpoint;
+        BitcoinOutput bitcoinOutput;
     };
 }
