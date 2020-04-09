@@ -38,9 +38,8 @@ namespace conclave
     {
         public:
         ConclaveNode(const Config&);
-        const std::string& getDisplayName() const;
-        const PrivateKey& getPrivateKey() const;
-        const PublicKey& getPublicKey() const;
+        const std::string getDisplayName() const;
+        const PublicKey getPublicKey() const;
         BitcoinChain& getBitcoinChain();
         ConclaveChain& getConclaveChain();
         private:

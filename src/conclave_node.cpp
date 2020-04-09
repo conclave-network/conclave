@@ -49,17 +49,12 @@ namespace conclave
         chainwatchManager.stop();
     }
     
-    const std::string& ConclaveNode::getDisplayName() const
+    const std::string ConclaveNode::getDisplayName() const
     {
         return displayName;
     }
     
-    const PrivateKey& ConclaveNode::getPrivateKey() const
-    {
-        return privateKey;
-    }
-    
-    const PublicKey& ConclaveNode::getPublicKey() const
+    const PublicKey ConclaveNode::getPublicKey() const
     {
         return privateKey.getPublicKey();
     }
