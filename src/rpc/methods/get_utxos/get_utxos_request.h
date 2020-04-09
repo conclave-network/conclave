@@ -1,0 +1,7 @@
+//
+// Created by noel on 09/04/2020.
+//
+
+#ifndef CONCLAVE_GET_UTXOS_REQUEST_H
+#define CONCLAVE_GET_UTXOS_REQUEST_H
+#endif //CONCLAVE_GET_UTXOS_REQUEST_H

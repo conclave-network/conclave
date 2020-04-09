@@ -52,23 +52,6 @@ namespace conclave
                     }
                     return total;
                 }
-
-//                Script makeEntryRedeemScript(const Hash256& claimTxHash,
-//                                             const std::vector<PublicKey>& trustees,
-//                                             const uint32_t minSigs)
-//                {
-//                    uint32_t nTrustees = trustees.size();
-//                    std::vector<ScriptElement> scriptElements{
-//                        claimTxHash, ScriptOp::drop, nTrustees
-//                    };
-//                    scriptElements.reserve(3 + nTrustees + 2);
-//                    for (const PublicKey& trustee: trustees) {
-//                        scriptElements.emplace_back(trustee);
-//                    }
-//                    scriptElements.emplace_back(minSigs);
-//                    scriptElements.emplace_back(ScriptOp::checkmultisig);
-//                    return Script(scriptElements);
-//                }
                 
                 static std::vector<BitcoinInput> makeBitcoinInputs(const Sources& sources)
                 {
@@ -116,16 +99,16 @@ namespace conclave
                     const std::vector<Destination> bitcoinDestinations = destinations.bitcoinDestinations;
                     const std::vector<Destination> conclaveDestinations = destinations.conclaveDestinations;
                     const uint64_t fundValue = totalValue(conclaveDestinations);
-                    // Make claim Tx (Conclave)
+                    
+                    // Make Conclave Tx
                     ConclaveTx claimTx(MIN_SIGS, TRUSTEES, makeConclaveOutputs(conclaveDestinations));
-                    // Make fund Tx (Bitcoin)
-                    std::vector<BitcoinInput> bitcoinInputs = makeBitcoinInputs(sources);
-                    std::vector<BitcoinOutput> bitcoinOutputs =
-                        makeBitcoinOutputs(bitcoinDestinations, fundValue, claimTx.getClaimScript());
-//                    std::cout << claimTx << std::endl;
-//                    std::cout << claimTx.getHash256() << std::endl;
-//                    std::cout << claimTx.getClaimScript() << std::endl;
-                    BitcoinTx fundTx(FUND_TX_VERSION, bitcoinInputs, bitcoinOutputs, FUND_TX_LOCK_TIME);
+                    
+                    // Make Bitcoin Tx
+                    BitcoinTx fundTx(FUND_TX_VERSION,
+                                     makeBitcoinInputs(sources),
+                                     makeBitcoinOutputs(bitcoinDestinations, fundValue, claimTx.getClaimScript()),
+                                     FUND_TX_LOCK_TIME
+                    );
                     return new MakeEntryTxResponse(EntryTx(fundTx, claimTx));
                 }
             }
