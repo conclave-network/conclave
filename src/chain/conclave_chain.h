@@ -52,7 +52,6 @@ namespace conclave
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             // Public Functions
             const uint64_t getAddressBalance(const Address&);
-            void submitEntryTx(const EntryTx&);
             const Hash256 submitTx(const ConclaveTx&);
             const Hash256 getChainTipHash();
             const ConclaveBlock getChainTip();
@@ -61,8 +60,8 @@ namespace conclave
             const uint64_t countFundTotal(const Hash256& walletHash);
             const uint64_t countSpendTotal(const Hash256& walletHash);
             const bool txIsOnBlockchain(const Hash256&);
-            const Hash256 processClaimTx(const ConclaveTx&);
-            const Hash256 processTx(const ConclaveTx&);
+            const Hash256 processClaimTx(ConclaveTx);
+            const Hash256 processTx(ConclaveTx);
             // Properties
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
