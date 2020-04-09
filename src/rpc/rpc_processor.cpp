@@ -16,13 +16,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "methods/error_response.h"
 #include "rpc_processor.h"
 #include <iostream>
+#include <stdexcept>
 
 namespace conclave
 {
     namespace rpc
     {
+        using namespace methods;
+        
         RpcProcessor::RpcProcessor(const unsigned int id, ConclaveNode& conclaveNode,
                                    ConcurrentList<Request*>& requestQueue, ConcurrentList<Response*>& responseQueue)
             : Worker(), id(id),
@@ -40,7 +44,21 @@ namespace conclave
             }
             Request& request = **opRequest;
             std::cout << "RPC processor " << id << " dequeued a " << request.getMethodName() << " request" << std::endl;
-            Response* response = request.handle(conclaveNode);
+            
+            /**
+             * Run the handler and hopefully get back a response. If the handler throws an exception, we catch the
+             * exception here and make an `ErrorResponse` containing the error message which is sent back to the
+             * client.
+             */
+            
+            Response* response;
+            try {
+                response = request.handle(conclaveNode);
+            } catch (std::exception& e) {
+                std::cout << "RpcProcessor caught: " << e.what() << std::endl;
+                std::cout << "Queueing an error response" << std::endl;
+                response = new ErrorResponse(request.getMethod(), e.what());
+            }
             response->tag = request.tag;
             responseQueue.addToStart(response);
             delete &request;
