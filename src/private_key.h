@@ -28,7 +28,7 @@ namespace conclave
     {
         public:
         PrivateKey(const Hash256&);
-        [[nodiscard]] const PublicKey& getPublicKey() const;
+        [[nodiscard]] const PublicKey getPublicKey() const;
         private:
         const Hash256 data;
         const PublicKey publicKey;

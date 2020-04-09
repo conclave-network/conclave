@@ -35,7 +35,7 @@ namespace conclave
     {
     }
     
-    [[nodiscard]] const PublicKey& PrivateKey::getPublicKey() const
+    [[nodiscard]] const PublicKey PrivateKey::getPublicKey() const
     {
         return publicKey;
     }
