@@ -68,8 +68,10 @@ add_executable(
         structs/destination.cpp
         structs/bitcoin_input.cpp
         structs/bitcoin_output.cpp
+        structs/bitcoin_rich_output.cpp
         structs/conclave_input.cpp
         structs/conclave_output.cpp
+        structs/conclave_rich_output.cpp
         structs/bitcoin_tx.cpp
         structs/conclave_tx.cpp
         structs/entry_tx.cpp
