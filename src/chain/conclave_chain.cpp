@@ -62,7 +62,22 @@ namespace conclave
         
         const std::vector<ConclaveOutput> ConclaveChain::getUtxos(const Address& address)
         {
-            return {};
+            const Hash256 walletHash = Script::p2hScript(address).getHash256();
+            std::vector<ConclaveOutput> utxos;
+            std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+            while (fundTip.has_value()) {
+                std::optional<ConclaveTx> conclaveTx = databaseClient.getItem(fundTip->txId);
+                CONCLAVE_ASSERT(conclaveTx.has_value(),
+                                "can not find transaction: " + std::string(fundTip->txId));
+                CONCLAVE_ASSERT(fundTip->index <= conclaveTx->conclaveOutputs.size(),
+                                "index out of range: " + std::to_string(fundTip->index));
+                ConclaveOutput& conclaveOutput = conclaveTx->conclaveOutputs[fundTip->index];
+                CONCLAVE_ASSERT(conclaveOutput.scriptPubKey.getHash256() == walletHash,
+                                "wallet hash does not match hash of scriptPubKey");
+                utxos.emplace_back(conclaveOutput);
+                fundTip = conclaveOutput.predecessor;
+            }
+            return utxos;
         }
         
         const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)

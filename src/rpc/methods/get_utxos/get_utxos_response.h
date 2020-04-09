@@ -69,7 +69,7 @@ namespace conclave
                         serializedJson = ptreeToString(tree);
                     }
                     
-                    const static RpcMethod rpcMethod = RpcMethod::GetAddressBalance;
+                    const static RpcMethod rpcMethod = RpcMethod::GetUtxos;
                     const std::vector<BitcoinOutput> bitcoinOutputs;
                     const std::vector<ConclaveOutput> conclaveOutputs;
                 };
