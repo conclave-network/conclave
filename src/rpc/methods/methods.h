@@ -30,6 +30,7 @@ namespace conclave
         {
             NodeInfo,
             GetAddressBalance,
+            GetUtxos,
             MakeEntryTx,
             SubmitBitcoinTx,
             SubmitConclaveTx,
@@ -38,6 +39,7 @@ namespace conclave
         static const std::string RPC_METHOD_NAMES[] = {
             "NodeInfo",
             "GetAddressBalance",
+            "GetUtxos",
             "MakeEntryTx",
             "SubmitBitcoinTx",
             "SubmitConclaveTx"

@@ -91,6 +91,7 @@ add_executable(
         rpc/methods/response.cpp
         rpc/methods/node_info/node_info_handler.cpp
         rpc/methods/get_address_balance/get_address_balance_handler.cpp
+        rpc/methods/get_utxos/get_utxos_handler.cpp
         rpc/methods/make_entry_tx/make_entry_tx_handler.cpp
         rpc/methods/make_entry_tx/structs/sources.cpp
         rpc/methods/make_entry_tx/structs/destinations.cpp

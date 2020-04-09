@@ -22,11 +22,11 @@
 #include "structs/conclave_block.h"
 #include "bitcoin_chain.h"
 #include "../config/conclave_chain_config.h"
-#include "../hash256.h"
-#include "../address.h"
 #include "../structs/conclave_tx.h"
-#include "../structs/entry_tx.h"
-
+#include "../structs/conclave_output.h"
+#include "../address.h"
+#include "../hash256.h"
+#include <cstdint>
 /***
  * Abstraction layer over the Conclave blockchain. All interaction with the Conclave chain
  * such as getting blocks, transactions, wallet balances, as well as submitting new transactions,
@@ -52,6 +52,7 @@ namespace conclave
             explicit ConclaveChain(const ConclaveChainConfig&, BitcoinChain& bitcoinChain);
             // Public Functions
             const uint64_t getAddressBalance(const Address&);
+            const std::vector<ConclaveOutput> getUtxos(const Address&);
             const Hash256 submitTx(const ConclaveTx&);
             const Hash256 getChainTipHash();
             const ConclaveBlock getChainTip();

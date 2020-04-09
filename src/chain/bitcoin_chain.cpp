@@ -39,6 +39,11 @@ namespace conclave
             return getPrimitiveFromJson<uint64_t>(tree, "confirmed");
         }
         
+        const std::vector<BitcoinOutput> BitcoinChain::getUtxos(const Address& address)
+        {
+            return {};
+        }
+        
         const BitcoinTx BitcoinChain::getTx(const Hash256& txId)
         {
             pt::ptree tree = electrumxClient.blockchainTransactionGet(txId, true);

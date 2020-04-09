@@ -60,6 +60,11 @@ namespace conclave
             return countFundTotal(walletHash) - countSpendTotal(walletHash);
         }
         
+        const std::vector<ConclaveOutput> ConclaveChain::getUtxos(const Address& address)
+        {
+            return {};
+        }
+        
         const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
         {
             const Hash256 txId = conclaveTx.getHash256();
@@ -78,7 +83,7 @@ namespace conclave
         
         const Hash256 ConclaveChain::getChainTipHash()
         {
-            std::optional <Hash256> chainTipHash = databaseClient.getSingletonItem(COLLECTION_CHAIN_TIP);
+            std::optional<Hash256> chainTipHash = databaseClient.getSingletonItem(COLLECTION_CHAIN_TIP);
             if (chainTipHash.has_value()) {
                 return *chainTipHash;
             } else {
@@ -90,7 +95,7 @@ namespace conclave
         const ConclaveBlock ConclaveChain::getChainTip()
         {
             const Hash256 chainTipHash = getChainTipHash();
-            std::optional <ConclaveBlock> chainTipBV = databaseClient.getItem(chainTipHash);
+            std::optional<ConclaveBlock> chainTipBV = databaseClient.getItem(chainTipHash);
             if (chainTipBV.has_value()) {
                 return *chainTipBV;
             } else {
@@ -101,11 +106,11 @@ namespace conclave
         const uint64_t ConclaveChain::countFundTotal(const Hash256& walletHash)
         {
             uint64_t fundTotal = 0;
-            std::optional <Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+            std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
             while (fundTip.has_value()) {
                 // Potential for an infinite loop here if there is a graph cycle.
                 // TODO: Do something about it
-                std::optional <ConclaveTx> conclaveTx = databaseClient.getItem(fundTip->txId);
+                std::optional<ConclaveTx> conclaveTx = databaseClient.getItem(fundTip->txId);
                 if (!conclaveTx.has_value()) {
                     throw std::runtime_error(
                         "Can not find transaction: " + static_cast<std::string>(fundTip->txId));
@@ -122,7 +127,7 @@ namespace conclave
         
         const uint64_t ConclaveChain::countSpendTotal(const Hash256& walletHash)
         {
-            std::optional <Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
+            std::optional<Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
             uint64_t spendTotal = 0;
             while (spendTip.has_value()) {
                 break; // TODO
@@ -147,7 +152,7 @@ namespace conclave
             
             // Ensure scriptPubKey is a P2WSH encumbrance which pays to
             // our claim script, thus to our claim transaction
-            const std::optional <Hash256> redeemScriptHash = fundOutput.scriptPubKey.getP2wshHash();
+            const std::optional<Hash256> redeemScriptHash = fundOutput.scriptPubKey.getP2wshHash();
             if (!redeemScriptHash.has_value() || *redeemScriptHash != claimScriptHash) {
                 throw std::runtime_error("redeem script hash does not match claim script hash");
             }
@@ -164,7 +169,7 @@ namespace conclave
             for (uint64_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                 ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                 const Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
-                const std::optional <Outpoint> prevFundTip =
+                const std::optional<Outpoint> prevFundTip =
                     databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
                 if (prevFundTip.has_value()) {
                     if (prevFundTip->txId == claimTxHashSansPredecessors && prevFundTip->index == i) {

@@ -19,6 +19,7 @@
 #include "request.h"
 #include "node_info/node_info_request.h"
 #include "get_address_balance/get_address_balance_request.h"
+#include "get_utxos/get_utxos_request.h"
 #include "make_entry_tx/make_entry_tx_request.h"
 #include "submit_bitcoin_tx/submit_bitcoin_tx_request.h"
 #include "submit_conclave_tx/submit_conclave_tx_request.h"
@@ -29,6 +30,7 @@ namespace conclave
     {
         using namespace methods::node_info;
         using namespace methods::get_address_balance;
+        using namespace methods::get_utxos;
         using namespace methods::make_entry_tx;
         using namespace methods::submit_bitcoin_tx;
         using namespace methods::submit_conclave_tx;
@@ -49,6 +51,8 @@ namespace conclave
                     return new NodeInfoRequest(params);
                 case RpcMethod::GetAddressBalance:
                     return new GetAddressBalanceRequest(params);
+                case RpcMethod::GetUtxos:
+                    return new GetUtxosRequest(params);
                 case RpcMethod::MakeEntryTx:
                     return new MakeEntryTxRequest(params);
                 case RpcMethod::SubmitBitcoinTx:
