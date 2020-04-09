@@ -102,7 +102,7 @@ add_executable(
         chain/database/database_client.cpp
         chain/structs/conclave_block.cpp
         chain/structs/bitcoin_block_header.cpp
-        rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_handler.cpp rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_request.h rpc/methods/submit_bitcoin_tx/submit_bitcoin_tx_response.h rpc/methods/submit_conclave_tx/submit_conclave_tx_handler.cpp rpc/methods/submit_conclave_tx/submit_conclave_tx_request.h rpc/methods/submit_conclave_tx/submit_conclave_tx_response.h)
+)
 
 target_link_libraries(
         conclaved
