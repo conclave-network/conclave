@@ -44,8 +44,8 @@ namespace conclave
         const uint32_t version = deserializeIntegral<uint32_t>(data, pos);
         const uint32_t lockTime = deserializeIntegral<uint32_t>(data, pos);
         const uint32_t minSigs = deserializeIntegral<uint32_t>(data, pos);
-        const std::vector<PublicKey> trustees = deserializeVectorOfObjects<PublicKey>(data, pos);
         const std::optional<Outpoint> fundPoint = deserializeOptionalObject<Outpoint>(data, pos);
+        const std::vector<PublicKey> trustees = deserializeVectorOfObjects<PublicKey>(data, pos);
         const std::vector<ConclaveInput> conclaveInputs = deserializeVectorOfObjects<ConclaveInput>(data, pos);
         const std::vector<BitcoinOutput> bitcoinOutputs = deserializeVectorOfObjects<BitcoinOutput>(data, pos);
         const std::vector<ConclaveOutput> conclaveOutputs = deserializeVectorOfObjects<ConclaveOutput>(data, pos);
@@ -190,6 +190,15 @@ namespace conclave
         scriptElements.emplace_back(minSigs);
         scriptElements.emplace_back(ScriptOp::checkmultisig);
         return Script(scriptElements);
+    }
+    
+    const uint64_t ConclaveTx::getClaimedValue() const
+    {
+        uint64_t claimedValue = 0;
+        for (const ConclaveOutput& conclaveOutput: conclaveOutputs) {
+            claimedValue += conclaveOutput.value;
+        }
+        return claimedValue;
     }
     
     //

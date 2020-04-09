@@ -64,10 +64,11 @@ namespace conclave
         ConclaveTx(const ConclaveTx&);
         ConclaveTx(ConclaveTx&&);
         // Public Functions
-        const Hash256 getHash256(const bool) const;
-        const std::vector<BYTE> serialize(const bool) const;
+        const Hash256 getHash256(const bool = false) const;
+        const std::vector<BYTE> serialize(const bool = false) const;
         const bool isClaimTx() const;
         const Script getClaimScript() const;
+        const uint64_t getClaimedValue() const;
         // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;
