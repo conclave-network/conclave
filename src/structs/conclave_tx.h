@@ -68,7 +68,9 @@ namespace conclave
         const std::vector<BYTE> serialize(const bool = false) const;
         const bool isClaimTx() const;
         const Script getClaimScript() const;
-        const uint64_t getClaimedValue() const;
+        const uint64_t getBitcoinOutputValue() const;
+        const uint64_t getConclaveOutputValue() const;
+        const uint64_t getTotalOutputValue() const;
         // Conversions
         explicit operator pt::ptree() const;
         explicit operator std::string() const;

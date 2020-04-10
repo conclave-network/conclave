@@ -192,13 +192,27 @@ namespace conclave
         return Script(scriptElements);
     }
     
-    const uint64_t ConclaveTx::getClaimedValue() const
+    const uint64_t ConclaveTx::getBitcoinOutputValue() const
     {
-        uint64_t claimedValue = 0;
-        for (const ConclaveOutput& conclaveOutput: conclaveOutputs) {
-            claimedValue += conclaveOutput.value;
+        uint64_t value = 0;
+        for (const BitcoinOutput& bitcoinOutput: bitcoinOutputs) {
+            value += bitcoinOutput.value;
         }
-        return claimedValue;
+        return value;
+    }
+    
+    const uint64_t ConclaveTx::getConclaveOutputValue() const
+    {
+        uint64_t value = 0;
+        for (const ConclaveOutput& conclaveOutput: conclaveOutputs) {
+            value += conclaveOutput.value;
+        }
+        return value;
+    }
+    
+    const uint64_t ConclaveTx::getTotalOutputValue() const
+    {
+        return getBitcoinOutputValue() + getConclaveOutputValue();
     }
     
     //
