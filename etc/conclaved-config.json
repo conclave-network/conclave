@@ -10,7 +10,7 @@
   },
   "BitcoinChain": {
     "ElectrumXClient": {
-      "Host": "shogoth.no-ip.info",
+      "Host": "electrum.networkingfanatic.com",
       "Port": 50001
     }
   },

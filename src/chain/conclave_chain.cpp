@@ -85,12 +85,6 @@ namespace conclave
         
         const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
         {
-            const Hash256 txId = conclaveTx.getHash256();
-            // Check if tx is already on the blockchain
-//            if (txIsOnBlockchain(txId)) {
-//                std::cout << "tx " << txId << " already on blockchain" << std::endl;
-//                return txId;
-//            }
             if (conclaveTx.isClaimTx()) {
                 return processClaimTx(conclaveTx);
             } else {
