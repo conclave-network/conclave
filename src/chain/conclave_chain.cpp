@@ -42,8 +42,10 @@ namespace conclave
         //
         
         const std::string ConclaveChain::COLLECTION_CHAIN_TIP = "ChainTip";
+        const std::string ConclaveChain::COLLECTION_SPENDS = "Spends";
         const std::string ConclaveChain::COLLECTION_SPEND_TIPS = "SpendTips";
         const std::string ConclaveChain::COLLECTION_FUND_TIPS = "FundTips";
+        
         
         //
         // Constructors
@@ -84,12 +86,11 @@ namespace conclave
         const Hash256 ConclaveChain::submitTx(const ConclaveTx& conclaveTx)
         {
             const Hash256 txId = conclaveTx.getHash256();
-            
             // Check if tx is already on the blockchain
-            if (txIsOnBlockchain(txId)) {
-                std::cout << "tx " << txId << " already on blockchain" << std::endl;
-                return txId;
-            }
+//            if (txIsOnBlockchain(txId)) {
+//                std::cout << "tx " << txId << " already on blockchain" << std::endl;
+//                return txId;
+//            }
             if (conclaveTx.isClaimTx()) {
                 return processClaimTx(conclaveTx);
             } else {
@@ -128,25 +129,44 @@ namespace conclave
                 // TODO: Do something about it
                 std::optional<ConclaveTx> conclaveTx = databaseClient.getItem(fundTip->txId);
                 if (!conclaveTx.has_value()) {
-                    throw std::runtime_error(
-                        "Can not find transaction: " + static_cast<std::string>(fundTip->txId));
+                    throw std::runtime_error("can not find transaction: " + static_cast<std::string>(fundTip->txId));
                 }
                 if (conclaveTx->conclaveOutputs.size() <= fundTip->index) {
-                    throw std::runtime_error("Output index out of bounds" + static_cast<std::string>(*fundTip));
+                    throw std::runtime_error("output index out of bounds" + static_cast<std::string>(*fundTip));
                 }
-                ConclaveOutput output = conclaveTx->conclaveOutputs[fundTip->index];
-                fundTotal += output.value;
-                fundTip = output.predecessor;
+                ConclaveOutput& conclaveOutput = conclaveTx->conclaveOutputs[fundTip->index];
+                fundTotal += conclaveOutput.value;
+                fundTip = conclaveOutput.predecessor;
             }
             return fundTotal;
         }
         
         const uint64_t ConclaveChain::countSpendTotal(const Hash256& walletHash)
         {
-            std::optional<Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
             uint64_t spendTotal = 0;
+            std::optional<Inpoint> spendTip = databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
             while (spendTip.has_value()) {
-                break; // TODO
+                // Potential for an infinite loop here if there is a graph cycle.
+                // TODO: Do something about it
+                std::optional<ConclaveTx> conclaveTx = databaseClient.getItem(spendTip->txId);
+                if (!conclaveTx.has_value()) {
+                    throw std::runtime_error("can not find transaction: " + static_cast<std::string>(spendTip->txId));
+                }
+                if (conclaveTx->conclaveInputs.size() <= spendTip->index) {
+                    throw std::runtime_error("input index out of bounds" + static_cast<std::string>(*spendTip));
+                }
+                ConclaveInput& conclaveInput = conclaveTx->conclaveInputs[spendTip->index];
+                Outpoint& outpoint = conclaveInput.outpoint;
+                std::optional<ConclaveTx> prevConclaveTx = databaseClient.getItem(outpoint.txId);
+                if (!prevConclaveTx.has_value()) {
+                    throw std::runtime_error("can not find transaction: " + static_cast<std::string>(outpoint.txId));
+                }
+                if (prevConclaveTx->conclaveOutputs.size() <= outpoint.index) {
+                    throw std::runtime_error("output index out of bounds" + static_cast<std::string>(outpoint));
+                }
+                ConclaveOutput& conclaveOutput = prevConclaveTx->conclaveOutputs[outpoint.index];
+                spendTotal += conclaveOutput.value;
+                spendTip = conclaveInput.predecessor;
             }
             return spendTotal;
         }
@@ -158,6 +178,7 @@ namespace conclave
         
         const Hash256 ConclaveChain::processClaimTx(ConclaveTx claimTx)
         {
+            const Hash256 initialTxId = claimTx.getHash256();
             // TODO: ensure claimTx looks like a valid claim tx as much as possible
             // from inspecting claimTx structure alone before entering this function.
             const Outpoint fundPoint = *claimTx.fundPoint;
@@ -166,6 +187,13 @@ namespace conclave
             const BitcoinTx fundTx = bitcoinChain.getTx(fundPoint.txId);
             const BitcoinOutput fundOutput = fundTx.outputs[fundPoint.index];
             
+            // Ensure claimTx claims no more than the claimable value
+            const uint64_t claimableValue = fundOutput.value;
+            const uint64_t claimedValue = claimTx.getTotalOutputValue();
+            if (claimableValue < claimedValue) {
+                throw std::runtime_error("claim tx claims too much value");
+            }
+            
             // Ensure scriptPubKey is a P2WSH encumbrance which pays to
             // our claim script, thus to our claim transaction
             const std::optional<Hash256> redeemScriptHash = fundOutput.scriptPubKey.getP2wshHash();
@@ -173,37 +201,145 @@ namespace conclave
                 throw std::runtime_error("redeem script hash does not match claim script hash");
             }
             
-            // Ensure claimTx claims no more than the claimable value
-            const uint64_t claimableValue = fundOutput.value;
-            const uint64_t claimedValue = claimTx.getClaimedValue();
-            if (claimableValue < claimedValue) {
-                throw std::runtime_error("claim tx claims too much value");
-            }
-            const Hash256 claimTxHashSansPredecessors = claimTx.getHash256();
-            
-            // Update fundTips
+            // Update outpoint predecessors
+            // TODO: Currently this does not work properly if there are 2 or more outputs in the
+            // same tx paid to the same wallet. fix it.
             for (uint64_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
                 ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
                 const Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
-                const std::optional<Outpoint> prevFundTip =
-                    databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
-                if (prevFundTip.has_value()) {
-                    if (prevFundTip->txId == claimTxHashSansPredecessors && prevFundTip->index == i) {
-                        throw std::runtime_error("already have this fundTip in db");
-                    }
-                    conclaveOutput.predecessor = prevFundTip;
+                const std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+                if (fundTip.has_value()) {
+                    const bool fundTipPointsToThisTx = (fundTip->txId == initialTxId && fundTip->index == i);
+                    CONCLAVE_ASSERT(!fundTipPointsToThisTx, "fund tip points to this transaction");
+                    conclaveOutput.predecessor = fundTip;
                 }
-                const Outpoint newFundTip(claimTx.getHash256(), i);
+            }
+            
+            // txId is now final
+            const Hash256 finalTxId = claimTx.getHash256();
+            
+            // Ensure tx is not yet on the blockchain
+            CONCLAVE_ASSERT(!txIsOnBlockchain(finalTxId), "transaction is already on blockchain");
+            
+            // Update fund tips
+            for (uint64_t i = 0; i < claimTx.conclaveOutputs.size(); i++) {
+                ConclaveOutput& conclaveOutput = claimTx.conclaveOutputs[i];
+                const Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
+                const Outpoint newFundTip(finalTxId, i);
                 databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, newFundTip);
             }
+            
             // Store the transaction in database
             databaseClient.putItem(claimTx);
-            return claimTx.getHash256();
+            return finalTxId;
         }
         
         const Hash256 ConclaveChain::processTx(ConclaveTx conclaveTx)
         {
-            return conclaveTx.getHash256();
+            const Hash256 initialTxId = conclaveTx.getHash256();
+            
+            // Verify that each referenced output is either still spendable or
+            // already marked as spent by this transaction at the same inpoint.
+            for (uint64_t i = 0; i < conclaveTx.conclaveInputs.size(); i++) {
+                const Outpoint& outpoint = conclaveTx.conclaveInputs[i].outpoint;
+                const std::optional<Inpoint> inpoint =
+                    databaseClient.getMutableItem(COLLECTION_SPENDS, outpoint.getHash256());
+                if (inpoint.has_value()) {
+                    throw std::runtime_error("outpoint already spent: " + std::string(outpoint));
+                }
+            }
+            
+            // Gather previous outputs and sum up the spendable value
+            uint64_t spendableValue = 0;
+            std::vector<ConclaveOutput> prevOutputs;
+            prevOutputs.reserve(conclaveTx.conclaveInputs.size());
+            for (uint64_t i = 0; i < conclaveTx.conclaveInputs.size(); i++) {
+                const Outpoint& outpoint = conclaveTx.conclaveInputs[i].outpoint;
+                const std::optional<ConclaveTx> prevTx = databaseClient.getItem(outpoint.txId);
+                if (!prevTx.has_value()) {
+                    throw new std::runtime_error("can not find previous tx");
+                }
+                if (prevTx->conclaveOutputs.size() <= outpoint.index) {
+                    throw new std::runtime_error("index out of range");
+                }
+                const ConclaveOutput& prevOutput = prevTx->conclaveOutputs[outpoint.index];
+                spendableValue += prevOutput.value;
+                prevOutputs.emplace_back(prevOutput);
+            }
+            
+            // Ensure tx spends no more than the spendable value
+            const uint64_t spentValue = conclaveTx.getTotalOutputValue();
+            if (spendableValue < spentValue) {
+                throw std::runtime_error("tx spends too much value");
+            }
+            
+            // TODO: Check signatures
+            
+            // Update inpoint predecessors
+            // TODO: Currently this does not work properly if there are 2 or more inputs in the
+            // same tx paid from the same wallet. fix it.
+            for (uint64_t i = 0; i < conclaveTx.conclaveInputs.size(); i++) {
+                const Hash256 walletHash = prevOutputs[i].scriptPubKey.getHash256();
+                const std::optional<Inpoint> spendTip =
+                    databaseClient.getMutableItem(COLLECTION_SPEND_TIPS, walletHash);
+                if (spendTip.has_value()) {
+                    const bool spendTipPointsToThisTx = (spendTip->txId == initialTxId && spendTip->index == i);
+                    CONCLAVE_ASSERT(!spendTipPointsToThisTx, "spend tip points to this transaction");
+                    conclaveTx.conclaveInputs[i].predecessor = spendTip;
+                }
+            }
+            
+            // Update outpoint predecessors
+            // TODO: Currently this does not work properly if there are 2 or more outputs in the
+            // same tx paid to the same wallet. fix it.
+            for (uint64_t i = 0; i < conclaveTx.conclaveOutputs.size(); i++) {
+                ConclaveOutput& conclaveOutput = conclaveTx.conclaveOutputs[i];
+                const Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
+                const std::optional<Outpoint> fundTip = databaseClient.getMutableItem(COLLECTION_FUND_TIPS, walletHash);
+                if (fundTip.has_value()) {
+                    const bool fundTipPointsToThisTx = (fundTip->txId == initialTxId && fundTip->index == i);
+                    CONCLAVE_ASSERT(!fundTipPointsToThisTx, "fund tip points to this transaction");
+                    conclaveOutput.predecessor = fundTip;
+                }
+            }
+            
+            // txId is now final
+            const Hash256 finalTxId = conclaveTx.getHash256();
+            
+            // Ensure tx is not yet on the blockchain
+            CONCLAVE_ASSERT(!txIsOnBlockchain(finalTxId), "transaction is already on blockchain");
+            
+            // Spend the inputs - update spends and spend tips
+            for (uint64_t i = 0; i < conclaveTx.conclaveInputs.size(); i++) {
+                ConclaveInput& conclaveInput = conclaveTx.conclaveInputs[i];
+                const Outpoint& outpoint = conclaveInput.outpoint;
+                const ConclaveOutput& prevOutput = prevOutputs[i];
+                const Inpoint spendTip(finalTxId, i);
+                const Hash256 walletHash = prevOutput.scriptPubKey.getHash256();
+                
+                // Update spend
+                databaseClient.putMutableItem(COLLECTION_SPENDS, outpoint.getHash256(), spendTip);
+                
+                // Update spend tip
+                databaseClient.putMutableItem(COLLECTION_SPEND_TIPS, walletHash, spendTip);
+            }
+            
+            // Update fund tips
+            for (uint64_t i = 0; i < conclaveTx.conclaveOutputs.size(); i++) {
+                ConclaveOutput& conclaveOutput = conclaveTx.conclaveOutputs[i];
+                const Hash256 walletHash = conclaveOutput.scriptPubKey.getHash256();
+                const Outpoint newFundTip(finalTxId, i);
+                databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, newFundTip);
+            }
+            
+            // Process Bitcoin outputs
+            for (uint64_t i = 0; i < conclaveTx.conclaveOutputs.size(); i++) {
+                //TODO - put into a queue
+            }
+            
+            // Store the transaction in database
+            databaseClient.putItem(conclaveTx);
+            return finalTxId;
         }
     }
 }
