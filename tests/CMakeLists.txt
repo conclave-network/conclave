@@ -122,6 +122,7 @@ add_executable(
         script_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         script_test.cpp
@@ -145,6 +146,7 @@ add_executable(
         destination_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/structs/destination.cpp
         structs/destination_test.cpp
@@ -154,6 +156,7 @@ add_executable(
         bitcoin_input_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/outpoint.cpp
@@ -165,6 +168,7 @@ add_executable(
         bitcoin_output_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/bitcoin_output.cpp
@@ -175,6 +179,7 @@ add_executable(
         conclave_input_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/outpoint.cpp
@@ -187,6 +192,7 @@ add_executable(
         conclave_output_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/structs/outpoint.cpp
@@ -247,8 +253,9 @@ add_executable(
         bitcoin_chain_test
         ../src/hash160.cpp
         ../src/hash256.cpp
-        ../src/address.cpp
         ../src/public_key.cpp
+        ../src/address.cpp
+
         ../src/script.cpp
         ../src/structs/outpoint.cpp
         ../src/structs/bitcoin_input.cpp
@@ -265,6 +272,7 @@ add_executable(
         electrumx_client_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/script.cpp
         ../src/chain/electrumx/electrumx_client.cpp
@@ -292,6 +300,7 @@ add_executable(
         destinations_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         ../src/structs/destination.cpp
         ../src/rpc/methods/make_entry_tx/structs/destinations.cpp
