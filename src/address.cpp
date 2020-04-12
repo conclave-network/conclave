@@ -157,6 +157,13 @@ namespace conclave
     {
     }
     
+    Address::Address(const PublicKey& publicKey, const AddressFormat& addressFormat,
+                     const NetworkType& networkType)
+        : hash(publicKey.getHash160Compressed()), addressFormat(addressFormat), networkType(networkType),
+          payeeType(PayeeType::PUBKEY)
+    {
+    }
+    
     Address::Address(const std::string& addressString)
     {
         data_chunk addressData;

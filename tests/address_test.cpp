@@ -48,6 +48,7 @@ namespace conclave
     };
     const static std::vector<BYTE> SHORT_HASH_BV(SHORT_HASH_BA.begin(), SHORT_HASH_BA.end());
     const static std::vector<BYTE> LONG_HASH_BV(LONG_HASH_BA.begin(), LONG_HASH_BA.end());
+    const static PublicKey PUBLIC_KEY("026022eda26f4fbe5a33f533d6204731bb0e21a94191869395dc205b53e799e2d9");
     BOOST_AUTO_TEST_SUITE(AddressTestSuite)
         
         BOOST_AUTO_TEST_CASE(AddressByteArrayConstructorsTest)
@@ -118,6 +119,23 @@ namespace conclave
             BOOST_TEST(testnetSegwitScriptAddress == TESTNET_SEGWIT_SCRIPT_ADDRESS);
             BOOST_TEST(testnetConclavePubkeyAddress == TESTNET_CONCLAVE_PUBKEY_ADDRESS);
             BOOST_TEST(testnetConclaveScriptAddress == TESTNET_CONCLAVE_SCRIPT_ADDRESS);
+        }
+        
+        BOOST_AUTO_TEST_CASE(AddressPublicKeyConstructorsTest)
+        {
+            // Test pubkey constructor
+            Address mainnetClassicPubkeyAddress(PUBLIC_KEY, Address::AddressFormat::CLASSIC,
+                                                Address::NetworkType::MAINNET);
+            Address mainnetConclavePubkeyAddress(PUBLIC_KEY, Address::AddressFormat::CONCLAVE,
+                                                 Address::NetworkType::MAINNET);
+            Address testnetClassicPubkeyAddress(PUBLIC_KEY, Address::AddressFormat::CLASSIC,
+                                                Address::NetworkType::TESTNET);
+            Address testnetConclavePubkeyAddress(PUBLIC_KEY, Address::AddressFormat::CONCLAVE,
+                                                 Address::NetworkType::TESTNET);
+            BOOST_TEST((mainnetClassicPubkeyAddress == "1FVsnLgYbZxtPA9QRnUxRV8GAboNxvjGVv"));
+            BOOST_TEST((mainnetConclavePubkeyAddress == "5VyB5gP3iYRQeQDfFKLYRz9BkX2gzbHm"));
+            BOOST_TEST((testnetClassicPubkeyAddress == "mv1q5PmXQbQ9AGd29MTLFQLb2bQ5vGFJuH"));
+            BOOST_TEST((testnetConclavePubkeyAddress == "2rda2VK2yEtQodw3k5WZm1QJ7HeQab5d"));
         }
     
     BOOST_AUTO_TEST_SUITE_END()

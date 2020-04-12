@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "public_key.h"
 #include "hash160.h"
 #include "hash256.h"
 #include "conclave.h"
@@ -111,6 +112,7 @@ namespace conclave
         // Constructors
         Address(const Hash160&, const AddressFormat&, const NetworkType&, const PayeeType&);
         Address(const Hash256&, const AddressFormat&, const NetworkType&, const PayeeType&);
+        Address(const PublicKey&, const AddressFormat&, const NetworkType&);
         Address(const std::string&);
         Address(const char*);
         Address(const Address&);

@@ -113,6 +113,7 @@ add_executable(
         address_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/public_key.cpp
         ../src/address.cpp
         address_test.cpp
 )
