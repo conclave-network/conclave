@@ -42,6 +42,7 @@ namespace conclave
         //
         
         const std::string ConclaveChain::COLLECTION_CHAIN_TIP = "ChainTip";
+        const std::string ConclaveChain::COLLECTION_CLAIMS = "Claims";
         const std::string ConclaveChain::COLLECTION_SPENDS = "Spends";
         const std::string ConclaveChain::COLLECTION_SPEND_TIPS = "SpendTips";
         const std::string ConclaveChain::COLLECTION_FUND_TIPS = "FundTips";
@@ -173,23 +174,25 @@ namespace conclave
         const Hash256 ConclaveChain::processClaimTx(ConclaveTx claimTx)
         {
             const Hash256 initialTxId = claimTx.getHash256();
-            // TODO: ensure claimTx looks like a valid claim tx as much as possible
-            // from inspecting claimTx structure alone before entering this function.
             const Outpoint fundPoint = *claimTx.fundPoint;
-            const Script claimScript = claimTx.getClaimScript();
-            const Hash256 claimScriptHash = claimScript.getHash256();
-            const BitcoinTx fundTx = bitcoinChain.getTx(fundPoint.txId);
-            const BitcoinOutput fundOutput = fundTx.outputs[fundPoint.index];
+            const Hash256 fundPointHash = fundPoint.getHash256();
+            
+            // Ensure fundPoint hasn't already been claimed
+            if (databaseClient.getMutableItem(COLLECTION_CLAIMS, fundPointHash).has_value()) {
+                throw std::runtime_error("fundPoint already claimed");
+            }
             
             // Ensure claimTx claims no more than the claimable value
-            const uint64_t claimableValue = fundOutput.value;
-            const uint64_t claimedValue = claimTx.getTotalOutputValue();
-            if (claimableValue < claimedValue) {
+            const BitcoinTx fundTx = bitcoinChain.getTx(fundPoint.txId);
+            const BitcoinOutput fundOutput = fundTx.outputs[fundPoint.index];
+            if (fundOutput.value < claimTx.getTotalOutputValue()) {
                 throw std::runtime_error("claim tx claims too much value");
             }
             
             // Ensure scriptPubKey is a P2WSH encumbrance which pays to
             // our claim script, thus to our claim transaction
+            const Script claimScript = claimTx.getClaimScript();
+            const Hash256 claimScriptHash = claimScript.getHash256();
             const std::optional<Hash256> redeemScriptHash = fundOutput.scriptPubKey.getP2wshHash();
             if (!redeemScriptHash.has_value() || *redeemScriptHash != claimScriptHash) {
                 throw std::runtime_error("redeem script hash does not match claim script hash");
@@ -223,7 +226,10 @@ namespace conclave
                 databaseClient.putMutableItem(COLLECTION_FUND_TIPS, walletHash, newFundTip);
             }
             
-            // Store the transaction in database
+            // Claim the fundPoint
+            databaseClient.putMutableItem(COLLECTION_CLAIMS, fundPointHash, finalTxId);
+            
+            // Store the transaction
             databaseClient.putItem(claimTx);
             return finalTxId;
         }
@@ -327,13 +333,20 @@ namespace conclave
             }
             
             // Process Bitcoin outputs
-            for (uint64_t i = 0; i < conclaveTx.conclaveOutputs.size(); i++) {
-                //TODO - put into a queue
+            // TEMPORARY !!!
+            if (conclaveTx.bitcoinOutputs.size() > 0) {
+                withdrawOutputs(conclaveTx.bitcoinOutputs);
             }
             
             // Store the transaction in database
             databaseClient.putItem(conclaveTx);
             return finalTxId;
+        }
+        
+        const void ConclaveChain::withdrawOutputs(const std::vector<BitcoinOutput>& withdrawalOutputs)
+        {
+            // TEMPORARY FUNCTION !!!
+            std::cout << "Withdrawing..." << std::endl;
         }
     }
 }

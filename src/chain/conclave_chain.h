@@ -46,6 +46,7 @@ namespace conclave
             const static ConclaveBlock GENESIS_BLOCK;
             // Collection Names
             const static std::string COLLECTION_CHAIN_TIP;
+            const static std::string COLLECTION_CLAIMS;
             const static std::string COLLECTION_SPENDS;
             const static std::string COLLECTION_SPEND_TIPS;
             const static std::string COLLECTION_FUND_TIPS;
@@ -64,6 +65,7 @@ namespace conclave
             const bool txIsOnBlockchain(const Hash256&);
             const Hash256 processClaimTx(ConclaveTx);
             const Hash256 processTx(ConclaveTx);
+            const void withdrawOutputs(const std::vector<BitcoinOutput>&);
             // Properties
             BitcoinChain& bitcoinChain;
             DatabaseClient databaseClient;
