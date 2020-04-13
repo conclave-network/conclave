@@ -167,7 +167,7 @@ namespace conclave
     {
         return Script(std::vector<machine::operation>{
             opcode::push_size_0,
-            static_cast<std::vector<BYTE>>(script.getHash256())
+            static_cast<std::vector<BYTE>>(script.getSingleSHA256())
         });
     }
     
