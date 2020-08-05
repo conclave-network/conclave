@@ -21,6 +21,7 @@
 #include "../script.h"
 #include "bitcoin_chain.h"
 #include <stdexcept>
+#include <optional>
 
 namespace conclave
 {
@@ -44,18 +45,23 @@ namespace conclave
             return {};//TODO
         }
         
-        const BitcoinTx BitcoinChain::getTx(const Hash256& txId)
+        const std::optional<BitcoinTx> BitcoinChain::getTx(const Hash256& txId)
         {
-            pt::ptree tree = electrumxClient.blockchainTransactionGet(txId, true);
-            return BitcoinTx(HEX_TO_BYTE_VECTOR(getPrimitiveFromJson<std::string>(tree, "result")));
+            try {
+                pt::ptree tree = electrumxClient.blockchainTransactionGet(txId, true);
+                return BitcoinTx(HEX_TO_BYTE_VECTOR(getPrimitiveFromJson<std::string>(tree, "result")));
+            } catch (std::runtime_error&) {
+                return std::nullopt;
+            }
         }
         
         const Hash256 BitcoinChain::submitTx(const BitcoinTx& bitcoinTx)
         {
             pt::ptree tree = electrumxClient
                 .blockchainTransactionBroadcast(BYTE_VECTOR_TO_HEX(bitcoinTx.serialize()));
-            Hash256 txId = Hash256(tree.data());
+            Hash256 txId = Hash256(getPrimitiveFromJson<std::string>(tree, "result"));
             std::cout << "returned " << txId << std::endl;
+            std::cout << "expecting " << bitcoinTx.getHash256() << std::endl;
             // Make sure returned TxId is same as our calculated TxId
             if (txId != bitcoinTx.getHash256()) {
                 throw std::runtime_error("ElectrumX server returned different TxId");

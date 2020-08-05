@@ -114,6 +114,7 @@ add_executable(
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
+        ../src/script.cpp
         ../src/address.cpp
         address_test.cpp
 )
@@ -147,6 +148,7 @@ add_executable(
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
+        ../src/script.cpp
         ../src/address.cpp
         ../src/structs/destination.cpp
         structs/destination_test.cpp
@@ -301,6 +303,7 @@ add_executable(
         ../src/hash160.cpp
         ../src/hash256.cpp
         ../src/public_key.cpp
+        ../src/script.cpp
         ../src/address.cpp
         ../src/structs/destination.cpp
         ../src/rpc/methods/make_entry_tx/structs/destinations.cpp

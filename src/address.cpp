@@ -17,6 +17,7 @@
  */
 
 #include "address.h"
+#include "script.h"
 #include <bitcoin/system.hpp>
 #include <bitcoin/system/math/checksum.hpp>
 #include <vector>
@@ -295,6 +296,11 @@ namespace conclave
     const bool Address::isP2CSH() const
     {
         return (addressFormat == AddressFormat::CONCLAVE) && (payeeType == PayeeType::SCRIPT);
+    }
+    
+    const Hash256 Address::getStandardScriptHash() const
+    {
+        return Script::p2hScript(*this).getSingleSHA256();
     }
     
     //

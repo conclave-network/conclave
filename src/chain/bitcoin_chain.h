@@ -49,7 +49,7 @@ namespace conclave
             // Public Functions
             const uint64_t getAddressBalance(const Address&);
             const std::vector<BitcoinRichOutput> getUtxos(const Address&);
-            const BitcoinTx getTx(const Hash256&);
+            const std::optional<BitcoinTx> getTx(const Hash256&);
             const Hash256 submitTx(const BitcoinTx&);
             const bool txIsConfirmed(const Hash256&);
             const bool outputIsConclaveOwned(const Outpoint& outpoint);

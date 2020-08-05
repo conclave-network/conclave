@@ -17,6 +17,7 @@
  */
 
 #include "conclave_chain.h"
+#include "../private_key.h"
 
 namespace conclave
 {
@@ -182,9 +183,14 @@ namespace conclave
                 throw std::runtime_error("fundPoint already claimed");
             }
             
+            // Attempt to get fundTx
+            const std::optional<BitcoinTx> fundTx = bitcoinChain.getTx(fundPoint.txId);
+            if (!fundTx.has_value()) {
+                throw std::runtime_error("fundTx not found");
+            }
+            
             // Ensure claimTx claims no more than the claimable value
-            const BitcoinTx fundTx = bitcoinChain.getTx(fundPoint.txId);
-            const BitcoinOutput fundOutput = fundTx.outputs[fundPoint.index];
+            const BitcoinOutput fundOutput = fundTx->outputs[fundPoint.index];
             if (fundOutput.value < claimTx.getTotalOutputValue()) {
                 throw std::runtime_error("claim tx claims too much value");
             }
@@ -192,7 +198,7 @@ namespace conclave
             // Ensure scriptPubKey is a P2WSH encumbrance which pays to
             // our claim script, thus to our claim transaction
             const Script claimScript = claimTx.getClaimScript();
-            const Hash256 claimScriptHash = claimScript.getHash256();
+            const Hash256 claimScriptHash = claimScript.getSingleSHA256();
             const std::optional<Hash256> redeemScriptHash = fundOutput.scriptPubKey.getP2wshHash();
             if (!redeemScriptHash.has_value() || *redeemScriptHash != claimScriptHash) {
                 throw std::runtime_error("redeem script hash does not match claim script hash");
@@ -345,8 +351,7 @@ namespace conclave
         
         const void ConclaveChain::withdrawOutputs(const std::vector<BitcoinOutput>& withdrawalOutputs)
         {
-            // TEMPORARY FUNCTION !!!
-            std::cout << "Withdrawing..." << std::endl;
+            //TODO
         }
     }
 }

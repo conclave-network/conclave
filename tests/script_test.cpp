@@ -142,7 +142,7 @@ namespace conclave
             // P2WSH Script
             BOOST_TEST((
                            Script::p2wshScript(Script("return")) ==
-                           Script("zero [d4b2548065db6cc797926a3db7de3664ad3f48acaa0e7174a9a6f490716807ea]")));
+                           Script("zero [189f40034be7a199f1fa9891668ee3ab6049f82d38c68be70f596eab2e1857b7]")));
         }
         
         BOOST_AUTO_TEST_CASE(ScriptDeserializeFactoryTest)

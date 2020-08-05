@@ -26,6 +26,6 @@ namespace conclave
 {
     BOOST_AUTO_TEST_CASE(ConclaveTxConstructorsTest)
     {
-        BOOST_TEST(true); // Dummy test because no tests will fail
+        BOOST_TEST(true);
     }
 }

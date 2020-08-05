@@ -134,6 +134,7 @@ namespace conclave
         const bool isP2WSH() const;
         const bool isP2CPKH() const;
         const bool isP2CSH() const;
+        const Hash256 getStandardScriptHash() const;
         // Conversions
         explicit operator std::string() const;
         // Operator Overloads

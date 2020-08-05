@@ -181,13 +181,13 @@ namespace conclave
     {
         const uint32_t nTrustees = trustees.size();
         std::vector<ScriptElement> scriptElements{
-            getHash256(true), ScriptOp::drop, nTrustees
+            getHash256(true), ScriptOp::drop, minSigs
         };
         scriptElements.reserve(3 + nTrustees + 2);
         for (const PublicKey& trustee: trustees) {
             scriptElements.emplace_back(trustee);
         }
-        scriptElements.emplace_back(minSigs);
+        scriptElements.emplace_back(nTrustees);
         scriptElements.emplace_back(ScriptOp::checkmultisig);
         return Script(scriptElements);
     }

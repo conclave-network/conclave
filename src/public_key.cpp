@@ -48,12 +48,12 @@ namespace conclave
         const uint8_t leadingByte = deserializeIntegral<uint8_t>(data, pos);
         if (leadingByte < 0x04) {
             // Compressed
-            const Hash256 x = Hash256::deserialize(data, pos);
+            const Hash256 x = Hash256::deserialize(data, pos).reversed();
             return PublicKey(std::move(x), leadingByte == 0x03);
         } else {
             // Uncompressed
-            const Hash256 x = Hash256::deserialize(data, pos);
-            const Hash256 y = Hash256::deserialize(data, pos);
+            const Hash256 x = Hash256::deserialize(data, pos).reversed();
+            const Hash256 y = Hash256::deserialize(data, pos).reversed();
             return PublicKey(std::move(x), std::move(y));
         }
     }
