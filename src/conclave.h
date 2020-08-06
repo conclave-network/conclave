@@ -42,6 +42,8 @@ const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
 const static size_t UNCOMPRESSED_PUBKEY_SIZE_BYTES = 65;
 const static size_t SMALL_HASH_SIZE_BYTES = 20;
 const static size_t LARGE_HASH_SIZE_BYTES = 32;
+const static size_t ECDSA_SIGNATURE_SIZE_BYTES = 64; // Not DER
+
 
 template<size_t size>
 inline const std::array<BYTE, size> bytePointerToByteArray(const BYTE* ptr)
