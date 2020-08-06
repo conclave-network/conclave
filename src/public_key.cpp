@@ -36,7 +36,7 @@ namespace conclave
         ecc[0] = (odd & 1u) + 2u;
         std::copy(x.begin(), x.end(), &ecc[1]);
         decompress(ecu, ecc);
-        return Hash256(&ecu[1 + EC_POINT_SIZE_BYTES]);
+        return Hash256(&ecu[1 + EC_GROUP_ELEMENT_SIZE_BYTES]);
     }
     
     //
@@ -89,7 +89,7 @@ namespace conclave
     }
     
     PublicKey::PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>& data)
-        : x(&data[1]), y(&data[1 + EC_POINT_SIZE_BYTES])
+        : x(&data[1]), y(&data[1 + EC_GROUP_ELEMENT_SIZE_BYTES])
     {
     }
     
@@ -168,14 +168,14 @@ namespace conclave
         std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES> arr;
         arr[0] = 0x04;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
-        std::copy(y.begin(), y.end(), arr.begin() + 1 + EC_POINT_SIZE_BYTES);
+        std::copy(y.begin(), y.end(), arr.begin() + 1 + EC_GROUP_ELEMENT_SIZE_BYTES);
         return arr;
     }
     
     PublicKey::operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const
     {
         std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES> arr;
-        arr[0] = (y[EC_POINT_SIZE_BYTES - 1] & 1u) + 2u;
+        arr[0] = (y[EC_GROUP_ELEMENT_SIZE_BYTES - 1] & 1u) + 2u;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
         return arr;
     }
