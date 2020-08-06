@@ -50,6 +50,7 @@ namespace conclave
     
     EcdsaSignature::operator std::vector<BYTE>() const
     {
+        return std::vector<BYTE>(); // TODO
     }
     
     //
