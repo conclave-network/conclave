@@ -27,6 +27,22 @@ namespace conclave
     const static Hash256 S_1("5dfeb8c8d701087e81b08b22170da77cd2b4fdc752971961afd9e141707a7683");
     const static Hash256 R_2("13e36927f48cecd5d56e6b4f924fffbed1b871929fc9fe9ee7af518f92eb406e");
     const static Hash256 S_2("f3dfd48975511a0e340241b32420e9e5e44cb79c8626ddbe7c94a95e1190e2a6");
+    const static std::string R1S1_DER_STR =
+        "3046022100f04972590d84a3929d6d9685c0e7468f99327d714c21aee087966fb0070b9b6902"
+        "210083767a7041e1d9af61199752c7fdb4d27ca70d17228bb0817e0801d7c8b8fe5d";
+    const static std::string R1S2_DER_STR =
+        "3046022100f04972590d84a3929d6d9685c0e7468f99327d714c21aee087966fb0070b9b6902"
+        "2100a6e290115ea9947cbedd26869cb74ce4e5e92024b34102340e1a517589d4dff3";
+    const static std::string R2S1_DER_STR =
+        "304502206e40eb928f51afe79efec99f9271b8d1beff4f924f6b6ed5d5ec8cf42769e3130221"
+        "0083767a7041e1d9af61199752c7fdb4d27ca70d17228bb0817e0801d7c8b8fe5d";
+    const static std::string R2S2_DER_STR =
+        "304502206e40eb928f51afe79efec99f9271b8d1beff4f924f6b6ed5d5ec8cf42769e3130221"
+        "00a6e290115ea9947cbedd26869cb74ce4e5e92024b34102340e1a517589d4dff3";
+    const static std::vector<BYTE> R1S1_DER_BV = HEX_TO_BYTE_VECTOR(R1S1_DER_STR);
+    const static std::vector<BYTE> R1S2_DER_BV = HEX_TO_BYTE_VECTOR(R1S2_DER_STR);
+    const static std::vector<BYTE> R2S1_DER_BV = HEX_TO_BYTE_VECTOR(R2S1_DER_STR);
+    const static std::vector<BYTE> R2S2_DER_BV = HEX_TO_BYTE_VECTOR(R2S2_DER_STR);
     BOOST_AUTO_TEST_SUITE(EcdsaSignatureTestSuite)
         
         BOOST_AUTO_TEST_CASE(EcdsaSignatureRSConstructorsTest)
@@ -263,6 +279,10 @@ namespace conclave
             EcdsaSignature r1s2(R_1, S_2);
             EcdsaSignature r2s1(R_2, S_1);
             EcdsaSignature r2s2(R_2, S_2);
+            BOOST_ASSERT((r1s1.serialize() == R1S1_DER_BV));
+            BOOST_ASSERT((r1s2.serialize() == R1S2_DER_BV));
+            BOOST_ASSERT((r2s1.serialize() == R2S1_DER_BV));
+            BOOST_ASSERT((r2s2.serialize() == R2S2_DER_BV));
         }
     
     BOOST_AUTO_TEST_SUITE_END()
