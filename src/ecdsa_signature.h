@@ -23,23 +23,29 @@
 namespace conclave
 {
     /***
-     * Representation of DER-encoded ECDSA signature with sighash byte
+     * Representation of ECDSA signature.
+     *
+     * NOTE: Converting to a byte array or byte vector gives a fixed-length
+     * representation of r and s concatenated. Calling the serialize() method
+     * returns the DER serialization. DER serialization is needed in bitcoin
+     * script, but going forward is not the favoured format.
      */
     class EcdsaSignature final
     {
         public:
-        // Factories
         // Constructors
         EcdsaSignature(const Hash256& r, const Hash256& s);
         EcdsaSignature(Hash256&& r, Hash256&& s);
         EcdsaSignature(const EcdsaSignature&);
-        EcdsaSignature(EcdsaSignature&&);
+        EcdsaSignature(EcdsaSignature&&) noexcept;
         // Public Functions
+        const std::vector<BYTE> serialize() const;
         // Conversions
+        operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const;
         operator std::vector<BYTE>() const;
         // Operator Overloads
         EcdsaSignature& operator=(const EcdsaSignature&);
-        EcdsaSignature& operator=(EcdsaSignature&&);
+        EcdsaSignature& operator=(EcdsaSignature&&) noexcept;
         bool operator==(const EcdsaSignature&) const;
         bool operator!=(const EcdsaSignature&) const;
         private:

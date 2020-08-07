@@ -17,7 +17,9 @@
  */
 
 #include "ecdsa_signature.h"
+#include <bitcoin/system.hpp>
 
+namespace bc_system = libbitcoin::system;
 namespace conclave
 {
     //
@@ -39,18 +41,41 @@ namespace conclave
     {
     }
     
-    EcdsaSignature::EcdsaSignature(EcdsaSignature&& other)
+    EcdsaSignature::EcdsaSignature(EcdsaSignature&& other) noexcept
         : r(std::move(other.r)), s(std::move(other.s))
     {
+    }
+    
+    //
+    // Public Functions
+    //
+    
+    const std::vector<BYTE> EcdsaSignature::serialize() const
+    {
+        // DER Serialization
+        bc_system::der_signature der;
+        bc_system::encode_signature(der, *this);
+        return der;
     }
     
     //
     // Conversions
     //
     
+    EcdsaSignature::operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const
+    {
+        std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES> arr;
+        std::copy(r.begin(), r.end(), arr.begin());
+        std::copy(s.begin(), s.end(), arr.begin() + EC_GROUP_ELEMENT_SIZE_BYTES);
+        return arr;
+    }
+    
     EcdsaSignature::operator std::vector<BYTE>() const
     {
-        return std::vector<BYTE>(); // TODO
+        const auto array = static_cast<std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>>(*this);
+        std::vector<BYTE> vector(ECDSA_SIGNATURE_SIZE_BYTES);
+        std::copy(array.begin(), array.end(), vector.begin());
+        return vector;
     }
     
     //
@@ -64,7 +89,7 @@ namespace conclave
         return *this;
     }
     
-    EcdsaSignature& EcdsaSignature::operator=(EcdsaSignature&& other)
+    EcdsaSignature& EcdsaSignature::operator=(EcdsaSignature&& other) noexcept
     {
         r = std::move(other.r);
         s = std::move(other.s);
@@ -78,6 +103,6 @@ namespace conclave
     
     bool EcdsaSignature::operator!=(const EcdsaSignature& other) const
     {
-        return (r != other.r) || (s == other.s);
+        return (r != other.r) || (s != other.s);
     }
 }

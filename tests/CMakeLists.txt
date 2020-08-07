@@ -106,6 +106,7 @@ add_executable(
 add_executable(
         ecdsa_signature_test
         ../src/hash256.cpp
+        ../src/ecdsa_signature.cpp
         ecdsa_signature_test.cpp
 )
 
