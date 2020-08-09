@@ -36,6 +36,11 @@ namespace conclave
     {
     }
     
+    EcdsaSignature::EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>& data)
+        : EcdsaSignature(data.cbegin(), data.cbegin() + EC_GROUP_ELEMENT_SIZE_BYTES)
+    {
+    }
+    
     EcdsaSignature::EcdsaSignature(const EcdsaSignature& other)
         : r(other.r), s(other.s)
     {

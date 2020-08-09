@@ -36,6 +36,7 @@ namespace conclave
         // Constructors
         EcdsaSignature(const Hash256& r, const Hash256& s);
         EcdsaSignature(Hash256&& r, Hash256&& s);
+        EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>&);
         EcdsaSignature(const EcdsaSignature&);
         EcdsaSignature(EcdsaSignature&&) noexcept;
         // Public Functions
