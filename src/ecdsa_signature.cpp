@@ -83,6 +83,11 @@ namespace conclave
         return vector;
     }
     
+    EcdsaSignature::operator std::string() const
+    {
+        return byteArrayToHexString(static_cast<std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>>(*this));
+    }
+    
     //
     // Operator Overloads
     //
@@ -109,5 +114,11 @@ namespace conclave
     bool EcdsaSignature::operator!=(const EcdsaSignature& other) const
     {
         return (r != other.r) || (s != other.s);
+    }
+    
+    std::ostream& operator<<(std::ostream& os, const EcdsaSignature& ecdsaSignature)
+    {
+        os << static_cast<std::string>(ecdsaSignature);
+        return os;
     }
 }

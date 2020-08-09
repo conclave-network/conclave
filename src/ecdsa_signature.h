@@ -44,11 +44,13 @@ namespace conclave
         // Conversions
         operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const;
         operator std::vector<BYTE>() const;
+        operator std::string() const;
         // Operator Overloads
         EcdsaSignature& operator=(const EcdsaSignature&);
         EcdsaSignature& operator=(EcdsaSignature&&) noexcept;
         bool operator==(const EcdsaSignature&) const;
         bool operator!=(const EcdsaSignature&) const;
+        friend std::ostream& operator<<(std::ostream&, const EcdsaSignature&);
         private:
         // Properties
         Hash256 r;
