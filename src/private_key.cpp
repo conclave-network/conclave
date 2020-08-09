@@ -23,7 +23,7 @@ namespace conclave
 {
     using namespace libbitcoin::system;
     
-    PublicKey derivePublicKey(const Hash256& privateKeyData)
+    static PublicKey derivePublicKey(const Hash256& privateKeyData)
     {
         ec_uncompressed ecu;
         secret_to_public(ecu, privateKeyData);
@@ -38,5 +38,12 @@ namespace conclave
     [[nodiscard]] const PublicKey PrivateKey::getPublicKey() const
     {
         return publicKey;
+    }
+    
+    [[nodiscard]] const EcdsaSignature PrivateKey::sign(const Hash256& message) const
+    {
+        ec_signature sig;
+        libbitcoin::system::sign(sig, data, static_cast<hash_digest>(message));
+        return EcdsaSignature(sig);
     }
 }

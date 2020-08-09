@@ -18,6 +18,7 @@
 
 #pragma once
 
+#include "ecdsa_signature.h"
 #include "public_key.h"
 #include "hash256.h"
 #include "conclave.h"
@@ -29,8 +30,9 @@ namespace conclave
         public:
         PrivateKey(const Hash256&);
         [[nodiscard]] const PublicKey getPublicKey() const;
+        [[nodiscard]] const EcdsaSignature sign(const Hash256&) const;
         private:
-        const Hash256 data;
-        const PublicKey publicKey;
+        Hash256 data;
+        PublicKey publicKey;
     };
 }

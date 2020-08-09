@@ -90,6 +90,7 @@ add_executable(
         private_key_test
         ../src/hash160.cpp
         ../src/hash256.cpp
+        ../src/ecdsa_signature.cpp
         ../src/public_key.cpp
         ../src/private_key.cpp
         private_key_test.cpp

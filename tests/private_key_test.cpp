@@ -23,11 +23,31 @@
 namespace conclave
 {
     const static Hash256 KEY_DATA_1("017b8511ce04f889d3ef08df1c4497794a2fce1c92a84562bbe5c6d572bfc67c");
-    const static Hash256 KEY_DATA_2("1b76e7bfc8248e47f59dd63534171cc54e6b49dd70cf16e45022bbd4e429e60a");
+    const static Hash256 MESSAGE_1("c48dc09b1e0495d33f6af7493fa10d050d5ffd5fc9a4f6bdaee0d1f1680f0feb");
+    const static PublicKey K1_PUB("03f50ca6f27d1c1f461160ae4cc3588141dc048b262101b5faa8a22e9de4c99c08");
+    const static EcdsaSignature K1_M1_SIG(hexStringToByteArray<ECDSA_SIGNATURE_SIZE_BYTES>(
+        "ba19d85bb520ba8d05c8f2c2805868962ccda6d121ad76286c9431a04eaea91f"
+        "af5cbf2333b156e13de4f638014f9785ce6e85d287b0b89712a6ba1cc5834f27"));
+    BOOST_AUTO_TEST_SUITE(PrivateKeyTestSuite)
+        
+        BOOST_AUTO_TEST_CASE(PrivateKeyConstructorTest)
+        {
+            PrivateKey privateKey1(KEY_DATA_1); // Shouldn't throw
+        }
+        
+        BOOST_AUTO_TEST_CASE(PrivateKeyGetPublicKeyTest)
+        {
+            PrivateKey privateKey1(KEY_DATA_1);
+            PublicKey publicKey1 = privateKey1.getPublicKey();
+            BOOST_TEST((publicKey1 == K1_PUB));
+        }
+        
+        BOOST_AUTO_TEST_CASE(PrivateKeyEcdsaSignTest)
+        {
+            PrivateKey privateKey1(KEY_DATA_1);
+            EcdsaSignature k1m1Sig = privateKey1.sign(MESSAGE_1);
+            BOOST_TEST((k1m1Sig == K1_M1_SIG));
+        }
     
-    BOOST_AUTO_TEST_CASE(PrivateKeyConstructorTest)
-    {
-        PrivateKey privateKey1(KEY_DATA_1);
-        PrivateKey privateKey2(KEY_DATA_2);
-    }
+    BOOST_AUTO_TEST_SUITE_END()
 }
