@@ -47,6 +47,15 @@ RUN git clone https://github.com/imatix/gsl.git \
     && make install \
     && cd ../..
 
+# Secp256k1
+RUN git clone https://github.com/libbitcoin/secp256k1.git \
+    && cd secp256k1 \
+    && git checkout 1c3616f9f6f8ec4cd88eaccbae08b8cbb04ea326 \
+    && ./autogen.sh \
+    && ./configure --enable-module-recovery \
+    && make \
+    && make install \
+    && cd ..
 
 #WORKDIR /conclave-build
 #COPY . .
