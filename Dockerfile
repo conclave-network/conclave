@@ -38,6 +38,16 @@ RUN set -ex \
     && b2 install
 ENV BOOST_ROOT /usr/local/boost_${BOOST_VERSION}
 
+# GSL
+RUN git clone https://github.com/imatix/gsl.git \
+    && cd gsl \
+    && git checkout 20d56ca93748b12f44528f0bc2250305a95327c0 \
+    && cd src \
+    && make \
+    && make install \
+    && cd ../..
+
+
 #WORKDIR /conclave-build
 #COPY . .
 
