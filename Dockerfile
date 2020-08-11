@@ -16,7 +16,8 @@ RUN set -ex \
         libpq-dev \
         libpqxx-dev \
         curl \
-        git
+        git \
+        valgrind
 
 # OpenSSL (TODO: deprecate)
 RUN apt-get install libssl-dev
