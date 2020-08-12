@@ -63,7 +63,7 @@ RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
     && git clone https://github.com/libbitcoin/libbitcoin-build.git \
     && cd libbitcoin-build \
     && git checkout 9e0f971377010f92ca12b8cccbefb251bb937fb4 \
-    && ./generate.sh \\
+    && ./generate.sh \
     && cd ../libbitcoin-system \
     && git checkout bef130bdc8c57808dceab99d6867f3c58acf4e92 \
     && ./install.sh \
@@ -72,6 +72,21 @@ RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
     && make \
     && make install \
     && cd ..
+
+# CMake
+ARG CMAKE_VERSION_DOT=3.17.0
+ARG CMAKE_HASH=b44685227b9f9be103e305efa2075a8ccf2415807fbcf1fc192da4d36aacc9f5
+RUN set -ex \
+    && curl -L -o cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION_DOT}/cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    && echo "${CMAKE_HASH}  cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz" | sha256sum -c \
+    && tar -xvf cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/bin/* /usr/local/bin \
+    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/doc/* /usr/local/doc \
+    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/man/* /usr/local/man \
+    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/share/* /usr/local/share \
+    && cd ..
+
 
 
 #WORKDIR /conclave-build
