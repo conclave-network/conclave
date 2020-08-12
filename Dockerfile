@@ -58,6 +58,22 @@ RUN git clone https://github.com/libbitcoin/secp256k1.git \
     && make install \
     && cd ..
 
+# Libbitcoin
+RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
+    && git clone https://github.com/libbitcoin/libbitcoin-build.git \
+    && cd libbitcoin-build \
+    && git checkout 9e0f971377010f92ca12b8cccbefb251bb937fb4 \
+    && ./generate.sh \\
+    && cd ../libbitcoin-system \
+    && git checkout bef130bdc8c57808dceab99d6867f3c58acf4e92 \
+    && ./install.sh \
+    && ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && cd ..
+
+
 #WORKDIR /conclave-build
 #COPY . .
 
