@@ -22,6 +22,9 @@ RUN set -ex \
 # OpenSSL (TODO: deprecate)
 RUN apt-get install libssl-dev
 
+# LMDB
+RUN apt-get install liblmdb++-dev
+
 # Boost
 ARG BOOST_VERSION=1_72_0
 ARG BOOST_VERSION_DOT=1.72.0
@@ -101,7 +104,7 @@ RUN set -ex \
     && make install \
     && cd ..
 
-#WORKDIR /conclave-build
-#COPY . .
+WORKDIR /conclave-build
+COPY . .
+RUN make && make install
 
-#RUN make && make install
