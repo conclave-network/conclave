@@ -87,7 +87,19 @@ RUN set -ex \
     && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/share/* /usr/local/share \
     && cd ..
 
-
+# Poco
+ARG POCO_VERSION_DOT=1.10.1
+ARG POCO_HASH=7f5931e0bb06bc2880a0f3867053a2fddf6c0d3e5dd96342a665460301fc34ca
+RUN set -ex \
+    && curl -L -o poco-${POCO_VERSION_DOT}-all.tar.gz \
+    https://pocoproject.org/releases/poco-${POCO_VERSION_DOT}/poco-${POCO_VERSION_DOT}-all.tar.gz \
+    && echo "${POCO_HASH}  poco-${POCO_VERSION_DOT}-all.tar.gz" | sha256sum -c \
+    && tar -xvf poco-${POCO_VERSION_DOT}-all.tar.gz \
+    && cd poco-${POCO_VERSION_DOT}-all \
+    && ./configure \
+    && make \
+    && make install \
+    && cd ..
 
 #WORKDIR /conclave-build
 #COPY . .
