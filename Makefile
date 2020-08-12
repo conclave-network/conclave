@@ -20,7 +20,7 @@ BUILD_DIR=cmake-build-debug
 all: conclave
 .PHONY: clean
 
-install: conclave test
+install: conclave
 	cp $(BUILD_DIR)/bin/* /usr/local/bin
 	cp etc/* /usr/local/etc
 
