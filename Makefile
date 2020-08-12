@@ -17,7 +17,7 @@
 # No release build for the moment
 BUILD_DIR=cmake-build-debug
 
-all: conclave test
+all: conclave
 .PHONY: clean
 
 install: conclave test
