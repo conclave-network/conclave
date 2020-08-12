@@ -19,11 +19,23 @@ RUN set -ex \
         git \
         valgrind
 
-# OpenSSL (TODO: deprecate)
-RUN apt-get install libssl-dev
+# CMake
+ARG CMAKE_VERSION_DOT=3.17.0
+ARG CMAKE_HASH=b44685227b9f9be103e305efa2075a8ccf2415807fbcf1fc192da4d36aacc9f5
+RUN set -ex \
+    && curl -L -o cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION_DOT}/cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    && echo "${CMAKE_HASH}  cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz" | sha256sum -c \
+    && tar -xvf cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
+    && cd cmake-${CMAKE_VERSION_DOT}-Linux-x86_64 \
+    && cp -r bin/* /usr/local/bin/ \
+    && cp -r doc/* /usr/local/doc/ \
+    && cp -r man/* /usr/local/man/ \
+    && cp -r share/* /usr/local/share/ \
+    && cd ..
 
-# LMDB
-RUN apt-get install liblmdb++-dev
+# OpenSSL (TODO: deprecate)
+RUN apt-get --no-install-recommends --yes install libssl-dev
 
 # Boost
 ARG BOOST_VERSION=1_72_0
@@ -42,54 +54,6 @@ RUN set -ex \
     && b2 install
 ENV BOOST_ROOT /usr/local/boost_${BOOST_VERSION}
 
-# GSL
-RUN git clone https://github.com/imatix/gsl.git \
-    && cd gsl \
-    && git checkout 20d56ca93748b12f44528f0bc2250305a95327c0 \
-    && cd src \
-    && make \
-    && make install \
-    && cd ../..
-
-# Secp256k1
-RUN git clone https://github.com/libbitcoin/secp256k1.git \
-    && cd secp256k1 \
-    && git checkout 1c3616f9f6f8ec4cd88eaccbae08b8cbb04ea326 \
-    && ./autogen.sh \
-    && ./configure --enable-module-recovery \
-    && make \
-    && make install \
-    && cd ..
-
-# Libbitcoin
-RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
-    && git clone https://github.com/libbitcoin/libbitcoin-build.git \
-    && cd libbitcoin-build \
-    && git checkout 9e0f971377010f92ca12b8cccbefb251bb937fb4 \
-    && ./generate.sh \
-    && cd ../libbitcoin-system \
-    && git checkout bef130bdc8c57808dceab99d6867f3c58acf4e92 \
-    && ./install.sh \
-    && ./autogen.sh \
-    && ./configure \
-    && make \
-    && make install \
-    && cd ..
-
-# CMake
-ARG CMAKE_VERSION_DOT=3.17.0
-ARG CMAKE_HASH=b44685227b9f9be103e305efa2075a8ccf2415807fbcf1fc192da4d36aacc9f5
-RUN set -ex \
-    && curl -L -o cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
-    https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION_DOT}/cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
-    && echo "${CMAKE_HASH}  cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz" | sha256sum -c \
-    && tar -xvf cmake-${CMAKE_VERSION_DOT}-Linux-x86_64.tar.gz \
-    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/bin/* /usr/local/bin \
-    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/doc/* /usr/local/doc \
-    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/man/* /usr/local/man \
-    && cp -r cmake-${CMAKE_VERSION_DOT}-Linux-x86_64/share/* /usr/local/share \
-    && cd ..
-
 # Poco
 ARG POCO_VERSION_DOT=1.10.1
 ARG POCO_HASH=7f5931e0bb06bc2880a0f3867053a2fddf6c0d3e5dd96342a665460301fc34ca
@@ -102,9 +66,38 @@ RUN set -ex \
     && ./configure \
     && make \
     && make install \
+    && ldconfig \
     && cd ..
 
+# LMDB
+RUN apt-get --no-install-recommends --yes install liblmdb++-dev
+
+# Secp256k1
+RUN git clone https://github.com/libbitcoin/secp256k1.git \
+    && cd secp256k1 \
+    && git checkout 1c3616f9f6f8ec4cd88eaccbae08b8cbb04ea326 \
+    && ./autogen.sh \
+    && ./configure --enable-module-recovery \
+    && make \
+    && make install \
+    && ldconfig \
+    && cd ..
+
+# Libbitcoin system
+RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
+    && cd libbitcoin-system \
+    && git checkout bef130bdc8c57808dceab99d6867f3c58acf4e92 \
+    && ./autogen.sh \
+    && ./configure \
+    && make \
+    && make install \
+    && ldconfig \
+    && cd ..
+
+# Conclave build
 WORKDIR /conclave-build
 COPY . .
-RUN make && make install
-
+RUN set -ex \
+    && make \
+    && make test \
+    && make install
