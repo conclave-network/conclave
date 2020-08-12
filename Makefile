@@ -21,8 +21,8 @@ all: conclave test
 .PHONY: clean
 
 install: conclave test
-	sudo cp $(BUILD_DIR)/bin/* /usr/local/bin
-	sudo cp etc/* /usr/local/etc
+	cp $(BUILD_DIR)/bin/* /usr/local/bin
+	cp etc/* /usr/local/etc
 
 dev: conclave
 	valgrind --tool=memcheck --leak-check=yes ./$(BUILD_DIR)/bin/conclaved
