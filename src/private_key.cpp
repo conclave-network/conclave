@@ -30,10 +30,18 @@ namespace conclave
         return PublicKey(ecu);
     }
     
+    //
+    // Constructors
+    //
+    
     PrivateKey::PrivateKey(const Hash256& data)
         : data(data), publicKey(derivePublicKey(data))
     {
     }
+    
+    //
+    // Public Functions
+    //
     
     [[nodiscard]] const PublicKey PrivateKey::getPublicKey() const
     {
