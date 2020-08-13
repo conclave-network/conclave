@@ -49,21 +49,6 @@ sudo make install
 This will install the Conclave binaries to `/usr/local/bin` and the config files to 
 `/usr/local/etc`.
 
-## Docker
-
-Docker support is still in the early stages however the `Dockerfile` will build the full application:
-
-```
-docker build -t conclave .
-```
-
-The daemon may then be run in a container with:
-
-```
-docker run -it conclave conclaved
-```
-
-
 ## Running the Daemon
 
 Once it's installed, run `conclaved` by typing:
@@ -82,6 +67,20 @@ To get help and see command line options:
 
 ```
 conclaved --help
+```
+
+## Docker
+
+Docker support is still in the early stages however the `Dockerfile` will build the full application:
+
+```
+docker build -t conclave .
+```
+
+The daemon may then be run in a container with:
+
+```
+docker run -it conclave conclaved
 ```
 
 ## Configuration
