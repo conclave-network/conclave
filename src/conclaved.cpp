@@ -19,31 +19,63 @@
 #include "conclave_node.h"
 #include "config/config.h"
 #include <boost/asio.hpp>
+#include <boost/program_options.hpp>
+#include <string>
 #include <iostream>
 
 using namespace conclave;
-const static std::string CONFIG_FILE = "etc/conclaved-config.json";
+using namespace boost::asio;
+using namespace boost::program_options;
+const static std::string DEFAULT_CONFIG_FILE = "./etc/conclaved-config.json";
 
-void sigHandler(const boost::system::error_code error, int signal)
+static void sigHandler(const boost::system::error_code error, int signal)
 {
     if (!error) {
         std::cout << "Caught signal " << signal << "...Exiting" << std::endl;
     }
 }
 
-int main()
+static const std::string getConfigFilePath(const variables_map& vm)
+{
+    if (vm.count("config-file")) {
+        return vm["config-file"].as<std::string>();
+    } else {
+        return DEFAULT_CONFIG_FILE;
+    }
+}
+
+int main(int argc, char** argv)
 {
     // Construct a signal set registered for process termination.
-    boost::asio::io_context ioContext;
-    boost::asio::signal_set signals(ioContext, SIGINT, SIGTERM);
+    io_context ioContext;
+    signal_set signals(ioContext, SIGINT, SIGTERM);
     
     // Start an asynchronous wait for one of the signals to occur.
     signals.async_wait(sigHandler);
     
-    // Load config
-    Config config(CONFIG_FILE);
+    // Read program options
+    variables_map vm;
+    options_description desc{"Options"};
+    desc.add_options()("help,h", "Help Screen")
+            ("config-file,c", "Config file");
+    
+    // read variables map
+    store(parse_command_line(argc, argv, desc), vm);
+    
+    // Display welcome message
     std::cout << "CONCLAVE - Making Bitcoin Scale And Be Useful" << std::endl;
     std::cout << "Copyright (C) 2019-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
+    
+    // check if user needs help
+    if (vm.count("help")) {
+        std::cout << desc << std::endl;
+        return 0;
+    }
+    
+    // Load config
+    const std::string configFilePath = getConfigFilePath(vm);
+    const Config config(configFilePath);
+    std::cout << "Successfully loaded config from " << configFilePath << std::endl;
     
     // Create the node
     ConclaveNode conclaveNode(config);
