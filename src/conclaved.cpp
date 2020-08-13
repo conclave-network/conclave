@@ -26,21 +26,15 @@
 using namespace conclave;
 using namespace boost::asio;
 using namespace boost::program_options;
-const static std::string DEFAULT_CONFIG_FILE = "./etc/conclaved-config.json";
+const static std::string DEFAULT_CONFIG_FILE = "/usr/local/etc/conclaved-config.json";
+// Program option keys
+const static std::string HELP_KEY = "help";
+const static std::string CONFIG_KEY = "config-file";
 
 static void sigHandler(const boost::system::error_code error, int signal)
 {
     if (!error) {
         std::cout << "Caught signal " << signal << "...Exiting" << std::endl;
-    }
-}
-
-static const std::string getConfigFilePath(const variables_map& vm)
-{
-    if (vm.count("config-file")) {
-        return vm["config-file"].as<std::string>();
-    } else {
-        return DEFAULT_CONFIG_FILE;
     }
 }
 
@@ -56,8 +50,8 @@ int main(int argc, char** argv)
     // Read program options
     variables_map vm;
     options_description desc{"Options"};
-    desc.add_options()("help,h", "Help Screen")
-            ("config-file,c", "Config file");
+    desc.add_options()(HELP_KEY.c_str(), "Help Screen")
+            (CONFIG_KEY.c_str(), value<std::string>()->default_value(DEFAULT_CONFIG_FILE), "Config file");
     
     // read variables map
     store(parse_command_line(argc, argv, desc), vm);
@@ -73,9 +67,9 @@ int main(int argc, char** argv)
     }
     
     // Load config
-    const std::string configFilePath = getConfigFilePath(vm);
+    const std::string configFilePath = vm[CONFIG_KEY].as<std::string>();
+    std::cout << "Attempting to read config from " << configFilePath << std::endl;
     const Config config(configFilePath);
-    std::cout << "Successfully loaded config from " << configFilePath << std::endl;
     
     // Create the node
     ConclaveNode conclaveNode(config);

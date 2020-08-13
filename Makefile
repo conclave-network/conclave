@@ -16,6 +16,7 @@
 
 # No release build for the moment
 BUILD_DIR=cmake-build-debug
+DEV_CONFIG_FILE=./etc/conclaved-config.json
 
 all: conclave
 .PHONY: clean
@@ -25,7 +26,7 @@ install: conclave
 	cp etc/* /usr/local/etc
 
 dev: conclave
-	valgrind --tool=memcheck --leak-check=yes ./$(BUILD_DIR)/bin/conclaved
+	valgrind --tool=memcheck --leak-check=yes ./$(BUILD_DIR)/bin/conclaved --config-file $(DEV_CONFIG_FILE)
 
 test:
 	mkdir -p $(BUILD_DIR)
