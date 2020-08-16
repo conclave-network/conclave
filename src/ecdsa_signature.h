@@ -33,6 +33,9 @@ namespace conclave
     class EcdsaSignature final
     {
         public:
+        // Factories
+        static EcdsaSignature deserialize(const std::vector<BYTE>&, size_t&);
+        static EcdsaSignature deserialize(const std::vector<BYTE>&);
         // Constructors
         EcdsaSignature(const Hash256& r, const Hash256& s);
         EcdsaSignature(Hash256&& r, Hash256&& s);

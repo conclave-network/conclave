@@ -23,6 +23,26 @@ namespace bc_system = libbitcoin::system;
 namespace conclave
 {
     //
+    // Factories
+    //
+    
+    EcdsaSignature EcdsaSignature::deserialize(const std::vector<BYTE>& data, size_t& pos)
+    {
+        // DER deserialization
+        const auto derSig =
+            std::vector<BYTE>(data.cbegin() + pos, data.cbegin() + pos + ECDSA_SIGNATURE_DER_MAX_SIZE_BYTES);
+        bc_system::ec_signature sig;
+        bc_system::parse_signature(sig, derSig, false);
+        return sig;
+    }
+    
+    EcdsaSignature EcdsaSignature::deserialize(const std::vector<BYTE>& data)
+    {
+        size_t pos = 0;
+        return deserialize(data, pos);
+    }
+    
+    //
     // Constructors
     //
     
