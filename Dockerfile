@@ -1,5 +1,6 @@
-# Build stage
-FROM ubuntu:18.04 as build
+# Base stage
+FROM ubuntu:18.04 as base
+
 WORKDIR /root
 
 RUN set -ex \
@@ -34,7 +35,7 @@ RUN set -ex \
     && cp -r share/* /usr/local/share/ \
     && cd ..
 
-# OpenSSL (TODO: deprecate)
+# OpenSSL
 RUN apt-get --no-install-recommends --yes install libssl-dev
 
 # Boost
@@ -94,10 +95,28 @@ RUN git clone https://github.com/libbitcoin/libbitcoin-system.git \
     && ldconfig \
     && cd ..
 
-# Conclave build
-WORKDIR /conclave-build
+# Cleanup
+RUN rm -fr ./*
+
+# Dev stage
+FROM base AS dev
+
+WORKDIR /usr/src/conclave
+
 COPY . .
+
+# Build stage
+FROM dev AS build
+
 RUN set -ex \
     && make \
-    && make test \
-    && make install
+    && make test
+
+# Run stage
+FROM base AS run
+
+COPY --from=build /usr/src/conclave/cmake-build-debug/bin/* /usr/bin
+
+COPY --from=build /usr/src/conclave/etc/* /etc
+
+CMD ["conclaved", "--config-file", "/etc/conclaved-config.json"]

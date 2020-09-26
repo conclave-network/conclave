@@ -1,4 +1,4 @@
-# Conclave - Making Bitcoin Scale And Be Useful
+# Conclave - Smart Bitcoin Scaling
 
 Visit us on the www: http://conclave.network
 
@@ -71,7 +71,9 @@ conclaved --help
 
 ## Docker
 
-Docker support is still in the early stages however the `Dockerfile` will build the full application:
+Docker images are based on Ubuntu 18.04.
+
+To build all stages (make take some time):
 
 ```
 docker build -t conclave .
@@ -80,8 +82,48 @@ docker build -t conclave .
 The daemon may then be run in a container with:
 
 ```
-docker run -it conclave conclaved
+docker run conclave
 ```
+
+### Docker Multi-Stage
+
+`dev` and `run` docker stages are provided for development and deployment, respectively. The images may be built with:
+
+```
+docker build -t conclave:dev --target dev .
+docker build -t conclave:run --target run .
+```
+
+A development container can be created and started with:
+```
+docker create -it --name my-conclave-dev-container conclave:dev /bin/bash
+docker start -ai my-conclave-dev-container
+```
+
+Then from within the container:
+
+```
+root@4c86d1846f6a:/usr/src/conclave# make
+mkdir -p cmake-build-debug
+cd cmake-build-debug && cmake -D INCLUDE_SRC:bool=YES ..
+-- The CXX compiler identification is GNU 7.5.0
+-- Check for working CXX compiler: /usr/bin/c++
+-- Check for working CXX compiler: /usr/bin/c++ - works
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Detecting CXX compile features
+...
+```
+
+A daemonized production container can be created and started with:
+```
+docker create --init -p 8008:8008 -it --name my-conclave-instance conclave:run
+docker start my-conclave-instance
+```
+
+*More work still needs to be done on configuring a bind mount and SSH server so Conclave can be developed 
+in-container using external tools such as CLion. This kind of setup allows Conclave to be developed on non-Linux OSes such
+as Windows and MacOS without the need for VMs.*
 
 ## Configuration
 
