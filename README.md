@@ -1,6 +1,8 @@
-# Conclave - Smart Bitcoin Scaling
+# Conclave
 
-Visit us on the www: http://conclave.network
+Scaling Bitcoin Simply.
+
+http://conclave.network 
 
 ![](https://img.shields.io/badge/license-GPL_3-green.svg "License")
 
