@@ -24,7 +24,7 @@ Clone the Conclave codebase from Github:
 git clone https://github.com/conclave-network/conclave.git
 ```
 
-## Step 1: Open the codebase in CLion
+## Step 1: Open the Codebase in CLion
 
 1. Open CLion.
 2. *File* > *Open*.
