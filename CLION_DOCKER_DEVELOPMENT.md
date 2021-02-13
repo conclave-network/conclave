@@ -114,5 +114,4 @@ conclave
 
 ## Step 7: Wait for Sync
 
-CLion will now start copying files into the container. wait until it's finished.
-
+CLion will now start copying files into the container. Wait until it's finished.
