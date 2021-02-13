@@ -22,14 +22,13 @@
 #include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
+#include <experimental/filesystem>
 
 using namespace conclave;
 using namespace boost::asio;
 using namespace boost::program_options;
-const static std::string DEFAULT_CONFIG_FILE = "/usr/local/etc/conclaved-config.json";
-// Program option keys
-const static std::string HELP_KEY = "help";
-const static std::string CONFIG_KEY = "config-file";
+
+namespace fs = std::experimental::filesystem;
 
 static void sigHandler(const boost::system::error_code error, int signal)
 {
@@ -40,47 +39,61 @@ static void sigHandler(const boost::system::error_code error, int signal)
 
 int main(int argc, char** argv)
 {
-    // Construct a signal set registered for process termination.
-    io_context ioContext;
-    signal_set signals(ioContext, SIGINT, SIGTERM);
-    
-    // Start an asynchronous wait for one of the signals to occur.
-    signals.async_wait(sigHandler);
-    
-    // Read program options
     variables_map vm;
-    options_description desc{"Options"};
-    desc.add_options()(HELP_KEY.c_str(), "Help Screen")
-            (CONFIG_KEY.c_str(), value<std::string>()->default_value(DEFAULT_CONFIG_FILE), "Config file");
-    
-    // read variables map
-    store(parse_command_line(argc, argv, desc), vm);
-    
-    // Display welcome message
-    std::cout << "CONCLAVE - Making Bitcoin Scale And Be Useful" << std::endl;
-    std::cout << "Copyright (C) 2019-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
-    
-    // check if user needs help
-    if (vm.count("help")) {
-        std::cout << desc << std::endl;
-        return 0;
+
+    std::cout << "CONCLAVE - Scaling Bitcoin Simply" << std::endl;
+    std::cout << "Copyright (C) 2019-2021 N. P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
+    std::cout << "Current path is: " << fs::current_path() << std::endl;
+
+    try {
+        // Read program options
+        options_description desc{"Options"};
+        desc.add_options()
+            ("help,h", "Help Screen")
+            ("config-file,c", value<std::string>(), "Config file");
+
+        // read variables map
+        store(parse_command_line(argc, argv, desc), vm);
+        notify(vm);
+
+        // check if user needs help
+        if (vm.count("help")) {
+            std::cout << desc << std::endl;
+            return 0;
+        }
+
+        // Ensure a config file
+        if (!vm.count("config-file")) {
+            std::cout << "Please specify a config file." << std::endl;
+            return 1;
+        }
+
+        // Load config
+        const std::string configFilePath = vm["config-file"].as<std::string>();
+        const Config config(configFilePath);
+
+        std::cout << "Config loaded from " << configFilePath << std::endl;
+
+        // Create the node
+        ConclaveNode conclaveNode(config);
+
+        // Construct a signal set registered for process termination.
+        io_context ioContext;
+        signal_set signals(ioContext, SIGINT, SIGTERM);
+
+        // Start an asynchronous wait for one of the signals to occur.
+        signals.async_wait(sigHandler);
+
+        // Start the node
+        conclaveNode.start();
+
+        // Await signal
+        ioContext.run();
+
+        // Stop the node
+        conclaveNode.stop();
+    } catch(const std::exception& e) {
+        std::cout << e.what() << std::endl;
+        return 1;
     }
-    
-    // Load config
-    const std::string configFilePath = vm[CONFIG_KEY].as<std::string>();
-    std::cout << "Attempting to read config from " << configFilePath << std::endl;
-    const Config config(configFilePath);
-    
-    // Create the node
-    ConclaveNode conclaveNode(config);
-    
-    // Start the node
-    conclaveNode.start();
-    
-    // Await signal
-    ioContext.run();
-    
-    // Stop the node
-    conclaveNode.stop();
-    return 0;
 }
