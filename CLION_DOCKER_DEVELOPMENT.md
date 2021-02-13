@@ -107,7 +107,12 @@ conclave
 ## Step 6: Create CMake Profile
 
 1. *File* > *Settings* > *Build, Execution, Deployment* > *CMake*.
-2. Click **+** to add a new profile.
-3. Set **Name** to `conclave-docker-debug`.
-4. Set **Build type** to *Debug*.
-5. 
+2. Highlight the existing **Debug** profile.
+3. Set **Toolchain** to *conclave-docker*.
+9. Click **Apply**.
+10. Click **OK**.
+
+## Step 7: Wait for Sync
+
+CLion will now start copying files into the container. wait until it's finished.
+
