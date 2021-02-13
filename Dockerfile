@@ -105,6 +105,23 @@ WORKDIR /usr/src/conclave
 
 COPY . .
 
+# CLion stage
+FROM base AS clion-dev
+
+RUN apt-get install -y ssh rsync
+
+RUN ( \
+    echo 'LogLevel DEBUG2'; \
+    echo 'PermitRootLogin yes'; \
+    echo 'PasswordAuthentication yes'; \
+    echo 'Subsystem sftp /usr/lib/openssh/sftp-server'; \
+  ) > /etc/ssh/sshd_config_test_clion \
+  && mkdir /run/sshd
+
+RUN useradd -m conclave && yes bitcoin | passwd conclave
+
+CMD ["/usr/sbin/sshd", "-D", "-e", "-f", "/etc/ssh/sshd_config_test_clion"]
+
 # Build stage
 FROM dev AS build
 
