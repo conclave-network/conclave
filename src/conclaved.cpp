@@ -16,19 +16,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include "util/filesystem.h"
 #include "conclave_node.h"
 #include "config/config.h"
 #include <boost/asio.hpp>
 #include <boost/program_options.hpp>
 #include <string>
 #include <iostream>
-#include <experimental/filesystem>
 
 using namespace conclave;
+using namespace fs;
 using namespace boost::asio;
 using namespace boost::program_options;
-
-namespace fs = std::experimental::filesystem;
 
 static void sigHandler(const boost::system::error_code error, int signal)
 {
