@@ -1,5 +1,5 @@
 /*
- * CONCLAVE - Making Bitcoin Scale And Be Useful
+ * CONCLAVE - Scaling Bitcoin Simply.
  * Copyright (C) 2020-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>
  *
  * This program is free software: you can redistribute it and/or modify

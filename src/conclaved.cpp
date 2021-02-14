@@ -1,6 +1,6 @@
 /*
- * CONCLAVE - Making Bitcoin Scale And Be Useful
- * Copyright (C) 2019-2020 Noel P. O'Donnell <noel.odonnell.2020@mumail.ie>
+ * CONCLAVE - Scaling Bitcoin Simply.
+ * Copyright (C) 2019-2021 Conclave development team
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,8 +42,11 @@ int main(int argc, char** argv)
     try {
         options_description desc{"Options"};
         variables_map vm;
-        std::cout << "CONCLAVE - Scaling Bitcoin Simply" << std::endl;
-        std::cout << "Copyright (C) 2019-2021 N. P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
+        std::cout << "CONCLAVE - Scaling Bitcoin Simply." << std::endl;
+        std::cout << "Copyright (C) 2019-2021 Conclave development team" << std::endl;
+        std::cout << "This software is protected by the GNU General Public License v3" << std::endl;
+        std::cout << "https://www.gnu.org/licenses/gpl-3.0.en.html" << std::endl;
+        std::cout << "https://conclave.network" << std::endl;
         std::cout << "Current path is: " << fs::current_path() << std::endl;
         desc.add_options()
                 ("help,h", "Help Screen")
