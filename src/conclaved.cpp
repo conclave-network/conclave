@@ -39,13 +39,12 @@ static void sigHandler(const boost::system::error_code error, int signal)
 
 int main(int argc, char** argv)
 {
-    variables_map vm;
-    std::cout << "CONCLAVE - Scaling Bitcoin Simply" << std::endl;
-    std::cout << "Copyright (C) 2019-2021 N. P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
-    std::cout << "Current path is: " << fs::current_path() << std::endl;
     try {
-        // Read program options
         options_description desc{"Options"};
+        variables_map vm;
+        std::cout << "CONCLAVE - Scaling Bitcoin Simply" << std::endl;
+        std::cout << "Copyright (C) 2019-2021 N. P. O'Donnell <noel.odonnell.2020@mumail.ie>" << std::endl;
+        std::cout << "Current path is: " << fs::current_path() << std::endl;
         desc.add_options()
                 ("help,h", "Help Screen")
                 ("config-file,c", value<std::string>(), "Config file");
@@ -90,9 +89,9 @@ int main(int argc, char** argv)
         // Stop the node
         conclaveNode.stop();
         std::cout << "Clean exit with code 0" << std::endl;
-        return 0;
+        return EXIT_SUCCESS;
     } catch (const std::exception& e) {
         std::cout << e.what() << std::endl;
-        return 1;
+        return EXIT_FAILURE;
     }
 }
