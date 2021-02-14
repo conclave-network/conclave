@@ -102,9 +102,10 @@ conclave
 5. Set **CMake** to `/usr/local/bin/cmake`
 6. Set **C Compiler** to *Let Cmake detect*
 7. Set **C++ Compiler** to *Let Cmake detect*
-8. Wait a few seconds until C and C++ compilers are detected.
-9. Click **Apply**.
-10. Click **OK**.
+8. Set **Debugger** to *Remote host GDB*
+9. Wait a few seconds until compilers and debugger are all detected.
+10. Click **Apply**.
+11. Click **OK**.
 
 ## Step 6: Create CMake Profile
 
@@ -131,8 +132,8 @@ to `etc/conclaved-config.json` will immediately be picked up on the next run.
 
 ## Step 9: Build `conclaved`
 
-1. At the top right of the CMake window, just after the green hammer icon, set the active configuration to *conclaved |
-   Debug-conclave-docker*.
+1. At the top right of the CMake window, on the right of the green hammer icon, set the active configuration to
+   *conclaved | Debug-conclave-docker*.
 2. Click the green hammer icon to build `conclaved`.
 3. Wait for the build to complete.
 
@@ -173,11 +174,28 @@ Started 3 RPC processors
 RpcAcceptor: listening on 0.0.0.0:8008
 ```
 
-Congratulations! You're now ready to develop Conclave!
+Make a test cURL request from your dev machine:
+
+```bash
+curl -d '{"method": "NodeInfo"}' http://127.0.0.1:8008/
+```
+
+You should get something like:
+
+```json
+{
+  "DisplayName": "Callan",
+  "PublicKey": "021d5219a13f0f23ebbd8e88abe9ab9eac77f9daaa859cfff0580279a15d9aa12b"
+}
+```
+
+If you did, congratulations! You're now ready to hack on Conclave!
 
 ---
 
-## Stopping / Deleting the Container
+## Cleaning Up
+
+### Stopping / Deleting the Container
 
 Stop the container:
 
@@ -191,8 +209,16 @@ Delete the container:
 docker rm conclave-clion-ctr
 ```
 
-## Deleting the Image
+### Deleting the Image
+
+If you need to rebuild the image you'll first need to delete it:
 
 ```bash
 docker rmi conclave-clion
 ```
+
+## Troubleshooting
+
+* If the run configuration does not appear to be active and you can not see the green hammer icon or other green icons:
+    * Ensure the container is running with `docker ps | grep conclave-clion-ctr`
+    * Failing that, *File* > *Reload CMake Project* can sometimes help.
