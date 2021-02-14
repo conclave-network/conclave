@@ -50,11 +50,11 @@ namespace conclave
                 const pt::ptree blockchainTransactionGet(const std::string&, const bool);
                 const pt::ptree blockchainHeadersSubscribe();
                 private:
-                const pt::ptree doRequest(const pt::ptree&);
+                const std::string serverHost;
+                const unsigned short serverPort;
                 BYTE* receiveBuffer;
-                const SocketAddress socketAddress;
-                StreamSocket streamSocket;
                 std::mutex receiveBufferMutex;
+                const pt::ptree doRequest(const pt::ptree&);
             };
         }
     }

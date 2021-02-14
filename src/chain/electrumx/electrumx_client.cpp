@@ -31,9 +31,9 @@ namespace conclave
         namespace electrumx
         {
             ElectrumxClient::ElectrumxClient(const std::string& host, const unsigned short port)
-                : receiveBuffer(new BYTE[RECEIVE_BUFFER_SIZE + 1]),
-                  socketAddress(host, port),
-                  streamSocket(socketAddress)
+                : serverHost(host),
+                  serverPort(port),
+                  receiveBuffer(new BYTE[RECEIVE_BUFFER_SIZE + 1])
             {
             }
             
@@ -97,8 +97,14 @@ namespace conclave
                 return doRequest(request);
             }
             
+            /***
+             * Send a request to the ElectrumX server.
+             * @param request Request JSON.
+             * @return Response JSON.
+             */
             const pt::ptree ElectrumxClient::doRequest(const pt::ptree& request)
             {
+                StreamSocket streamSocket(SocketAddress(serverHost, serverPort));
                 std::string requestString = ptreeToString(request, false);
                 streamSocket.sendBytes(requestString.c_str(), requestString.length(), 0);
                 receiveBufferMutex.lock();
