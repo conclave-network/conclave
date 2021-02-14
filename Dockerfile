@@ -8,6 +8,7 @@ RUN set -ex \
     && apt-get --no-install-recommends --yes install \
         ca-certificates \
         build-essential \
+        gdb \
         autoconf \
         automake \
         libtool \
