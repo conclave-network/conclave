@@ -1,7 +1,7 @@
 # CLion / Docker Development
 
-The quickest way of getting started developing Concalve is with the following setup which involves Docker and CLion.
-Conclave has a lot of dependencies and you may not want to clog up your base system with these, so Docker fixes this
+The quickest way to get started developing Conclave is with the following setup which involves Docker and CLion.
+Conclave has a lot of dependencies and you may not want to clog up your base system with these, so Docker fixes that
 problem, however, some extra setup is required for CLion to "see into" the docker container and resolve toolchains,
 libraries, header files, and so forth.
 
@@ -111,12 +111,69 @@ conclave
 1. *File* > *Settings* > *Build, Execution, Deployment* > *CMake*.
 2. Highlight the existing **Debug** profile.
 3. Set **Toolchain** to *conclave-docker*.
-9. Click **Apply**.
-10. Click **OK**.
+4. Click **Apply**.
+5. Click **OK**.
 
 ## Step 7: Wait for Sync
 
 CLion will now start copying files into the container. Wait until it's finished.
+
+## Step 8: Set up `conclaved` Run Configuration
+
+This will make `conclaved` run with the config inside the codebase's `etc` directory, so any changes made
+to `etc/conclaved-config.json` will immediately be picked up on the next run.
+
+1. *Run* > *Edit Configurations...*
+2. Under *CMake Application* highlight *conclaved*.
+3. Set **Program arguments** to `-c ../../etc/conclaved-config.json`.
+4. Click **Apply**.
+5. Click **OK**.
+
+## Step 9: Build `conclaved`
+
+1. At the top right of the CMake window, just after the green hammer icon, set the active configuration to *conclaved |
+   Debug-conclave-docker*.
+2. Click the green hammer icon to build `conclaved`.
+3. Wait for the build to complete.
+
+## Step 10: Run `conclaved`
+
+1. Open the source file `src/conclaved.cpp`.
+2. Navigate to the `main` function.
+3. Click on the green triangle and select **Run 'conclaved'**.
+
+`conclaved` should now run and in the *Run* tab you should see something like:
+
+```
+/tmp/tmp.3x3L2lJ8HH/cmake-build-debug-conclave-docker/bin/conclaved -c ../../etc/conclaved-config.json
+CONCLAVE - Scaling Bitcoin Simply.
+Copyright (C) 2019-2021 Conclave development team
+This software is protected by the GNU General Public License v3
+https://www.gnu.org/licenses/gpl-3.0.en.html
+https://conclave.network
+Current path is: "/tmp/tmp.3x3L2lJ8HH/cmake-build-debug-conclave-docker/bin"
+Config loaded from ../../etc/conclaved-config.json
+ChainwatchManager ctor
+Starting node: Callan
+Public key: 021d5219a13f0f23ebbd8e88abe9ab9eac77f9daaa859cfff0580279a15d9aa12b
+ChainwatchManager prepare
+Starting RPC manager...
+Created RPC processor 0
+Created RPC processor 1
+Created RPC processor 2
+Created 3 RPC processors. Starting them now...
+RPC dispatcher 0 waiting for next response...
+RPC processor 0 waiting for next request...
+Started RPC processor 0
+RPC processor 1 waiting for next request...
+Started RPC processor 1
+RPC processor 2 waiting for next request...
+Started RPC processor 2
+Started 3 RPC processors
+RpcAcceptor: listening on 0.0.0.0:8008
+```
+
+Congratulations! You're now ready to develop Conclave!
 
 ---
 
