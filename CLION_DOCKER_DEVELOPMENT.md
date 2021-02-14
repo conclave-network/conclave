@@ -117,3 +117,25 @@ conclave
 ## Step 7: Wait for Sync
 
 CLion will now start copying files into the container. Wait until it's finished.
+
+---
+
+## Stopping / Deleting the Container
+
+Stop the container:
+
+```bash
+docker stop conclave-clion-ctr
+```
+
+Delete the container:
+
+```bash
+docker rm conclave-clion-ctr
+```
+
+## Deleting the Image
+
+```bash
+docker rmi conclave-clion
+```
