@@ -31,16 +31,16 @@ typedef unsigned char BYTE;
 #define STRING_TO_BYTE_VECTOR(str) std::vector<BYTE>(str.begin(), str.end())
 #define BYTE_VECTOR_TO_HEX(byteVector) byteVectorToHexString(byteVector)
 #define HEX_TO_BYTE_VECTOR(hex) hexStringToByteVector(hex)
-// Sizes of things
-const static size_t UINT8_SIZE = 1;
-const static size_t UINT16_SIZE = 2;
-const static size_t UINT32_SIZE = 4;
-const static size_t UINT64_SIZE = 8;
-const static size_t PRIVKEY_SIZE_BYTES = 32;
-const static size_t EC_GROUP_ELEMENT_SIZE_BYTES = 32;
-const static size_t XONLY_PUBKEY_SIZE_BYTES = 32;
-const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
-const static size_t UNCOMPRESSED_PUBKEY_SIZE_BYTES = 65;
+// Sizes of things. In bytes.
+const static size_t UINT8_SIZE_BYTES = 1;
+const static size_t UINT16_SIZE_BYTES = 2;
+const static size_t UINT32_SIZE_BYTES = 4;
+const static size_t UINT64_SIZE_BYTES = 8;
+const static size_t SECP256K1_SCALAR_SIZE_BYTES = 32;
+const static size_t SECP256K1_PRIVKEY_SIZE_BYTES = SECP256K1_SCALAR_SIZE_BYTES;
+const static size_t SECP256K1_PUBKEY_X_ONLY_SIZE_BYTES = 32;
+const static size_t SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES = 33;
+const static size_t SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES = 65;
 const static size_t SMALL_HASH_SIZE_BYTES = 20;
 const static size_t LARGE_HASH_SIZE_BYTES = 32;
 const static size_t ECDSA_SIGNATURE_SIZE_BYTES = 64; // Not DER

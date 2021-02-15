@@ -28,7 +28,7 @@ namespace conclave
     /**
      * Secp256k1 curve order (n).
      */
-    const static std::array<BYTE, 32> SECP256K1_ORDER_BA{
+    const static std::array<BYTE, SECP256K1_SCALAR_SIZE_BYTES> SECP256K1_ORDER_BA{
         0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff,
         0xff, 0xff, 0xff, 0xff,

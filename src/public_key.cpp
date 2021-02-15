@@ -37,7 +37,7 @@ namespace conclave
         ecc[0] = (odd & 1u) + 2u;
         std::copy(x.begin(), x.end(), &ecc[1]);
         decompress(ecu, ecc);
-        return Hash256(&ecu[1 + EC_GROUP_ELEMENT_SIZE_BYTES]);
+        return Hash256(&ecu[1 + SECP256K1_SCALAR_SIZE_BYTES]);
     }
     
     ///
@@ -86,18 +86,18 @@ namespace conclave
     {
     }
     
-    PublicKey::PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>& data)
-        : x(&data[1]), y(&data[1 + EC_GROUP_ELEMENT_SIZE_BYTES])
+    PublicKey::PublicKey(const std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>& data)
+        : x(&data[1]), y(&data[1 + SECP256K1_SCALAR_SIZE_BYTES])
     {
     }
     
-    PublicKey::PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>& data)
+    PublicKey::PublicKey(const std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>& data)
         : x(&data[1]), y(getY(Hash256(&data[1]), data[0] == 0x03))
     {
     }
     
     PublicKey::PublicKey(const std::string& hex)
-        : PublicKey(hexStringToByteArray<COMPRESSED_PUBKEY_SIZE_BYTES>(hex))
+        : PublicKey(hexStringToByteArray<SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>(hex))
     {
     }
     
@@ -112,33 +112,35 @@ namespace conclave
     
     std::string PublicKey::asHexStringUncompressed() const
     {
-        return byteArrayToHexString(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+        return byteArrayToHexString(static_cast<std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>>(*this));
     }
     
     std::string PublicKey::asHexStringCompressed() const
     {
-        return byteArrayToHexString(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+        return byteArrayToHexString(static_cast<std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>>(*this));
     }
     
     Hash160 PublicKey::getHash160Uncompressed() const
     {
-        return bitcoin_short_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+        return bitcoin_short_hash(static_cast<std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>>(*this));
     }
     
     Hash160 PublicKey::getHash160Compressed() const
     {
-        return bitcoin_short_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
+        return bitcoin_short_hash(static_cast<std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>>(*this));
     }
     
     Hash256 PublicKey::getHash256Uncompressed() const
     {
-        return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
+        return static_cast<Hash256>(bitcoin_hash(
+            static_cast<std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>>(*this)))
             .reversed();
     }
     
     Hash256 PublicKey::getHash256Compressed() const
     {
-        return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
+        return static_cast<Hash256>(bitcoin_hash(
+            static_cast<std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>>(*this)))
             .reversed();
     }
     
@@ -156,19 +158,19 @@ namespace conclave
     /// Conversions
     ///
     
-    PublicKey::operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const
+    PublicKey::operator std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>() const
     {
-        std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES> arr{};
+        std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES> arr{};
         arr[0] = 0x04;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
-        std::copy(y.begin(), y.end(), arr.begin() + 1 + EC_GROUP_ELEMENT_SIZE_BYTES);
+        std::copy(y.begin(), y.end(), arr.begin() + 1 + SECP256K1_SCALAR_SIZE_BYTES);
         return arr;
     }
     
-    PublicKey::operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const
+    PublicKey::operator std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>() const
     {
-        std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES> arr{};
-        arr[0] = (y[EC_GROUP_ELEMENT_SIZE_BYTES - 1] & 1u) + 2u;
+        std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES> arr{};
+        arr[0] = (y[SECP256K1_SCALAR_SIZE_BYTES - 1] & 1u) + 2u;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
         return arr;
     }
@@ -176,8 +178,8 @@ namespace conclave
     PublicKey::operator std::vector<BYTE>() const
     {
         // Represent as a compressed pubkey by default
-        const auto array = static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this);
-        std::vector<BYTE> vector(COMPRESSED_PUBKEY_SIZE_BYTES);
+        const auto array = static_cast<std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>>(*this);
+        std::vector<BYTE> vector(SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES);
         std::copy(array.begin(), array.end(), vector.begin());
         return vector;
     }

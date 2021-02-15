@@ -57,7 +57,7 @@ namespace conclave
     }
     
     EcdsaSignature::EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>& data)
-        : EcdsaSignature(data.cbegin(), data.cbegin() + EC_GROUP_ELEMENT_SIZE_BYTES)
+        : EcdsaSignature(data.cbegin(), data.cbegin() + SECP256K1_SCALAR_SIZE_BYTES)
     {
     }
     
@@ -91,7 +91,7 @@ namespace conclave
     {
         std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES> arr;
         std::copy(r.begin(), r.end(), arr.begin());
-        std::copy(s.begin(), s.end(), arr.begin() + EC_GROUP_ELEMENT_SIZE_BYTES);
+        std::copy(s.begin(), s.end(), arr.begin() + SECP256K1_SCALAR_SIZE_BYTES);
         return arr;
     }
     

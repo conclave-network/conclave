@@ -96,20 +96,20 @@ namespace conclave
         uint64_t uvalue = value;
         std::vector<BYTE> ret;
         if (uvalue <= 0xfcu) {
-            ret.resize(UINT8_SIZE);
-            std::memcpy(&ret[0], &uvalue, UINT8_SIZE);
+            ret.resize(UINT8_SIZE_BYTES);
+            std::memcpy(&ret[0], &uvalue, UINT8_SIZE_BYTES);
         } else if (uvalue <= 0xffffu) {
-            ret.resize(1 + UINT16_SIZE);
+            ret.resize(1 + UINT16_SIZE_BYTES);
             ret[0] = 0xfd;
-            std::memcpy(&ret[1], &uvalue, UINT16_SIZE);
+            std::memcpy(&ret[1], &uvalue, UINT16_SIZE_BYTES);
         } else if (uvalue <= 0xffffffffu) {
-            ret.resize(1 + UINT32_SIZE);
+            ret.resize(1 + UINT32_SIZE_BYTES);
             ret[0] = 0xfe;
-            std::memcpy(&ret[1], &uvalue, UINT32_SIZE);
+            std::memcpy(&ret[1], &uvalue, UINT32_SIZE_BYTES);
         } else {
-            ret.resize(1 + UINT64_SIZE);
+            ret.resize(1 + UINT64_SIZE_BYTES);
             ret[0] = 0xff;
-            std::memcpy(&ret[1], &uvalue, UINT64_SIZE);
+            std::memcpy(&ret[1], &uvalue, UINT64_SIZE_BYTES);
         }
         return ret;
     }

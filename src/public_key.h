@@ -37,8 +37,8 @@ namespace conclave
         PublicKey(PublicKey&&) noexcept;
         PublicKey(Hash256, Hash256);
         PublicKey(Hash256, bool);
-        explicit PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
-        explicit PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
+        explicit PublicKey(const std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>&);
+        explicit PublicKey(const std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>&);
         explicit PublicKey(const std::string&);
         explicit PublicKey(const char*);
         // Public Functions
@@ -51,8 +51,8 @@ namespace conclave
         [[nodiscard]] std::vector<BYTE> serialize() const;
         [[nodiscard]] bool yIsEven() const;
         // Conversions
-        explicit operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
-        explicit operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
+        explicit operator std::array<BYTE, SECP256K1_PUBKEY_COMPRESSED_SIZE_BYTES>() const;
+        explicit operator std::array<BYTE, SECP256K1_PUBKEY_UNCOMPRESSED_SIZE_BYTES>() const;
         explicit operator std::vector<BYTE>() const;
         explicit operator std::string() const;
         // Operator Overloads
