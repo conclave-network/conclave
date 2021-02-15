@@ -30,7 +30,7 @@ namespace conclave
     /// Helpers
     ///
     
-    inline const static Hash256 getY(const Hash256& x, const bool odd)
+    inline static Hash256 getY(const Hash256& x, const bool odd)
     {
         ec_compressed ecc;
         ec_uncompressed ecu;
@@ -46,16 +46,16 @@ namespace conclave
     
     PublicKey PublicKey::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
-        const uint8_t leadingByte = deserializeIntegral<uint8_t>(data, pos);
+        const auto leadingByte = deserializeIntegral<uint8_t>(data, pos);
         if (leadingByte < 0x04) {
             // Compressed
             const Hash256 x = Hash256::deserialize(data, pos).reversed();
-            return PublicKey(std::move(x), leadingByte == 0x03);
+            return PublicKey(x, leadingByte == 0x03);
         } else {
             // Uncompressed
             const Hash256 x = Hash256::deserialize(data, pos).reversed();
             const Hash256 y = Hash256::deserialize(data, pos).reversed();
-            return PublicKey(std::move(x), std::move(y));
+            return PublicKey(x, y);
         }
     }
     
@@ -194,14 +194,9 @@ namespace conclave
     /// Operator Overloads
     ///
     
-    PublicKey& PublicKey::operator=(const PublicKey& other)
-    {
-        x = other.x;
-        y = other.y;
-        return *this;
-    }
+    PublicKey& PublicKey::operator=(const PublicKey& other) = default;
     
-    PublicKey& PublicKey::operator=(PublicKey&& other)
+    PublicKey& PublicKey::operator=(PublicKey&& other) noexcept
     {
         x = std::move(other.x);
         y = std::move(other.y);

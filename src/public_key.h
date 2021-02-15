@@ -57,7 +57,7 @@ namespace conclave
         explicit operator std::string() const;
         // Operator Overloads
         PublicKey& operator=(const PublicKey&);
-        PublicKey& operator=(PublicKey&&);
+        PublicKey& operator=(PublicKey&&) noexcept;
         bool operator==(const PublicKey&) const;
         bool operator!=(const PublicKey&) const;
         friend std::ostream& operator<<(std::ostream&, const PublicKey&);
