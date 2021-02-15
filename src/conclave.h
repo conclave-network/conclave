@@ -38,6 +38,7 @@ const static size_t UINT32_SIZE = 4;
 const static size_t UINT64_SIZE = 8;
 const static size_t PRIVKEY_SIZE_BYTES = 32;
 const static size_t EC_GROUP_ELEMENT_SIZE_BYTES = 32;
+const static size_t XONLY_PUBKEY_SIZE_BYTES = 32;
 const static size_t COMPRESSED_PUBKEY_SIZE_BYTES = 33;
 const static size_t UNCOMPRESSED_PUBKEY_SIZE_BYTES = 65;
 const static size_t SMALL_HASH_SIZE_BYTES = 20;

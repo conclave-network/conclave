@@ -20,14 +20,15 @@
 #include "util/serialization.h"
 #include <bitcoin/system/math/elliptic_curve.hpp>
 #include <algorithm>
+#include <utility>
 
 namespace conclave
 {
     using namespace libbitcoin::system;
     
-    //
-    // Helpers
-    //
+    ///
+    /// Helpers
+    ///
     
     inline const static Hash256 getY(const Hash256& x, const bool odd)
     {
@@ -39,9 +40,9 @@ namespace conclave
         return Hash256(&ecu[1 + EC_GROUP_ELEMENT_SIZE_BYTES]);
     }
     
-    //
-    // Factories
-    //
+    ///
+    /// Factories
+    ///
     
     PublicKey PublicKey::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
@@ -64,26 +65,23 @@ namespace conclave
         return deserialize(data, pos);
     }
     
-    //
-    // Constructors
-    //
+    ///
+    /// Constructors
+    ///
     
-    PublicKey::PublicKey(const Hash256& x, const Hash256& y)
-        : x(x), y(y)
+    PublicKey::PublicKey(const PublicKey& other) = default;
+    
+    PublicKey::PublicKey(PublicKey&& other) noexcept
+        : x(std::move(other.x)), y(std::move(other.y))
     {
     }
     
-    PublicKey::PublicKey(Hash256&& x, Hash256&& y)
+    PublicKey::PublicKey(Hash256 x, Hash256 y)
         : x(std::move(x)), y(std::move(y))
     {
     }
     
-    PublicKey::PublicKey(const Hash256& x, const bool odd)
-        : x(x), y(getY(x, odd))
-    {
-    }
-    
-    PublicKey::PublicKey(Hash256&& x, const bool odd)
+    PublicKey::PublicKey(Hash256 x, bool odd)
         : x(std::move(x)), y(getY(x, odd))
     {
     }
@@ -108,64 +106,59 @@ namespace conclave
     {
     }
     
-    PublicKey::PublicKey(const PublicKey& other)
-        : x(other.x), y(other.y)
-    {
-    }
+    ///
+    /// Public Functions
+    ///
     
-    PublicKey::PublicKey(PublicKey&& other)
-        : x(std::move(other.x)), y(std::move(other.y))
-    {
-    }
-    
-    //
-    // Public Functions
-    //
-    
-    const std::string PublicKey::asHexStringUncompressed() const
+    std::string PublicKey::asHexStringUncompressed() const
     {
         return byteArrayToHexString(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
     }
     
-    const std::string PublicKey::asHexStringCompressed() const
+    std::string PublicKey::asHexStringCompressed() const
     {
         return byteArrayToHexString(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
     }
     
-    const Hash160 PublicKey::getHash160Uncompressed() const
+    Hash160 PublicKey::getHash160Uncompressed() const
     {
         return bitcoin_short_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
     }
     
-    const Hash160 PublicKey::getHash160Compressed() const
+    Hash160 PublicKey::getHash160Compressed() const
     {
         return bitcoin_short_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this));
     }
     
-    const Hash256 PublicKey::getHash256Uncompressed() const
+    Hash256 PublicKey::getHash256Uncompressed() const
     {
         return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
             .reversed();
     }
     
-    const Hash256 PublicKey::getHash256Compressed() const
+    Hash256 PublicKey::getHash256Compressed() const
     {
         return static_cast<Hash256>(bitcoin_hash(static_cast<std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>>(*this)))
             .reversed();
     }
     
-    const std::vector<BYTE> PublicKey::serialize() const
+    std::vector<BYTE> PublicKey::serialize() const
     {
         return static_cast<std::vector<BYTE>>(*this);
     }
     
-    //
-    // Conversions
-    //
+    bool PublicKey::yIsEven() const
+    {
+        return y[sizeof(y) - 1] % 2;
+    }
+    
+    ///
+    /// Conversions
+    ///
     
     PublicKey::operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const
     {
-        std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES> arr;
+        std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES> arr{};
         arr[0] = 0x04;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
         std::copy(y.begin(), y.end(), arr.begin() + 1 + EC_GROUP_ELEMENT_SIZE_BYTES);
@@ -174,7 +167,7 @@ namespace conclave
     
     PublicKey::operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const
     {
-        std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES> arr;
+        std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES> arr{};
         arr[0] = (y[EC_GROUP_ELEMENT_SIZE_BYTES - 1] & 1u) + 2u;
         std::copy(x.begin(), x.end(), arr.begin() + 1);
         return arr;
@@ -195,9 +188,9 @@ namespace conclave
         return asHexStringCompressed();
     }
     
-    //
-    // Operator Overloads
-    //
+    ///
+    /// Operator Overloads
+    ///
     
     PublicKey& PublicKey::operator=(const PublicKey& other)
     {

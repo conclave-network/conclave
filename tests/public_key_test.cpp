@@ -24,10 +24,10 @@ namespace conclave
 {
     const static Hash256 X_1("86f77ac51a93e9d65df4ab0d3a7f9dac2a0a282143e21352a94c2793898534a5");
     const static Hash256 X_2("8e188221e8c93e55c19b0ccc38fbe55a94c85a8ced56fcd36ef40197b61b6e35");
-    const static bool ODD_1 = true;
+    const static bool EVEN_1 = true;
     const static Hash256 Y_1("61feca91499858565af5b47ac0cc6c1fb9c0c0eb7af205b89f987e11ff9b5d0d");
     const static Hash256 Y_2("a978b0680815960871e5052bd2db13ce001bcb8bac0c44a7ed13bff65107eb6a");
-    const static bool ODD_2 = false;
+    const static bool EVEN_2 = false;
     const static std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES> COMPRESSED_BA_1{
         0x04,
         0x86, 0xf7, 0x7a, 0xc5, 0x1a, 0x93, 0xe9, 0xd6, 0x5d, 0xf4, 0xab, 0x0d, 0x3a, 0x7f, 0x9d, 0xac,
@@ -52,33 +52,43 @@ namespace conclave
         0xa9, 0x78, 0xb0, 0x68, 0x08, 0x15, 0x96, 0x08, 0x71, 0xe5, 0x05, 0x2b, 0xd2, 0xdb, 0x13, 0xce,
         0x00, 0x1b, 0xcb, 0x8b, 0xac, 0x0c, 0x44, 0xa7, 0xed, 0x13, 0xbf, 0xf6, 0x51, 0x07, 0xeb, 0x6a
     };
-    const static std::vector<BYTE> PUBKEY_1_SERIALIZED{
+    const static std::vector<BYTE> UNCOMPRESSED_PUBKEY_SERIALIZED_1{
         0x03,
         0x86, 0xf7, 0x7a, 0xc5, 0x1a, 0x93, 0xe9, 0xd6, 0x5d, 0xf4, 0xab, 0x0d, 0x3a, 0x7f, 0x9d, 0xac,
         0x2a, 0x0a, 0x28, 0x21, 0x43, 0xe2, 0x13, 0x52, 0xa9, 0x4c, 0x27, 0x93, 0x89, 0x85, 0x34, 0xa5
     };
-    const static std::vector<BYTE> PUBKEY_2_SERIALIZED{
+    const static std::vector<BYTE> UNCOMPRESSED_PUBKEY_SERIALIZED_2{
         0x02,
         0x8e, 0x18, 0x82, 0x21, 0xe8, 0xc9, 0x3e, 0x55, 0xc1, 0x9b, 0x0c, 0xcc, 0x38, 0xfb, 0xe5, 0x5a,
         0x94, 0xc8, 0x5a, 0x8c, 0xed, 0x56, 0xfc, 0xd3, 0x6e, 0xf4, 0x01, 0x97, 0xb6, 0x1b, 0x6e, 0x35,
     };
     BOOST_AUTO_TEST_SUITE(PublicKeyTestSuite)
         
-        BOOST_AUTO_TEST_CASE(PublicKeyXYConstructorTest)
+        BOOST_AUTO_TEST_CASE(PublicKeyConstructorsTest)
         {
-            BOOST_TEST(true); // TODO
+            // X, Y ctor.
+            PublicKey publicKeyFromXY(X_1, Y_1);
+            // X, Y move ctor.
+            PublicKey publicKeyFromXMoveYMove((Hash256(X_1)), (Hash256(Y_1)));
+            BOOST_TEST((publicKeyFromXY == publicKeyFromXMoveYMove));
         }
-        
-        // TODO: more tests
         
         BOOST_AUTO_TEST_CASE(PublicKeySerializeTest)
         {
-            PublicKey publicKey1FromXY(X_1, Y_1);
-            PublicKey publicKey2FromXY(X_2, Y_2);
-            BOOST_TEST(publicKey1FromXY.serialize() == PUBKEY_1_SERIALIZED);
-            BOOST_TEST(publicKey2FromXY.serialize() == PUBKEY_2_SERIALIZED);
+            PublicKey publicKeyFromXY1(X_1, Y_1);
+            PublicKey publicKeyFromXY2(X_2, Y_2);
+            BOOST_TEST((publicKeyFromXY1.serialize() == UNCOMPRESSED_PUBKEY_SERIALIZED_1));
+            BOOST_TEST((publicKeyFromXY2.serialize() == UNCOMPRESSED_PUBKEY_SERIALIZED_2));
         }
-    
+        
+        BOOST_AUTO_TEST_CASE(PublicKeyYIsEvenTest)
+        {
+            PublicKey publicKeyFromXY1(X_1, Y_1);
+            PublicKey publicKeyFromXY2(X_2, Y_2);
+            BOOST_TEST((publicKeyFromXY1.yIsEven() == EVEN_1));
+            BOOST_TEST((publicKeyFromXY2.yIsEven() == EVEN_2));
+        }
+        
         BOOST_AUTO_TEST_CASE(PublicKeyAssignmentOperatorsTest)
         {
             const PublicKey publicKey1(X_1, Y_1);

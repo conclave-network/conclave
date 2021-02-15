@@ -30,7 +30,8 @@ namespace conclave
             {
                 NodeInfoResponse* nodeInfoHandler(const NodeInfoRequest& nodeInfoRequest, ConclaveNode& conclaveNode)
                 {
-                    return new NodeInfoResponse(conclaveNode.getDisplayName(), conclaveNode.getPublicKey());
+                    return new NodeInfoResponse(conclaveNode.getDisplayName(),
+                                                static_cast<std::string>(conclaveNode.getPublicKey()));
                 }
             }
         }

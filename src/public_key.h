@@ -33,29 +33,28 @@ namespace conclave
         static PublicKey deserialize(const std::vector<BYTE>&, size_t&);
         static PublicKey deserialize(const std::vector<BYTE>&);
         // Constructors
-        PublicKey(const Hash256&, const Hash256&);
-        PublicKey(Hash256&&, Hash256&&);
-        PublicKey(const Hash256&, const bool);
-        PublicKey(Hash256&&, const bool);
-        PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
-        PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
-        PublicKey(const std::string&);
-        PublicKey(const char*);
         PublicKey(const PublicKey&);
-        PublicKey(PublicKey&&);
+        PublicKey(PublicKey&&) noexcept;
+        PublicKey(Hash256, Hash256);
+        PublicKey(Hash256, bool);
+        explicit PublicKey(const std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>&);
+        explicit PublicKey(const std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>&);
+        explicit PublicKey(const std::string&);
+        explicit PublicKey(const char*);
         // Public Functions
-        const std::string asHexStringUncompressed() const;
-        const std::string asHexStringCompressed() const;
-        const Hash160 getHash160Uncompressed() const;
-        const Hash160 getHash160Compressed() const;
-        const Hash256 getHash256Uncompressed() const;
-        const Hash256 getHash256Compressed() const;
-        const std::vector<BYTE> serialize() const;
+        [[nodiscard]] std::string asHexStringUncompressed() const;
+        [[nodiscard]] std::string asHexStringCompressed() const;
+        [[nodiscard]] Hash160 getHash160Uncompressed() const;
+        [[nodiscard]] Hash160 getHash160Compressed() const;
+        [[nodiscard]] Hash256 getHash256Uncompressed() const;
+        [[nodiscard]] Hash256 getHash256Compressed() const;
+        [[nodiscard]] std::vector<BYTE> serialize() const;
+        [[nodiscard]] bool yIsEven() const;
         // Conversions
-        operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
-        operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
-        operator std::vector<BYTE>() const;
-        operator std::string() const;
+        explicit operator std::array<BYTE, COMPRESSED_PUBKEY_SIZE_BYTES>() const;
+        explicit operator std::array<BYTE, UNCOMPRESSED_PUBKEY_SIZE_BYTES>() const;
+        explicit operator std::vector<BYTE>() const;
+        explicit operator std::string() const;
         // Operator Overloads
         PublicKey& operator=(const PublicKey&);
         PublicKey& operator=(PublicKey&&);

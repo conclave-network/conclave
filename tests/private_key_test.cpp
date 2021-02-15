@@ -42,6 +42,13 @@ namespace conclave
             BOOST_TEST((publicKey1 == K1_PUB));
         }
         
+        BOOST_AUTO_TEST_CASE(PrivateKeyGetEvenYPublicKeyTest)
+        {
+            PrivateKey privateKey1(KEY_DATA_1);
+            PublicKey publicKey1 = privateKey1.getEvenYPublicKey();
+            BOOST_TEST((publicKey1 == K1_PUB));
+        }
+        
         BOOST_AUTO_TEST_CASE(PrivateKeyEcdsaSignTest)
         {
             PrivateKey privateKey1(KEY_DATA_1);

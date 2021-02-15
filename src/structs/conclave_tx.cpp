@@ -229,7 +229,8 @@ namespace conclave
             tree.add_child(JSONKEY_FUND_POINT, static_cast<pt::ptree>(*fundPoint));
         }
         if (trustees.size() > 0) {
-            tree.add_child(JSONKEY_TRUSTEES, vectorOfObjectsToArray(trustees));
+            tree.add_child(JSONKEY_TRUSTEES,
+                           vectorOfObjectsToArray(std::vector<std::string>(trustees.begin(), trustees.end())));
         }
         if (conclaveInputs.size() > 0) {
             tree.add_child(JSONKEY_CONCLAVE_INPUTS, vectorOfObjectsToArray(conclaveInputs));

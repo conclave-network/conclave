@@ -36,9 +36,9 @@ namespace conclave
             {
                 // TEMP !!!
                 const static std::vector<PublicKey> TRUSTEES{
-                    "022054a424a0f76037d7fbe9dca924ba42f87574e2a2f4b6d9fd68231516fcbaeb",
-                    "039642b5f4defadc2b65d4dadc6479c88174e6fccdcb4c4e636c111fcd949efa3b",
-                    "02421b7dc96af3b9f73b219d7ee5d99d73086505b493294b1b7dc38eaf3667b734"
+                    PublicKey("022054a424a0f76037d7fbe9dca924ba42f87574e2a2f4b6d9fd68231516fcbaeb"),
+                    PublicKey("039642b5f4defadc2b65d4dadc6479c88174e6fccdcb4c4e636c111fcd949efa3b"),
+                    PublicKey("02421b7dc96af3b9f73b219d7ee5d99d73086505b493294b1b7dc38eaf3667b734")
                 };
                 const static uint32_t MIN_SIGS = 2;
                 const static uint32_t FUND_TX_VERSION = 2;

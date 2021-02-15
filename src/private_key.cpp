@@ -18,37 +18,49 @@
 
 #include "private_key.h"
 #include <bitcoin/system/math/elliptic_curve.hpp>
+#include <bitcoin/system/math/ec_scalar.hpp>
 
 namespace conclave
 {
     using namespace libbitcoin::system;
     
-    static PublicKey derivePublicKey(const Hash256& privateKeyData)
+    static inline std::array<PublicKey, 2> derivePublicKeys(const Hash256& privateKeyData)
     {
-        ec_uncompressed ecu;
-        secret_to_public(ecu, privateKeyData);
-        return PublicKey(ecu);
+        ec_scalar pk1(privateKeyData);
+        ec_scalar pk2(ec_scalar(SECP256K1_ORDER_BA) - pk1);
+        ec_uncompressed ecu1, ecu2;
+        secret_to_public(ecu1, pk1);
+        secret_to_public(ecu2, pk2);
+        return {
+            PublicKey(ecu1),
+            PublicKey(ecu2)
+        };
     }
     
-    //
-    // Constructors
-    //
+    ///
+    /// Constructors
+    ///
     
     PrivateKey::PrivateKey(const Hash256& data)
-        : data(data), publicKey(derivePublicKey(data))
+        : data(data), publicKeys(derivePublicKeys(data)), evenYPublicKeyIndex(!this->publicKeys[0].yIsEven())
     {
     }
     
-    //
-    // Public Functions
-    //
+    ///
+    /// Public Functions
+    ///
     
-    [[nodiscard]] const PublicKey PrivateKey::getPublicKey() const
+    [[nodiscard]] PublicKey PrivateKey::getPublicKey() const
     {
-        return publicKey;
+        return publicKeys[0];
     }
     
-    [[nodiscard]] const EcdsaSignature PrivateKey::sign(const Hash256& message) const
+    [[nodiscard]] PublicKey PrivateKey::getEvenYPublicKey() const
+    {
+        return publicKeys[evenYPublicKeyIndex];
+    }
+    
+    [[nodiscard]] EcdsaSignature PrivateKey::sign(const Hash256& message) const
     {
         ec_signature sig;
         libbitcoin::system::sign(sig, data, static_cast<hash_digest>(message));

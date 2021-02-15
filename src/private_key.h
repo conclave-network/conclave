@@ -25,14 +25,30 @@
 
 namespace conclave
 {
+    /**
+     * Secp256k1 curve order (n).
+     */
+    const static std::array<BYTE, 32> SECP256K1_ORDER_BA{
+        0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xff,
+        0xff, 0xff, 0xff, 0xfe,
+        0xba, 0xae, 0xdc, 0xe6,
+        0xaf, 0x48, 0xa0, 0x3b,
+        0xbf, 0xd2, 0x5e, 0x8c,
+        0xd0, 0x36, 0x41, 0x41
+    };
+    
     class PrivateKey
     {
         public:
-        PrivateKey(const Hash256&);
-        [[nodiscard]] const PublicKey getPublicKey() const;
-        [[nodiscard]] const EcdsaSignature sign(const Hash256&) const;
+        explicit PrivateKey(const Hash256&);
+        [[nodiscard]] PublicKey getPublicKey() const;
+        [[nodiscard]] PublicKey getEvenYPublicKey() const;
+        [[nodiscard]] EcdsaSignature sign(const Hash256&) const;
         private:
-        Hash256 data;
-        PublicKey publicKey;
+        const Hash256 data;
+        const std::array<PublicKey, 2> publicKeys;
+        const uint8_t evenYPublicKeyIndex;
     };
 }
