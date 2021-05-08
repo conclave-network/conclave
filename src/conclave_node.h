@@ -38,7 +38,7 @@ namespace conclave
     {
         public:
         explicit ConclaveNode(const Config&);
-        [[nodiscard]] bool getTestnet() const;
+        [[nodiscard]] bool isTestnet() const;
         [[nodiscard]] const std::string getDisplayName() const;
         [[nodiscard]] const PublicKey getPublicKey() const;
         BitcoinChain& getBitcoinChain();

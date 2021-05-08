@@ -40,7 +40,7 @@ namespace conclave
     {
         std::cout << "Starting node: " << getDisplayName() << std::endl;
         std::cout << "Public key: " << getPublicKey() << std::endl;
-        std::cout << "Testnet: " << getTestnet() << std::endl;
+        std::cout << "Testnet: " << isTestnet() << std::endl;
         chainwatchManager.start();
         rpcManager.start();
     }
@@ -51,7 +51,7 @@ namespace conclave
         chainwatchManager.stop();
     }
     
-    bool ConclaveNode::getTestnet() const
+    bool ConclaveNode::isTestnet() const
     {
         return testnet;
     }

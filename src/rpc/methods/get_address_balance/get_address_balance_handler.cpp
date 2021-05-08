@@ -35,7 +35,7 @@ namespace conclave
                 {
                     const Address& address = getAddressBalanceRequest.getAddress();
                     const bool addressIsTestnet = address.isTestnet();
-                    const bool nodeIsTestnet = conclaveNode.getTestnet();
+                    const bool nodeIsTestnet = conclaveNode.isTestnet();
                     ensure_correct_user_input(addressIsTestnet == nodeIsTestnet,
                                               "You provided a "
                                               + std::string(addressIsTestnet ? "testnet" : "mainnet")
