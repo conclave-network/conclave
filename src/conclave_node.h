@@ -37,14 +37,14 @@ namespace conclave
     class ConclaveNode final : public Worker
     {
         public:
-        ConclaveNode(const Config&);
-        const std::string getDisplayName() const;
-        const PublicKey getPublicKey() const;
+        explicit ConclaveNode(const Config&);
+        [[nodiscard]] const std::string getDisplayName() const;
+        [[nodiscard]] const PublicKey getPublicKey() const;
         BitcoinChain& getBitcoinChain();
         ConclaveChain& getConclaveChain();
         private:
-        void prepare() override final;
-        void cleanup() override final;
+        void prepare() override;
+        void cleanup() override;
         std::string displayName;
         PrivateKey privateKey;
         BitcoinChain bitcoinChain;
