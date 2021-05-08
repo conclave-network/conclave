@@ -18,7 +18,10 @@
 
 #pragma once
 
+#include "conclave.h"
 #include "hash256.h"
+#include <array>
+#include <string>
 
 namespace conclave
 {
@@ -37,17 +40,18 @@ namespace conclave
         static EcdsaSignature deserialize(const std::vector<BYTE>&, size_t&);
         static EcdsaSignature deserialize(const std::vector<BYTE>&);
         // Constructors
-        EcdsaSignature(const Hash256& r, const Hash256& s);
-        EcdsaSignature(Hash256&& r, Hash256&& s);
-        EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>&);
         EcdsaSignature(const EcdsaSignature&);
         EcdsaSignature(EcdsaSignature&&) noexcept;
+        EcdsaSignature(Hash256, Hash256);
+        explicit EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>&);
+        explicit EcdsaSignature(const std::string&);
+        explicit EcdsaSignature(const char*);
         // Public Functions
-        const std::vector<BYTE> serialize() const;
+        [[nodiscard]] std::vector<BYTE> serialize() const;
         // Conversions
-        operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const;
-        operator std::vector<BYTE>() const;
-        operator std::string() const;
+        explicit operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const;
+        explicit operator std::vector<BYTE>() const;
+        explicit operator std::string() const;
         // Operator Overloads
         EcdsaSignature& operator=(const EcdsaSignature&);
         EcdsaSignature& operator=(EcdsaSignature&&) noexcept;

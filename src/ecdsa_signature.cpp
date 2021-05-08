@@ -22,9 +22,9 @@
 namespace bc_system = libbitcoin::system;
 namespace conclave
 {
-    //
-    // Factories
-    //
+    ///
+    /// Factories
+    ///
     
     EcdsaSignature EcdsaSignature::deserialize(const std::vector<BYTE>& data, size_t& pos)
     {
@@ -33,7 +33,7 @@ namespace conclave
             std::vector<BYTE>(data.cbegin() + pos, data.cbegin() + pos + ECDSA_SIGNATURE_DER_MAX_SIZE_BYTES);
         bc_system::ec_signature sig;
         bc_system::parse_signature(sig, derSig, false);
-        return sig;
+        return static_cast<EcdsaSignature>(sig);
     }
     
     EcdsaSignature EcdsaSignature::deserialize(const std::vector<BYTE>& data)
@@ -42,54 +42,56 @@ namespace conclave
         return deserialize(data, pos);
     }
     
-    //
-    // Constructors
-    //
+    ///
+    /// Constructors
+    ///
     
-    EcdsaSignature::EcdsaSignature(const Hash256& r, const Hash256& s)
-        : r(r), s(s)
-    {
-    }
-    
-    EcdsaSignature::EcdsaSignature(Hash256&& r, Hash256&& s)
-        : r(std::move(r)), s(std::move(s))
-    {
-    }
-    
-    EcdsaSignature::EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>& data)
-        : EcdsaSignature(data.cbegin(), data.cbegin() + SECP256K1_SCALAR_SIZE_BYTES)
-    {
-    }
-    
-    EcdsaSignature::EcdsaSignature(const EcdsaSignature& other)
-        : r(other.r), s(other.s)
-    {
-    }
+    EcdsaSignature::EcdsaSignature(const EcdsaSignature& other) = default;
     
     EcdsaSignature::EcdsaSignature(EcdsaSignature&& other) noexcept
         : r(std::move(other.r)), s(std::move(other.s))
     {
     }
     
-    //
-    // Public Functions
-    //
+    EcdsaSignature::EcdsaSignature(Hash256 r, Hash256 s)
+        : r(std::move(r)), s(std::move(s))
+    {
+    }
     
-    const std::vector<BYTE> EcdsaSignature::serialize() const
+    EcdsaSignature::EcdsaSignature(const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>& data)
+        : r(&data[0]), s(&data[0] + SECP256K1_SCALAR_SIZE_BYTES)
+    {
+    }
+    
+    EcdsaSignature::EcdsaSignature(const std::string& hex)
+        : EcdsaSignature(hexStringToByteArray<ECDSA_SIGNATURE_SIZE_BYTES>(hex))
+    {
+    }
+    
+    EcdsaSignature::EcdsaSignature(const char* hex)
+        : EcdsaSignature(std::string(hex))
+    {
+    }
+    
+    ///
+    /// Public Functions
+    ///
+    
+    std::vector<BYTE> EcdsaSignature::serialize() const
     {
         // DER Serialization
         bc_system::der_signature der;
-        bc_system::encode_signature(der, *this);
+        bc_system::encode_signature(der, static_cast<const std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>>(*this));
         return der;
     }
     
-    //
-    // Conversions
-    //
+    ///
+    /// Conversions
+    ///
     
     EcdsaSignature::operator std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>() const
     {
-        std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES> arr;
+        std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES> arr{};
         std::copy(r.begin(), r.end(), arr.begin());
         std::copy(s.begin(), s.end(), arr.begin() + SECP256K1_SCALAR_SIZE_BYTES);
         return arr;
@@ -108,16 +110,11 @@ namespace conclave
         return byteArrayToHexString(static_cast<std::array<BYTE, ECDSA_SIGNATURE_SIZE_BYTES>>(*this));
     }
     
-    //
-    // Operator Overloads
-    //
+    ///
+    /// Operator Overloads
+    ///
     
-    EcdsaSignature& EcdsaSignature::operator=(const EcdsaSignature& other)
-    {
-        r = other.r;
-        s = other.s;
-        return *this;
-    }
+    EcdsaSignature& EcdsaSignature::operator=(const EcdsaSignature& other) = default;
     
     EcdsaSignature& EcdsaSignature::operator=(EcdsaSignature&& other) noexcept
     {
