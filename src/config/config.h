@@ -28,14 +28,14 @@
 class Config
 {
     public:
-    Config(const std::string&);
-    const bool getTestnet() const;
-    const std::string& getDisplayName() const;
-    const std::string& getPrivateKey() const;
-    const RpcConfig& getRpcConfig() const;
-    const BitcoinChainConfig& getBitcoinChainConfig() const;
-    const ConclaveChainConfig& getConclaveChainConfig() const;
-    const ChainwatchConfig& getChainwatchConfig() const;
+    explicit Config(const std::string&);
+    [[nodiscard]] bool getTestnet() const;
+    [[nodiscard]] const std::string& getDisplayName() const;
+    [[nodiscard]] const std::string& getPrivateKey() const;
+    [[nodiscard]] const RpcConfig& getRpcConfig() const;
+    [[nodiscard]] const BitcoinChainConfig& getBitcoinChainConfig() const;
+    [[nodiscard]] const ConclaveChainConfig& getConclaveChainConfig() const;
+    [[nodiscard]] const ChainwatchConfig& getChainwatchConfig() const;
     private:
     bool testnet;
     std::string displayName;

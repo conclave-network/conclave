@@ -44,7 +44,7 @@ Config::Config(const std::string& configFilePath)
     }
 }
 
-const bool Config::getTestnet() const
+bool Config::getTestnet() const
 {
     return testnet;
 }
