@@ -16,11 +16,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#include <stdexcept>
+#include <string>
+
 #pragma once
 namespace conclave
 {
     namespace rpc
     {
         const static char* RESPONSE_HEADERS = "Content-Type: application/json\nConnection: close";
+        
+        inline void ensure_correct_user_input(const bool predicate, const std::string& errMsg)
+        {
+            if (!predicate) {
+                throw std::runtime_error("Bad input: " + errMsg);
+            }
+        }
     }
 }
