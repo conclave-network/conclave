@@ -26,6 +26,7 @@ namespace conclave
 {
     ConclaveNode::ConclaveNode(const Config& config)
         : Worker(),
+          testnet(config.getTestnet()),
           displayName(config.getDisplayName()),
           privateKey(config.getPrivateKey()),
           bitcoinChain(BitcoinChain(config.getBitcoinChainConfig())),
@@ -39,6 +40,7 @@ namespace conclave
     {
         std::cout << "Starting node: " << getDisplayName() << std::endl;
         std::cout << "Public key: " << getPublicKey() << std::endl;
+        std::cout << "Testnet: " << getTestnet() << std::endl;
         chainwatchManager.start();
         rpcManager.start();
     }
@@ -47,6 +49,11 @@ namespace conclave
     {
         rpcManager.stop();
         chainwatchManager.stop();
+    }
+    
+    bool ConclaveNode::getTestnet() const
+    {
+        return testnet;
     }
     
     const std::string ConclaveNode::getDisplayName() const

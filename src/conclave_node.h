@@ -38,6 +38,7 @@ namespace conclave
     {
         public:
         explicit ConclaveNode(const Config&);
+        [[nodiscard]] bool getTestnet() const;
         [[nodiscard]] const std::string getDisplayName() const;
         [[nodiscard]] const PublicKey getPublicKey() const;
         BitcoinChain& getBitcoinChain();
@@ -45,6 +46,7 @@ namespace conclave
         private:
         void prepare() override;
         void cleanup() override;
+        bool testnet;
         std::string displayName;
         PrivateKey privateKey;
         BitcoinChain bitcoinChain;

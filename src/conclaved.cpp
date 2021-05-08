@@ -71,7 +71,6 @@ int main(int argc, char** argv)
         const std::string configFilePath = vm["config-file"].as<std::string>();
         const Config config(configFilePath);
         std::cout << "Config loaded from " << configFilePath << std::endl;
-        std::cout << "Testnet mode is " << (config.getTestnet() ? "on" : "off") << std::endl;
         
         // Create the node
         ConclaveNode conclaveNode(config);
