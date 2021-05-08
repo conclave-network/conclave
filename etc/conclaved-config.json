@@ -1,6 +1,7 @@
 {
   "DisplayName": "Callan",
   "PrivateKey": "7fb4f6e09d5344c46b4551fe08af8033d5d5864d9bbe551f282a574c928e945b",
+  "Testnet": true,
   "RPC": {
     "Acceptor": {
       "IPAddress": "0.0.0.0",

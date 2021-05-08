@@ -32,6 +32,7 @@ Config::Config(const std::string& configFilePath)
         throw std::runtime_error("Error opening config file: " + configFilePath);
     }
     try {
+        testnet = root.get<bool>("Testnet");
         displayName = root.get<std::string>("DisplayName");
         privateKey = root.get<std::string>("PrivateKey");
         rpcConfig = RpcConfig(root.get_child("RPC"));
@@ -41,6 +42,11 @@ Config::Config(const std::string& configFilePath)
     } catch (std::exception& e) {
         throw std::runtime_error("Error parsing config file " + configFilePath + ": " + e.what());
     }
+}
+
+const bool Config::getTestnet() const
+{
+    return testnet;
 }
 
 const std::string& Config::getDisplayName() const

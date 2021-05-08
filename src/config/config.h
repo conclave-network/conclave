@@ -29,6 +29,7 @@ class Config
 {
     public:
     Config(const std::string&);
+    const bool getTestnet() const;
     const std::string& getDisplayName() const;
     const std::string& getPrivateKey() const;
     const RpcConfig& getRpcConfig() const;
@@ -36,6 +37,7 @@ class Config
     const ConclaveChainConfig& getConclaveChainConfig() const;
     const ChainwatchConfig& getChainwatchConfig() const;
     private:
+    bool testnet;
     std::string displayName;
     std::string privateKey;
     std::optional<RpcConfig> rpcConfig;
