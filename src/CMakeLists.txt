@@ -104,8 +104,7 @@ add_executable(
         chain/electrumx/electrumx_client.cpp
         chain/database/database_client.cpp
         chain/structs/conclave_block.cpp
-        chain/structs/bitcoin_block_header.cpp
-        conclave_cli.cpp)
+        chain/structs/bitcoin_block_header.cpp)
 
 target_link_libraries(
         conclaved
@@ -128,7 +127,6 @@ set_target_properties(
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
-
 
 add_executable(
         conclave-cli
