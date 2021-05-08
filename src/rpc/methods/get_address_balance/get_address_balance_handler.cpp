@@ -19,6 +19,7 @@
 #include "get_address_balance_request.h"
 #include "get_address_balance_response.h"
 #include "../../../conclave_node.h"
+#include "../../rpc.h"
 
 namespace conclave
 {
@@ -33,6 +34,14 @@ namespace conclave
                                          ConclaveNode& conclaveNode)
                 {
                     const Address& address = getAddressBalanceRequest.getAddress();
+                    const bool addressIsTestnet = address.isTestnet();
+                    const bool nodeIsTestnet = conclaveNode.getTestnet();
+                    ensure_correct_user_input(addressIsTestnet == nodeIsTestnet,
+                                              "You provided a "
+                                              + std::string(addressIsTestnet ? "testnet" : "mainnet")
+                                              + " address but this is a "
+                                              + std::string(nodeIsTestnet ? "testnet" : "mainnet")
+                                              + " node.");
                     uint64_t balance;
                     if (address.isConclave()) {
                         balance = conclaveNode.getConclaveChain().getAddressBalance(address);
