@@ -105,7 +105,7 @@ add_executable(
         chain/database/database_client.cpp
         chain/structs/conclave_block.cpp
         chain/structs/bitcoin_block_header.cpp
-)
+        conclave_cli.cpp)
 
 target_link_libraries(
         conclaved
@@ -125,6 +125,18 @@ target_link_libraries(
 
 set_target_properties(
         conclaved
+        PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+)
+
+
+add_executable(
+        conclave-cli
+        conclave_cli.cpp
+)
+
+set_target_properties(
+        conclave-cli
         PROPERTIES
         RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
 )
