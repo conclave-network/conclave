@@ -210,13 +210,13 @@ namespace conclave
             uint8_t u8 = deserializeIntegral<uint8_t>(data, pos);
             BOOST_TEST((u8 == 216));
             // [pos] = 0xd4
-            int8_t i8 = deserializeIntegral<uint8_t>(data, pos);
+            int8_t i8 = deserializeIntegral<int8_t>(data, pos);
             BOOST_TEST((i8 == -44));
             // [pos] = 0xff
             uint16_t u16 = deserializeIntegral<uint16_t>(data, pos);
             BOOST_TEST((u16 == 17407));
             // [pos] = 0xcc
-            int16_t i16 = deserializeIntegral<uint16_t>(data, pos);
+            int16_t i16 = deserializeIntegral<int16_t>(data, pos);
             BOOST_TEST((i16 == -29748));
             // [pos] = 0xbb
             uint32_t u32 = deserializeIntegral<uint32_t>(data, pos);
